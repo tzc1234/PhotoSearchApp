@@ -18,6 +18,14 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
         return bar
     }()
     
+    private lazy var dataSource: UITableViewDiffableDataSource<Int, Photo> = {
+        .init(tableView: tableView) { tableView, indexPath, photo in
+            let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
+            cell.titleLabel.text = photo.title
+            return cell
+        }
+    }()
+    
     private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
     private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
@@ -31,6 +39,10 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.dataSource = dataSource
+        tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
+        
         setupRefreshControl()
         loadPhotos()
     }
@@ -47,9 +59,16 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
         loadPhotosCancellable = loadPhotosPublisher(searchTerm)
             .sink(receiveCompletion: { [weak self] completion in
                 self?.refreshControl?.endRefreshing()
-            }, receiveValue: { _ in
-                
+            }, receiveValue: { [weak self] photos in
+                self?.display(photos)
             })
+    }
+    
+    private func display(_ photos: [Photo]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, Photo>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(photos)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -58,8 +77,14 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     }
 }
 
-struct Photo {
+class PhotoCell: UITableViewCell {
+    private(set) lazy var titleLabel = UILabel()
+    static var identifier: String { String(describing: Self.self) }
+}
+
+struct Photo: Equatable, Hashable {
     let id: String
+    let title: String
 }
 
 final class PhotoSearchUIIntegrationTests: XCTestCase {
@@ -137,7 +162,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     func test_loadingIndicator_showsBeforePhotosLoadedCompletedSuccessfully() {
-        let photos = [Photo(id: "0")]
+        let photos = [Photo(id: "0", title: "any title")]
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         
@@ -191,6 +216,28 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.complete(with: emptyPhotos, at: 1)
         
         XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed search request with error")
+    }
+    
+    func test_loadPhotosComplete_rendersPhotoViewsCompletedWithNonEmptyPhotos() {
+        let photos0 = [Photo(id: "0", title: "title 0"), Photo(id: "1", title: "title 1")]
+        let photos1 = [Photo(id: "2", title: "title 2"), Photo(id: "3", title: "title 3")]
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered before photos loaded")
+        
+        loader.complete(with: photos0, at: 0)
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 2, "Expect two photo views rendered while completed successfully")
+        XCTAssertEqual(sut.photoView(at: 0)?.titleText, photos0[0].title)
+        XCTAssertEqual(sut.photoView(at: 1)?.titleText, photos0[1].title)
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.complete(with: photos1, at: 1)
+
+        XCTAssertEqual(sut.numberOfPhotoViews, 2, "Expect two photo views rendered while completed search request successfully")
+        XCTAssertEqual(sut.photoView(at: 0)?.titleText, photos1[0].title)
+        XCTAssertEqual(sut.photoView(at: 1)?.titleText, photos1[1].title)
     }
     
     // MARK: - Helpers
@@ -248,6 +295,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
 }
 
 extension PhotoSearchViewController {
+    override func loadViewIfNeeded() {
+        super.loadViewIfNeeded()
+        
+        tableView.frame = CGRect(x: 0, y: 0, width: 1, height: 9999)
+    }
+    
     func simulateUserInitiatedReload() {
         refreshControl?.simulate(event: .valueChanged)
     }
@@ -261,8 +314,19 @@ extension PhotoSearchViewController {
     }
     
     var numberOfPhotoViews: Int {
-        tableView.numberOfRows(inSection: section)
+        tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
+    }
+
+    func photoView(at row: Int) -> PhotoCell? {
+        let indexPath = IndexPath(row: row, section: section)
+        return tableView.cellForRow(at: indexPath) as? PhotoCell
     }
     
-    var section: Int { 0 }
+    private var section: Int { 0 }
+}
+
+extension PhotoCell {
+    var titleText: String? {
+        titleLabel.text
+    }
 }
