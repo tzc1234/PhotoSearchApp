@@ -176,6 +176,23 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed search request with error")
     }
     
+    func test_loadPhotosComplete_doesNotRenderPhotoViewsCompletedWithEmptyPhotos() {
+        let emptyPhotos = [Photo]()
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered before photos loaded")
+        
+        loader.complete(with: emptyPhotos, at: 0)
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed with error")
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.complete(with: emptyPhotos, at: 1)
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed search request with error")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
