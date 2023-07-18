@@ -77,11 +77,6 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     }
 }
 
-class PhotoCell: UITableViewCell {
-    private(set) lazy var titleLabel = UILabel()
-    static var identifier: String { String(describing: Self.self) }
-}
-
 final class PhotoSearchUIIntegrationTests: XCTestCase {
 
     func test_init_doesNotNotifyLoader() {
