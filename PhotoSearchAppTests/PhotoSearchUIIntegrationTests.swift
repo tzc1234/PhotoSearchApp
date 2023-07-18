@@ -160,6 +160,22 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
     }
     
+    func test_loadPhotosComplete_doesNotRenderPhotoViewsCompletedWithError() {
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered before photos loaded")
+        
+        loader.complete(with: anyNSError(), at: 0)
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed with error")
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.complete(with: anyNSError(), at: 1)
+        
+        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed search request with error")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
@@ -226,4 +242,10 @@ extension PhotoSearchViewController {
     var isShowingLoadingIndicator: Bool {
         refreshControl?.isRefreshing == true
     }
+    
+    var numberOfPhotoViews: Int {
+        tableView.numberOfRows(inSection: section)
+    }
+    
+    var section: Int { 0 }
 }
