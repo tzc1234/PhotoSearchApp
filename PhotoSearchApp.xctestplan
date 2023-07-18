@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "273F68A0-B73E-4B47-94CF-6B105EEACB2A",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:PhotoSearchApp.xcodeproj",
+      "identifier" : "BE74D8912A66C76F00073E46",
+      "name" : "PhotoSearchApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PhotoSearchApp.xcodeproj",
+        "identifier" : "BE74D8A72A66C77000073E46",
+        "name" : "PhotoSearchAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}
