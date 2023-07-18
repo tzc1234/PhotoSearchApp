@@ -82,11 +82,6 @@ class PhotoCell: UITableViewCell {
     static var identifier: String { String(describing: Self.self) }
 }
 
-struct Photo: Equatable, Hashable {
-    let id: String
-    let title: String
-}
-
 final class PhotoSearchUIIntegrationTests: XCTestCase {
 
     func test_init_doesNotNotifyLoader() {
