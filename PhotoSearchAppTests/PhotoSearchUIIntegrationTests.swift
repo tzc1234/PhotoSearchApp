@@ -9,8 +9,16 @@ import Combine
 import XCTest
 @testable import PhotoSearchApp
 
-class PhotoSearchViewController: UITableViewController {
+class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
+    private(set) lazy var searchBar = {
+        let bar = UISearchBar()
+        bar.delegate = self
+        return bar
+    }()
+    
+    private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
+    
     private let loader: LoaderSpy
     
     init(loader: LoaderSpy) {
@@ -33,25 +41,36 @@ class PhotoSearchViewController: UITableViewController {
     
     @objc private func loadPhotos() {
         loadPhotosCancellable?.cancel()
-        loadPhotosCancellable = loader.loadPublisher()
+        loadPhotosCancellable = loader.loadPublisher(searchTerm)
             .sink(receiveCompletion: { completion in
                 
             }, receiveValue: { _ in
                 
             })
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchTerm = searchText
+        loadPhotos()
+    }
 }
 
 class LoaderSpy {
-    private(set) var cancelLoadCallCount = 0
-    private(set) var loadRequests = [PassthroughSubject<Void, Error>]()
+    typealias LoadPublisher = PassthroughSubject<Void, Error>
+    
+    private var loadRequests = [(publisher: LoadPublisher, searchTerm: String)]()
     var loadCallCount: Int {
         loadRequests.count
     }
+    var loggedSearchTerms: [String] {
+        loadRequests.map(\.searchTerm)
+    }
     
-    func loadPublisher() -> AnyPublisher<Void, Error> {
-        let publisher = PassthroughSubject<Void, Error>()
-        loadRequests.append(publisher)
+    private(set) var cancelLoadCallCount = 0
+    
+    func loadPublisher(_ searchTerm: String) -> AnyPublisher<Void, Error> {
+        let publisher = LoadPublisher()
+        loadRequests.append((publisher, searchTerm))
         return publisher.handleEvents(receiveCancel: { [weak self] in
             self?.cancelLoadCallCount += 1
         }).eraseToAnyPublisher()
@@ -59,7 +78,7 @@ class LoaderSpy {
     
     func complete(with error: Error, at index: Int) {
         guard index < loadRequests.count else { return }
-        loadRequests[index].send(completion: .failure(error))
+        loadRequests[index].publisher.send(completion: .failure(error))
     }
 }
 
@@ -86,11 +105,32 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadCallCount, 2, "Expect two photos loads after user initiated a photos reload")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load after an uncompleted request")
         
-        loader.complete(with: NSError(domain: "any error", code: 0), at: 1)
+        loader.complete(with: anyNSError(), at: 1)
         sut.simulateUserInitiatedReload()
         
         XCTAssertEqual(loader.loadCallCount, 3, "Expect three photos loads after user initiated second photos reload")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect no changes because no more request uncompleted")
+    }
+    
+    func test_photosSearching_requestsPhotosWithSearchTermFromLoader() {
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(loader.loggedSearchTerms, [""], "Expect one search term logged after view rendered")
+        
+        let searchTerm0 = "term 0"
+        sut.simulateSearchPhotos(by: searchTerm0)
+        
+        XCTAssertEqual(loader.loadCallCount, 2, "Expect two photos loads after search photos")
+        XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0], "Expect two search term logged after a search request")
+        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load because of the inital uncompleted request")
+        
+        let searchTerm1 = "term 1"
+        sut.simulateSearchPhotos(by: searchTerm1)
+        
+        XCTAssertEqual(loader.loadCallCount, 3, "Expect three photos loads after search photos again")
+        XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0, searchTerm1], "Expect three search terms logged after more a search request")
+        XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of more an uncompleted search request")
     }
     
     // MARK: - Helpers
@@ -102,11 +142,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
     }
+
+    private func anyNSError() -> NSError {
+        NSError(domain: "any error", code: 0)
+    }
     
 }
 
 extension PhotoSearchViewController {
     func simulateUserInitiatedReload() {
         refreshControl?.simulate(event: .valueChanged)
+    }
+    
+    func simulateSearchPhotos(by searchTerm: String) {
+        searchBar(searchBar, textDidChange: searchTerm)
     }
 }
