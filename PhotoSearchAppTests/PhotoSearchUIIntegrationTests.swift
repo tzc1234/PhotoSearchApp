@@ -95,10 +95,11 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
         let sut = PhotoSearchViewController(loader: loader)
-        
+        trackForMemoryLeaks(loader, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
     }
     
