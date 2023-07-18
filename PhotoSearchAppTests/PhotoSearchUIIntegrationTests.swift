@@ -10,6 +10,8 @@ import XCTest
 @testable import PhotoSearchApp
 
 class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
+    typealias LoadPhotosPublisher = AnyPublisher<Void, Error>
+    
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
         bar.delegate = self
@@ -18,11 +20,10 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     
     private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
+    private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
     
-    private let loader: LoaderSpy
-    
-    init(loader: LoaderSpy) {
-        self.loader = loader
+    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher) {
+        self.loadPhotosPublisher = loadPhotosPublisher
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,7 +42,7 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     
     @objc private func loadPhotos() {
         loadPhotosCancellable?.cancel()
-        loadPhotosCancellable = loader.loadPublisher(searchTerm)
+        loadPhotosCancellable = loadPhotosPublisher(searchTerm)
             .sink(receiveCompletion: { completion in
                 
             }, receiveValue: { _ in
@@ -52,33 +53,6 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchTerm = searchText
         loadPhotos()
-    }
-}
-
-class LoaderSpy {
-    typealias LoadPublisher = PassthroughSubject<Void, Error>
-    
-    private var loadRequests = [(publisher: LoadPublisher, searchTerm: String)]()
-    var loadCallCount: Int {
-        loadRequests.count
-    }
-    var loggedSearchTerms: [String] {
-        loadRequests.map(\.searchTerm)
-    }
-    
-    private(set) var cancelLoadCallCount = 0
-    
-    func loadPublisher(_ searchTerm: String) -> AnyPublisher<Void, Error> {
-        let publisher = LoadPublisher()
-        loadRequests.append((publisher, searchTerm))
-        return publisher.handleEvents(receiveCancel: { [weak self] in
-            self?.cancelLoadCallCount += 1
-        }).eraseToAnyPublisher()
-    }
-    
-    func complete(with error: Error, at index: Int) {
-        guard index < loadRequests.count else { return }
-        loadRequests[index].publisher.send(completion: .failure(error))
     }
 }
 
@@ -137,7 +111,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = PhotoSearchViewController(loader: loader)
+        let sut = PhotoSearchViewController(loadPhotosPublisher: loader.loadPublisher)
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
@@ -145,6 +119,33 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
 
     private func anyNSError() -> NSError {
         NSError(domain: "any error", code: 0)
+    }
+    
+    private class LoaderSpy {
+        typealias LoadPublisher = PassthroughSubject<Void, Error>
+        
+        private var loadRequests = [(publisher: LoadPublisher, searchTerm: String)]()
+        var loadCallCount: Int {
+            loadRequests.count
+        }
+        var loggedSearchTerms: [String] {
+            loadRequests.map(\.searchTerm)
+        }
+        
+        private(set) var cancelLoadCallCount = 0
+        
+        func loadPublisher(_ searchTerm: String) -> AnyPublisher<Void, Error> {
+            let publisher = LoadPublisher()
+            loadRequests.append((publisher, searchTerm))
+            return publisher.handleEvents(receiveCancel: { [weak self] in
+                self?.cancelLoadCallCount += 1
+            }).eraseToAnyPublisher()
+        }
+        
+        func complete(with error: Error, at index: Int) {
+            guard index < loadRequests.count else { return }
+            loadRequests[index].publisher.send(completion: .failure(error))
+        }
     }
     
 }
