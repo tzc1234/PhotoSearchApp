@@ -10,7 +10,7 @@ import XCTest
 @testable import PhotoSearchApp
 
 class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
-    typealias LoadPhotosPublisher = AnyPublisher<Void, Error>
+    typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
     
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
@@ -56,6 +56,10 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
         searchTerm = searchText
         loadPhotos()
     }
+}
+
+struct Photo {
+    let id: String
 }
 
 final class PhotoSearchUIIntegrationTests: XCTestCase {
@@ -132,6 +136,30 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
     }
     
+    func test_loadingIndicator_showsBeforePhotosLoadedCompletedSuccessfully() {
+        let photos = [Photo(id: "0")]
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once photos request begins")
+        
+        loader.complete(with: photos, at: 0)
+        
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error")
+        
+        sut.simulateUserInitiatedReload() // index 1
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user initiates photos again")
+        
+        sut.simulateSearchPhotos(by: anyTerm()) // index 2
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searchs photos")
+        
+        loader.complete(with: photos, at: 2)
+        
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
@@ -151,7 +179,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     private class LoaderSpy {
-        typealias LoadPublisher = PassthroughSubject<Void, Error>
+        typealias LoadPublisher = PassthroughSubject<[Photo], Error>
         
         private var loadRequests = [(publisher: LoadPublisher, searchTerm: String)]()
         var loadCallCount: Int {
@@ -163,12 +191,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         private(set) var cancelLoadCallCount = 0
         
-        func loadPublisher(_ searchTerm: String) -> AnyPublisher<Void, Error> {
+        func loadPublisher(_ searchTerm: String) -> AnyPublisher<[Photo], Error> {
             let publisher = LoadPublisher()
             loadRequests.append((publisher, searchTerm))
             return publisher.handleEvents(receiveCancel: { [weak self] in
                 self?.cancelLoadCallCount += 1
             }).eraseToAnyPublisher()
+        }
+        
+        func complete(with photos: [Photo], at index: Int) {
+            guard index < loadRequests.count else { return }
+            
+            loadRequests[index].publisher.send(photos)
+            loadRequests[index].publisher.send(completion: .finished)
         }
         
         func complete(with error: Error, at index: Int) {
