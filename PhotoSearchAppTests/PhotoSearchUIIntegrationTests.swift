@@ -189,16 +189,16 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered before photos loaded")
+        assert(sut, isRending: [])
         
         loader.complete(with: anyNSError(), at: 0)
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed with error")
+        assert(sut, isRending: [])
         
         sut.simulateSearchPhotos(by: anyTerm())
         loader.complete(with: anyNSError(), at: 1)
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed search request with error")
+        assert(sut, isRending: [])
     }
     
     func test_loadPhotosComplete_doesNotRenderPhotoViewsCompletedWithEmptyPhotos() {
@@ -206,16 +206,16 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered before photos loaded")
+        assert(sut, isRending: [])
         
         loader.complete(with: emptyPhotos, at: 0)
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed with error")
+        assert(sut, isRending: emptyPhotos)
         
         sut.simulateSearchPhotos(by: anyTerm())
         loader.complete(with: emptyPhotos, at: 1)
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered while completed search request with error")
+        assert(sut, isRending: emptyPhotos)
     }
     
     func test_loadPhotosComplete_rendersPhotoViewsCompletedWithNonEmptyPhotos() {
@@ -224,20 +224,16 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 0, "Expect no photo views rendered before photos loaded")
+        assert(sut, isRending: [])
         
         loader.complete(with: photos0, at: 0)
         
-        XCTAssertEqual(sut.numberOfPhotoViews, 2, "Expect two photo views rendered while completed successfully")
-        XCTAssertEqual(sut.photoView(at: 0)?.titleText, photos0[0].title)
-        XCTAssertEqual(sut.photoView(at: 1)?.titleText, photos0[1].title)
+        assert(sut, isRending: photos0)
         
         sut.simulateSearchPhotos(by: anyTerm())
         loader.complete(with: photos1, at: 1)
 
-        XCTAssertEqual(sut.numberOfPhotoViews, 2, "Expect two photo views rendered while completed search request successfully")
-        XCTAssertEqual(sut.photoView(at: 0)?.titleText, photos1[0].title)
-        XCTAssertEqual(sut.photoView(at: 1)?.titleText, photos1[1].title)
+        assert(sut, isRending: photos1)
     }
     
     // MARK: - Helpers
@@ -248,6 +244,27 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
+    }
+    
+    private func assert(_ sut: PhotoSearchViewController, isRending photos: [Photo],
+                        file: StaticString = #filePath, line: UInt = #line) {
+        guard photos.count == sut.numberOfPhotoViews else {
+            XCTFail("Expect \(photos.count) photo views, got \(sut.numberOfPhotoViews) instead", file: file, line: line)
+            return
+        }
+        
+        photos.enumerated().forEach { index, photo in
+            assert(sut, hasConfigureFor: photo, at: index, file: file, line: line)
+        }
+    }
+    
+    private func assert(_ sut: PhotoSearchViewController, hasConfigureFor photo: Photo, at row: Int,
+                        file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(sut.photoView(at: row)?.titleText,
+                       photo.title,
+                       "Expect title: \(photo.title) for row: \(row), got \(String(describing: sut.photoView(at: 0)?.titleText)) instead",
+                       file: file,
+                       line: line)
     }
     
     private func anyTerm() -> String {
