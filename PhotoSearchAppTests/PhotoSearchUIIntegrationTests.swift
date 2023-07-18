@@ -84,7 +84,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     func test_loadingIndicator_showsBeforePhotosLoadedCompletedSuccessfully() {
-        let photos = [Photo(id: "0", title: "any title")]
+        let photos = [makePhoto(id: "0")]
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         
@@ -141,8 +141,8 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     func test_loadPhotosComplete_rendersPhotoViewsCompletedWithNonEmptyPhotos() {
-        let photos0 = [Photo(id: "0", title: "title 0"), Photo(id: "1", title: "title 1")]
-        let photos1 = [Photo(id: "2", title: "title 2"), Photo(id: "3", title: "title 3")]
+        let photos0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
+        let photos1 = [makePhoto(id: "2", title: "title 2"), makePhoto(id: "3", title: "title 3")]
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         
@@ -187,6 +187,10 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
                        "Expect title: \(photo.title) for row: \(row), got \(String(describing: sut.photoView(at: 0)?.titleText)) instead",
                        file: file,
                        line: line)
+    }
+    
+    private func makePhoto(id: String = "any id", title: String = "any title") -> Photo {
+        .init(id: id, title: title)
     }
     
     private func anyTerm() -> String {
