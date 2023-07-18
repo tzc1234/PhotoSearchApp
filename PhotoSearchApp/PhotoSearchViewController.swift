@@ -8,7 +8,7 @@
 import Combine
 import UIKit
 
-class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
+class PhotoSearchViewController: UITableViewController {
     typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
     
     private(set) lazy var searchBar = {
@@ -69,7 +69,9 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
         snapshot.appendItems(photos)
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
-    
+}
+
+extension PhotoSearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchTerm = searchText
         loadPhotos()
