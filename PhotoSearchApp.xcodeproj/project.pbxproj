@@ -12,6 +12,8 @@
 		BE74D89F2A66C77000073E46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE74D89E2A66C77000073E46 /* Assets.xcassets */; };
 		BE74D8A22A66C77000073E46 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE74D8A02A66C77000073E46 /* LaunchScreen.storyboard */; };
 		BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8AC2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift */; };
+		BE74D8C72A66D21500073E46 /* UIRefreshControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */; };
+		BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,8 @@
 		BE74D8A82A66C77000073E46 /* PhotoSearchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoSearchAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE74D8AC2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSearchUIIntegrationTests.swift; sourceTree = "<group>"; };
 		BE74D8C52A66C87600073E46 /* PhotoSearchApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = PhotoSearchApp.xctestplan; sourceTree = "<group>"; };
+		BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+TestHelpers.swift"; sourceTree = "<group>"; };
+		BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+TestHelpers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,9 +92,19 @@
 		BE74D8AB2A66C77000073E46 /* PhotoSearchAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				BE74D8CA2A66D2C800073E46 /* Helpers */,
 				BE74D8AC2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift */,
 			);
 			path = PhotoSearchAppTests;
+			sourceTree = "<group>";
+		};
+		BE74D8CA2A66D2C800073E46 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */,
+				BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,7 +216,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */,
 				BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */,
+				BE74D8C72A66D21500073E46 /* UIRefreshControl+TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
