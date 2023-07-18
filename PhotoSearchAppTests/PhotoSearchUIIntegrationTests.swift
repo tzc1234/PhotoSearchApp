@@ -41,10 +41,12 @@ class PhotoSearchViewController: UITableViewController, UISearchBarDelegate {
     }
     
     @objc private func loadPhotos() {
+        refreshControl?.beginRefreshing()
+        
         loadPhotosCancellable?.cancel()
         loadPhotosCancellable = loadPhotosPublisher(searchTerm)
-            .sink(receiveCompletion: { completion in
-                
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.refreshControl?.endRefreshing()
             }, receiveValue: { _ in
                 
             })
@@ -107,6 +109,29 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of more an uncompleted search request")
     }
     
+    func test_loadingIndicator_showsBeforePhotosLoadedCompletedWithError() {
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once photos request begins")
+        
+        loader.complete(with: anyNSError(), at: 0)
+        
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error")
+        
+        sut.simulateUserInitiatedReload() // index 1
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user initiates photos again")
+        
+        sut.simulateSearchPhotos(by: anyTerm()) // index 2
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searchs photos")
+        
+        loader.complete(with: anyNSError(), at: 2)
+        
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
@@ -115,6 +140,10 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
+    }
+    
+    private func anyTerm() -> String {
+        "any term"
     }
 
     private func anyNSError() -> NSError {
@@ -157,5 +186,9 @@ extension PhotoSearchViewController {
     
     func simulateSearchPhotos(by searchTerm: String) {
         searchBar(searchBar, textDidChange: searchTerm)
+    }
+    
+    var isShowingLoadingIndicator: Bool {
+        refreshControl?.isRefreshing == true
     }
 }
