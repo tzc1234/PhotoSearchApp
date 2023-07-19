@@ -321,6 +321,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(secondView.renderedImage, imageData1, "Expect rendered image for second image view after second view image load successfully")
     }
     
+    func test_photoImageView_doesNotRenderInvalidDataImage() throws {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [makePhoto()], at: 0)
+        
+        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        let invalidData = Data("invaliad data".utf8)
+        loader.completeImageLoad(with: invalidData, at: 0)
+        
+        XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after first view image load with invalid data")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
