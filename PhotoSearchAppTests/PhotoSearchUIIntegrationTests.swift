@@ -429,9 +429,9 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
                          file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = PhotoSearchViewController(loadPhotosPublisher: loader.loadPublisher,
-                                            loadImagePublisher: loader.loadImagePublisher,
-                                            showError: showError)
+        let sut = PhotoSearchComposer.composeWith(loadPhotosPublisher: loader.loadPublisher,
+                                                  loadImagePublisher: loader.loadImagePublisher,
+                                                  showError: showError)
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)

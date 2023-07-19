@@ -5,12 +5,9 @@
 //  Created by Tsz-Lung on 18/07/2023.
 //
 
-import Combine
 import UIKit
 
 final class PhotoSearchViewController: UITableViewController {
-    typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
-    
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
         bar.delegate = self
@@ -24,16 +21,11 @@ final class PhotoSearchViewController: UITableViewController {
     }()
     
     private var searchTerm = ""
-    private var loadPhotosCancellable: Cancellable?
-    private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
-    private let loadImagePublisher: (Photo) -> PhotoCellController.LoadImagePublisher
-    private let showError: (String, String) -> Void
+    private let loadPhotos: (String) -> Void
+    let showError: (String, String) -> Void
     
-    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher,
-         loadImagePublisher: @escaping (Photo) -> PhotoCellController.LoadImagePublisher,
-         showError: @escaping (String, String) -> Void) {
-        self.loadPhotosPublisher = loadPhotosPublisher
-        self.loadImagePublisher = loadImagePublisher
+    init(loadPhotos: @escaping (String) -> Void, showError: @escaping (String, String) -> Void) {
+        self.loadPhotos = loadPhotos
         self.showError = showError
         super.init(nibName: nil, bundle: nil)
     }
@@ -44,7 +36,7 @@ final class PhotoSearchViewController: UITableViewController {
         super.viewDidLoad()
         configureTableView()
         setupRefreshControl()
-        loadPhotos()
+        loadPhotos(searchTerm)
     }
     
     private func configureTableView() {
@@ -54,35 +46,22 @@ final class PhotoSearchViewController: UITableViewController {
     
     private func setupRefreshControl() {
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(loadPhotos), for: .valueChanged)
+        refreshControl?.addTarget(self, action: #selector(reloadPhotos), for: .valueChanged)
     }
     
-    @objc private func loadPhotos() {
-        refreshControl?.beginRefreshing()
-        
-        loadPhotosCancellable?.cancel()
-        loadPhotosCancellable = loadPhotosPublisher(searchTerm)
-            .receive(on: DispatchQueue.immediateWhenOnMainQueueScheluder)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure = completion {
-                    self?.showError("Oops!", "Network error occurred, please try again.")
-                }
-                
-                self?.refreshControl?.endRefreshing()
-            }, receiveValue: { [weak self] photos in
-                guard let self else { return }
-                
-                self.display(photos.map { photo in
-                    PhotoCellController(photo: photo, loadImagePublisher: self.loadImagePublisher)
-                })
-            })
+    @objc private func reloadPhotos() {
+        loadPhotos(searchTerm)
     }
     
-    private func display(_ cellControllers: [PhotoCellController]) {
+    func display(_ cellControllers: [PhotoCellController]) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, PhotoCellController>()
         snapshot.appendSections([0])
         snapshot.appendItems(cellControllers)
         dataSource.applySnapshotUsingReloadData(snapshot)
+    }
+    
+    func showErrorView() {
+        showError("Oops!", "Network error occurred, please try again.")
     }
     
     private func cellController(forRowAt indexPath: IndexPath) -> PhotoCellController? {
@@ -101,6 +80,6 @@ final class PhotoSearchViewController: UITableViewController {
 extension PhotoSearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchTerm = searchText
-        loadPhotos()
+        loadPhotos(searchTerm)
     }
 }
