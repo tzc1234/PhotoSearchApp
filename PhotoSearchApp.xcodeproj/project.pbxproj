@@ -19,6 +19,7 @@
 		BE74D8C72A66D21500073E46 /* UIRefreshControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */; };
 		BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */; };
 		BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */; };
+		BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
+		BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 				BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */,
 				BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */,
 				BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */,
+				BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */,
 				BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */,
+				BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */,
 				BE74D8C72A66D21500073E46 /* UIRefreshControl+TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
