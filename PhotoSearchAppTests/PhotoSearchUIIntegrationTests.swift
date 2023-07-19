@@ -406,7 +406,22 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let previousImageData = UIImage.make(withColor: .gray).pngData()!
         loader.completeImageLoad(with: previousImageData, at: 0) // then complete the previous image request
         
-        XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image when image load completed successfully")
+        XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image after view reused when image load completed successfully")
+    }
+    
+    func test_loadImageComplete_dispatchesFromBackgroundToMainThread() {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [makePhoto()], at: 0)
+        sut.simulatePhotoImageViewVisiable(at: 0)
+        
+        let exp = expectation(description: "Wait for image load completed")
+        DispatchQueue.global().async {
+            loader.completeImageLoad(with: self.anyImageData(), at: 0)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
     }
     
     // MARK: - Helpers
