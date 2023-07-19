@@ -56,6 +56,7 @@ class PhotoSearchViewController: UITableViewController {
         
         loadPhotosCancellable?.cancel()
         loadPhotosCancellable = loadPhotosPublisher(searchTerm)
+            .receive(on: DispatchQueue.immediateWhenOnMainQueueScheluder)
             .sink(receiveCompletion: { [weak self] completion in
                 self?.refreshControl?.endRefreshing()
             }, receiveValue: { [weak self] photos in

@@ -158,7 +158,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         assert(sut, isRending: photos1)
     }
     
-    func test_loadPhotosCompleted_doesNotAlterCurrentRenderedPhotoViewsOnLoaderError() {
+    func test_loadPhotosComplete_doesNotAlterCurrentRenderedPhotoViewsOnLoaderError() {
         let photos0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
         let (sut, loader) = makeSUT()
         
@@ -176,6 +176,18 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.complete(with: anyNSError(), at: 2)
         
         assert(sut, isRending: photos0)
+    }
+    
+    func test_loadPhotosComplete_dispatchesFromBackgroundToMainThread() {
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        let exp = expectation(description: "Wait for initial photos load")
+        DispatchQueue.global().async {
+            loader.complete(with: [], at: 0)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
     }
     
     // MARK: - Helpers
