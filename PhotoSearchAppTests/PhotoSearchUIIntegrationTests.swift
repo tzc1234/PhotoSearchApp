@@ -331,7 +331,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let invalidData = Data("invaliad data".utf8)
         loader.completeImageLoad(with: invalidData, at: 0)
         
-        XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after first view image load with invalid data")
+        XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after image load completed with invalid data")
+    }
+    
+    func test_photoImageView_doesNotRenderOnImageLoadError() throws {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [makePhoto()], at: 0)
+        
+        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        loader.completeImageLoad(with: anyNSError(), at: 0)
+        
+        XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after image load completed with error")
     }
     
     // MARK: - Helpers
@@ -438,6 +450,10 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
             loadImageRequests[index].publisher.send(completion: .finished)
         }
         
+        func completeImageLoad(with error: Error, at index: Int) {
+            guard index < loadImageRequests.count else { return }
+            loadImageRequests[index].publisher.send(completion: .failure(error))
+        }
     }
     
     private struct LoggedError: Equatable {
