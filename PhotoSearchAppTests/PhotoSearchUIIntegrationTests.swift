@@ -341,9 +341,37 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.complete(with: [makePhoto()], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        
+        XCTAssertTrue(view.isShowingLoadingIndicator, "Expect a loading before image load completed")
+        
         loader.completeImageLoad(with: anyNSError(), at: 0)
         
         XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after image load completed with error")
+        XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image load completed with error")
+    }
+    
+    func test_photoImageView_configuresCorrectlyWhenCellBecomeVisibleAgain() throws {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [makePhoto()], at: 0)
+        
+        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        
+        XCTAssertNil(view.renderedImage, "Expect no rendered image before image load complete when view is visiable")
+        XCTAssertTrue(view.isShowingLoadingIndicator, "Expect a loading before image load completed")
+        
+        sut.simulatePhotoImageViewInvisiable(view, at: 0)
+        sut.simulatePhotoImageViewBecomeVisiableAgain(view, at: 0)
+        
+        XCTAssertNil(view.renderedImage, "Expect no rendered image before image reload complete when view becomes visiable again")
+        XCTAssertTrue(view.isShowingLoadingIndicator, "Expect a loading before image reload completed")
+        
+        let imageData = UIImage.make(withColor: .red).pngData()!
+        loader.completeImageLoad(with: imageData, at: 1)
+        
+        XCTAssertEqual(view.renderedImage, imageData, "Expect rendered image after image reload completed successfully")
+        XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image reload completed")
     }
     
     // MARK: - Helpers
@@ -520,5 +548,9 @@ extension PhotoCell {
     
     var renderedImage: Data? {
         photoImageView.image?.pngData()
+    }
+    
+    var isShowingLoadingIndicator: Bool {
+        containerView.isShimmering
     }
 }

@@ -9,6 +9,7 @@ import UIKit
 
 class PhotoCell: UITableViewCell {
     private(set) lazy var titleLabel = UILabel()
+    private(set) lazy var containerView = UIView()
     private(set) lazy var photoImageView = UIImageView()
     
     static var identifier: String { String(describing: Self.self) }

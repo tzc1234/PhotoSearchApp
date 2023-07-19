@@ -97,9 +97,10 @@ class PhotoSearchViewController: UITableViewController {
             return
         }
         
+        cell.containerView.isShimmering = true
         loadImageCancellables[indexPath] = loadImagePublisher(photo)
-            .sink(receiveCompletion: { _ in
-                
+            .sink(receiveCompletion: { [weak cell] _ in
+                cell?.containerView.isShimmering = false
             }, receiveValue: { [weak cell] data in
                 cell?.photoImageView.image = UIImage(data: data)
             })
