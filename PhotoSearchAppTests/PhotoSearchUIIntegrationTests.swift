@@ -299,6 +299,28 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
                        "Expect a image reload for second image view once second image view becomes visiable again")
     }
     
+    func test_photoImageView_rendersLoadedImage() throws {
+        let photo0 = makePhoto(id: "0")
+        let photo1 = makePhoto(id: "1")
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [photo0, photo1], at: 0)
+        
+        let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        let imageData0 = UIImage.make(withColor: .red).pngData()!
+        loader.completeImageLoad(with: imageData0, at: 0)
+        
+        XCTAssertEqual(firstView.renderedImage, imageData0, "Expect rendered image for first image view after first view image load successfully")
+        
+        let secondView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        let imageData1 = UIImage.make(withColor: .green).pngData()!
+        loader.completeImageLoad(with: imageData1, at: 1)
+        
+        XCTAssertEqual(firstView.renderedImage, imageData0, "Expect rendered image for first image no changes")
+        XCTAssertEqual(secondView.renderedImage, imageData1, "Expect rendered image for second image view after second view image load successfully")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
@@ -395,6 +417,14 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
                 self?.cancelLoadImageCallCount += 1
             }).eraseToAnyPublisher()
         }
+        
+        func completeImageLoad(with data: Data, at index: Int) {
+            guard index < loadImageRequests.count else { return }
+            
+            loadImageRequests[index].publisher.send(data)
+            loadImageRequests[index].publisher.send(completion: .finished)
+        }
+        
     }
     
     private struct LoggedError: Equatable {
@@ -457,5 +487,9 @@ extension PhotoSearchViewController {
 extension PhotoCell {
     var titleText: String? {
         titleLabel.text
+    }
+    
+    var renderedImage: Data? {
+        photoImageView.image?.pngData()
     }
 }
