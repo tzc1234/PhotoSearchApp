@@ -20,6 +20,7 @@
 		BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */; };
 		BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */; };
 		BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */; };
+		BED8BA382A682C9B0068A202 /* UIView+Shimmering.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
+		BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shimmering.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 				BE479DD92A671BF00036898B /* PhotoCell.swift */,
 				BE479DDB2A671C2F0036898B /* PhotoSearchViewController.swift */,
 				BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */,
+				BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */,
 				BE74D8952A66C76F00073E46 /* AppDelegate.swift */,
 				BE74D8972A66C76F00073E46 /* SceneDelegate.swift */,
 				BE74D89E2A66C77000073E46 /* Assets.xcassets */,
@@ -228,6 +231,7 @@
 				BE479DDC2A671C2F0036898B /* PhotoSearchViewController.swift in Sources */,
 				BE479DDA2A671BF00036898B /* PhotoCell.swift in Sources */,
 				BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */,
+				BED8BA382A682C9B0068A202 /* UIView+Shimmering.swift in Sources */,
 				BE479DD82A671B820036898B /* Photo.swift in Sources */,
 				BE74D8982A66C76F00073E46 /* SceneDelegate.swift in Sources */,
 				BE5BFEEC2A67E30F002C6E72 /* CombineHelpers.swift in Sources */,
