@@ -28,9 +28,11 @@ class PhotoSearchViewController: UITableViewController {
     private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
     private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
+    private let showError: (String, String) -> Void
     
-    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher) {
+    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher, showError: @escaping (String, String) -> Void) {
         self.loadPhotosPublisher = loadPhotosPublisher
+        self.showError = showError
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -58,6 +60,10 @@ class PhotoSearchViewController: UITableViewController {
         loadPhotosCancellable = loadPhotosPublisher(searchTerm)
             .receive(on: DispatchQueue.immediateWhenOnMainQueueScheluder)
             .sink(receiveCompletion: { [weak self] completion in
+                if case .failure = completion {
+                    self?.showError("Oops!", "Network error occurred, please try again.")
+                }
+                
                 self?.refreshControl?.endRefreshing()
             }, receiveValue: { [weak self] photos in
                 self?.display(photos)

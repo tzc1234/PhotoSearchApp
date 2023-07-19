@@ -190,11 +190,40 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
+    func test_loadPhotosComplete_showsErrorOnLoaderError() throws {
+        let expectedError = LoggedError(title: "Oops!", message: "Network error occurred, please try again.")
+        var loggedErrors = [LoggedError]()
+        let (sut, loader) = makeSUT(showError: { title, message in
+            loggedErrors.append(.init(title: title, message: message))
+        })
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(loggedErrors.count, 0, "Expect no errors shown before load photos completed")
+        
+        loader.complete(with: anyNSError(), at: 0)
+        
+        XCTAssertEqual(loggedErrors, [expectedError], "Expect one error shown after load photos completed with error")
+        
+        sut.simulateUserInitiatedReload()
+        loader.complete(with: [], at: 1)
+        
+        XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown after user initiated load photos completed successfully")
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        
+        XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown before search photos completed")
+        
+        loader.complete(with: anyNSError(), at: 2)
+        
+        XCTAssertEqual(loggedErrors, [expectedError, expectedError], "Expect one new error shown after search photos completed with error")
+    }
+    
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
+    private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
+                         file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = PhotoSearchViewController(loadPhotosPublisher: loader.loadPublisher)
+        let sut = PhotoSearchViewController(loadPhotosPublisher: loader.loadPublisher, showError: showError)
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
@@ -265,6 +294,11 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
             guard index < loadRequests.count else { return }
             loadRequests[index].publisher.send(completion: .failure(error))
         }
+    }
+    
+    private struct LoggedError: Equatable {
+        let title: String
+        let message: String
     }
     
 }
