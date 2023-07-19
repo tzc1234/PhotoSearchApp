@@ -10,6 +10,7 @@ import UIKit
 
 class PhotoSearchViewController: UITableViewController {
     typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
+    typealias LoadImagePublisher = AnyPublisher<Data, Error>
     
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
@@ -18,9 +19,16 @@ class PhotoSearchViewController: UITableViewController {
     }()
     
     private lazy var dataSource: UITableViewDiffableDataSource<Int, Photo> = {
-        .init(tableView: tableView) { tableView, indexPath, photo in
+        .init(tableView: tableView) { [weak self] tableView, indexPath, photo in
             let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
             cell.titleLabel.text = photo.title
+            let loadImageCancellable = self?.loadImagePublisher()
+                .sink(receiveCompletion: { _ in
+                
+                }, receiveValue: { _ in
+                
+                })
+            
             return cell
         }
     }()
@@ -28,10 +36,13 @@ class PhotoSearchViewController: UITableViewController {
     private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
     private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
+    private let loadImagePublisher: () -> LoadImagePublisher
     private let showError: (String, String) -> Void
     
-    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher, showError: @escaping (String, String) -> Void) {
+    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher, loadImagePublisher: @escaping () -> LoadImagePublisher,
+         showError: @escaping (String, String) -> Void) {
         self.loadPhotosPublisher = loadPhotosPublisher
+        self.loadImagePublisher = loadImagePublisher
         self.showError = showError
         super.init(nibName: nil, bundle: nil)
     }

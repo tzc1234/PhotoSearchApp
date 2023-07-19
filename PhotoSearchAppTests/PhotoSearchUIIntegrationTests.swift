@@ -218,12 +218,35 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loggedErrors, [expectedError, expectedError], "Expect one new error shown after search photos completed with error")
     }
     
+    // MARK: - Image View tests
+    
+    func test_photoImageView_loadImageWhenVisiable() {
+        let photo0 = makePhoto(id: "0")
+        let photo1 = makePhoto(id: "1")
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [photo0, photo1], at: 0)
+        
+        XCTAssertEqual(loader.loadImageCallCount, 0, "Expect no image load before image views rendered")
+        
+        sut.simulatePhotoImageViewVisiable(at: 0)
+        
+        XCTAssertEqual(loader.loadImageCallCount, 1, "Expect one image load once first image view is visiable")
+        
+        sut.simulatePhotoImageViewVisiable(at: 1)
+        
+        XCTAssertEqual(loader.loadImageCallCount, 2, "Expect two image load once second image view is visiable")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
                          file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = PhotoSearchViewController(loadPhotosPublisher: loader.loadPublisher, showError: showError)
+        let sut = PhotoSearchViewController(loadPhotosPublisher: loader.loadPublisher,
+                                            loadImagePublisher: loader.loadImagePublisher,
+                                            showError: showError)
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
@@ -294,6 +317,20 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
             guard index < loadRequests.count else { return }
             loadRequests[index].publisher.send(completion: .failure(error))
         }
+        
+        // MARK: - Image data loader
+        typealias LoadImagePublisher = PassthroughSubject<Data, Error>
+        
+        private var loadImageRequests = [LoadImagePublisher]()
+        var loadImageCallCount: Int {
+            loadImageRequests.count
+        }
+        
+        func loadImagePublisher() -> AnyPublisher<Data, Error> {
+            let publisher = LoadImagePublisher()
+            loadImageRequests.append(publisher)
+            return publisher.eraseToAnyPublisher()
+        }
     }
     
     private struct LoggedError: Equatable {
@@ -329,6 +366,12 @@ extension PhotoSearchViewController {
     func photoView(at row: Int) -> PhotoCell? {
         let indexPath = IndexPath(row: row, section: section)
         return tableView.cellForRow(at: indexPath) as? PhotoCell
+    }
+    
+    func simulatePhotoImageViewVisiable(at row: Int) {
+        let ds = tableView.dataSource
+        let indexPath = IndexPath(row: row, section: section)
+        ds?.tableView(tableView, cellForRowAt: indexPath)
     }
     
     private var section: Int { 0 }
