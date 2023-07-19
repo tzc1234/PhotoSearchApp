@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PhotoCell: UITableViewCell {
+final class PhotoCell: UITableViewCell {
     private(set) lazy var titleLabel = UILabel()
     private(set) lazy var containerView = UIView()
     private(set) lazy var photoImageView = UIImageView()

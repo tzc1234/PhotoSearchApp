@@ -8,9 +8,8 @@
 import Combine
 import UIKit
 
-class PhotoSearchViewController: UITableViewController {
+final class PhotoSearchViewController: UITableViewController {
     typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
-    typealias LoadImagePublisher = AnyPublisher<Data, Error>
     
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
@@ -18,26 +17,20 @@ class PhotoSearchViewController: UITableViewController {
         return bar
     }()
     
-    private lazy var dataSource: UITableViewDiffableDataSource<Int, Photo> = {
-        .init(tableView: tableView) { [weak self] tableView, indexPath, photo in
-            let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
-            cell.titleLabel.text = photo.title
-            self?.loadImage(on: cell, forRowAt: indexPath)
-            cell.onReuse = { [weak self] in
-                self?.cancelImageLoad(forRowAt: indexPath)
-            }
-            return cell
+    private lazy var dataSource: UITableViewDiffableDataSource<Int, PhotoCellController> = {
+        .init(tableView: tableView) { [weak self] tableView, indexPath, cellController in
+            cellController.cell(in: tableView)
         }
     }()
     
     private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
     private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
-    private var loadImageCancellables = [IndexPath: Cancellable]()
-    private let loadImagePublisher: (Photo) -> LoadImagePublisher
+    private let loadImagePublisher: (Photo) -> PhotoCellController.LoadImagePublisher
     private let showError: (String, String) -> Void
     
-    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher, loadImagePublisher: @escaping (Photo) -> LoadImagePublisher,
+    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher,
+         loadImagePublisher: @escaping (Photo) -> PhotoCellController.LoadImagePublisher,
          showError: @escaping (String, String) -> Void) {
         self.loadPhotosPublisher = loadPhotosPublisher
         self.loadImagePublisher = loadImagePublisher
@@ -49,12 +42,14 @@ class PhotoSearchViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.dataSource = dataSource
-        tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
-        
+        configureTableView()
         setupRefreshControl()
         loadPhotos()
+    }
+    
+    private func configureTableView() {
+        tableView.dataSource = dataSource
+        tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
     }
     
     private func setupRefreshControl() {
@@ -75,42 +70,31 @@ class PhotoSearchViewController: UITableViewController {
                 
                 self?.refreshControl?.endRefreshing()
             }, receiveValue: { [weak self] photos in
-                self?.display(photos)
+                guard let self else { return }
+                
+                self.display(photos.map { photo in
+                    PhotoCellController(photo: photo, loadImagePublisher: self.loadImagePublisher)
+                })
             })
     }
     
-    private func display(_ photos: [Photo]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, Photo>()
+    private func display(_ cellControllers: [PhotoCellController]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, PhotoCellController>()
         snapshot.appendSections([0])
-        snapshot.appendItems(photos)
+        snapshot.appendItems(cellControllers)
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
     
+    private func cellController(forRowAt indexPath: IndexPath) -> PhotoCellController? {
+        dataSource.itemIdentifier(for: indexPath)
+    }
+    
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cancelImageLoad(forRowAt: indexPath)
+        cellController(forRowAt: indexPath)?.cancelImageLoad()
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        loadImage(on: cell, forRowAt: indexPath)
-    }
-    
-    private func loadImage(on cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let photo = dataSource.itemIdentifier(for: indexPath), let cell = cell as? PhotoCell else {
-            return
-        }
-        
-        cell.containerView.isShimmering = true
-        loadImageCancellables[indexPath] = loadImagePublisher(photo)
-            .sink(receiveCompletion: { [weak cell] _ in
-                cell?.containerView.isShimmering = false
-            }, receiveValue: { [weak cell] data in
-                cell?.photoImageView.image = UIImage(data: data)
-            })
-    }
-    
-    private func cancelImageLoad(forRowAt indexPath: IndexPath) {
-        loadImageCancellables[indexPath]?.cancel()
-        loadImageCancellables[indexPath] = nil
+        cellController(forRowAt: indexPath)?.loadImage(on: cell)
     }
 }
 

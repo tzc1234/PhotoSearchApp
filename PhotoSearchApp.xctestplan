@@ -9,7 +9,15 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:PhotoSearchApp.xcodeproj",
+          "identifier" : "BE74D8912A66C76F00073E46",
+          "name" : "PhotoSearchApp"
+        }
+      ]
+    },
     "targetForVariableExpansion" : {
       "containerPath" : "container:PhotoSearchApp.xcodeproj",
       "identifier" : "BE74D8912A66C76F00073E46",
