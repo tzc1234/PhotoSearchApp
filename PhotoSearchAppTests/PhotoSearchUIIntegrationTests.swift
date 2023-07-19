@@ -140,7 +140,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         assert(sut, isRending: emptyPhotos)
     }
     
-    func test_loadPhotosComplete_rendersPhotoViewsCompletedWithNonEmptyPhotos() {
+    func test_loadPhotosComplete_rendersPhotoViewsCompletedWithPhotos() {
         let photos0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
         let photos1 = [makePhoto(id: "2", title: "title 2"), makePhoto(id: "3", title: "title 3")]
         let (sut, loader) = makeSUT()
@@ -156,6 +156,26 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.complete(with: photos1, at: 1)
 
         assert(sut, isRending: photos1)
+    }
+    
+    func test_loadPhotosCompleted_doesNotAlterCurrentRenderedPhotoViewsOnLoaderError() {
+        let photos0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: photos0, at: 0)
+        
+        assert(sut, isRending: photos0)
+        
+        sut.simulateUserInitiatedReload()
+        loader.complete(with: anyNSError(), at: 1)
+        
+        assert(sut, isRending: photos0)
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.complete(with: anyNSError(), at: 2)
+        
+        assert(sut, isRending: photos0)
     }
     
     // MARK: - Helpers
