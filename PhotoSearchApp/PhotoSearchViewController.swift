@@ -23,6 +23,9 @@ class PhotoSearchViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
             cell.titleLabel.text = photo.title
             self?.loadImage(on: cell, forRowAt: indexPath)
+            cell.onReuse = { [weak self] in
+                self?.cancelImageLoad(forRowAt: indexPath)
+            }
             return cell
         }
     }()
@@ -84,8 +87,7 @@ class PhotoSearchViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        loadImageCancellables[indexPath]?.cancel()
-        loadImageCancellables[indexPath] = nil
+        cancelImageLoad(forRowAt: indexPath)
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -104,6 +106,11 @@ class PhotoSearchViewController: UITableViewController {
             }, receiveValue: { [weak cell] data in
                 cell?.photoImageView.image = UIImage(data: data)
             })
+    }
+    
+    private func cancelImageLoad(forRowAt indexPath: IndexPath) {
+        loadImageCancellables[indexPath]?.cancel()
+        loadImageCancellables[indexPath] = nil
     }
 }
 

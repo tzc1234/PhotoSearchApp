@@ -12,5 +12,12 @@ class PhotoCell: UITableViewCell {
     private(set) lazy var containerView = UIView()
     private(set) lazy var photoImageView = UIImageView()
     
+    var onReuse: (() -> Void)?
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        onReuse?()
+    }
+    
     static var identifier: String { String(describing: Self.self) }
 }

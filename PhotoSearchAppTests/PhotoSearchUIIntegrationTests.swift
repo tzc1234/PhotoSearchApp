@@ -389,6 +389,26 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertNil(view.renderedImage, "Expect no rendered image when view is invisible although image load completed")
     }
     
+    func test_photoImageView_doesNotRenderImageFromPreviousImageLoadWhenItIsReused() throws {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [makePhoto(id: "0"), makePhoto(id: "1")], at: 0)
+        
+        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0)) // image request at 0
+        sut.simulatePhotoImageViewVisiable(at: 1) // image request at 1
+        
+        sut.simulatePhotoImageViewBecomeVisiableAgain(view, at: 1) // view reused at row 1 and become visiable again, image request at 2
+        view.prepareForReuse() // then call prepareForReuse
+        
+        let afterReusedImageData = UIImage.make(withColor: .red).pngData()!
+        loader.completeImageLoad(with: afterReusedImageData, at: 2) // complete the reused image request first
+        let previousImageData = UIImage.make(withColor: .gray).pngData()!
+        loader.completeImageLoad(with: previousImageData, at: 0) // then complete the previous image request
+        
+        XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image when image load completed successfully")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
@@ -424,7 +444,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     private func anyImageData() -> Data {
-        UIImage.make(withColor: .red).pngData()!
+        UIImage.make(withColor: .gray).pngData()!
     }
     
     private func makePhoto(id: String = "any id", title: String = "any title") -> Photo {
