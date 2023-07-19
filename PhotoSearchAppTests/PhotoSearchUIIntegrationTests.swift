@@ -239,7 +239,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect two image load once second image view is visiable")
     }
     
-    func test_photoImageView_cancelsImageLoadWhenInvisiable() throws {
+    func test_photoImageView_cancelsImageLoadForPhotoWhenInvisiable() throws {
         let photo0 = makePhoto(id: "0")
         let photo1 = makePhoto(id: "1")
         let (sut, loader) = makeSUT()
@@ -266,6 +266,37 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect no new image load since no new image view is visible")
         XCTAssertEqual(loader.cancelLoadImageCallCount, 2, "Expect a new cancelled image load since second image view is invisible")
+    }
+    
+    func test_photoImageView_reloadsImageForPhotoWhenBecomeVisibleAgain() throws {
+        let photo0 = makePhoto(id: "0")
+        let photo1 = makePhoto(id: "1")
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [photo0, photo1], at: 0)
+        
+        let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect a image load once first image view is visiable")
+        
+        sut.simulatePhotoImageViewInvisiable(firstView, at: 0)
+        sut.simulatePhotoImageViewBecomeVisiableAgain(firstView, at: 0)
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo0], "Expect a image reload once first image view becomes visiable again")
+        
+        let secondView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 1))
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage,
+                       [photo0, photo0, photo1],
+                       "Expect a image load for second image view once second image view is visiable")
+        
+        sut.simulatePhotoImageViewInvisiable(secondView, at: 1)
+        sut.simulatePhotoImageViewBecomeVisiableAgain(secondView, at: 1)
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage,
+                       [photo0, photo0, photo1, photo1],
+                       "Expect a image reload for second image view once second image view becomes visiable again")
     }
     
     // MARK: - Helpers
@@ -412,6 +443,12 @@ extension PhotoSearchViewController {
         let d = tableView.delegate
         let indexPath = IndexPath(row: row, section: section)
         d?.tableView?(tableView, didEndDisplaying: view, forRowAt: indexPath)
+    }
+    
+    func simulatePhotoImageViewBecomeVisiableAgain(_ view: UITableViewCell, at row: Int) {
+        let d = tableView.delegate
+        let indexPath = IndexPath(row: row, section: section)
+        d?.tableView?(tableView, willDisplay: view, forRowAt: indexPath)
     }
     
     private var section: Int { 0 }
