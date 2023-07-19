@@ -22,7 +22,7 @@ class PhotoSearchViewController: UITableViewController {
         .init(tableView: tableView) { [weak self] tableView, indexPath, photo in
             let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
             cell.titleLabel.text = photo.title
-            let loadImageCancellable = self?.loadImagePublisher()
+            self?.loadImageCancellables[indexPath] = self?.loadImagePublisher(photo)
                 .sink(receiveCompletion: { _ in
                 
                 }, receiveValue: { _ in
@@ -36,10 +36,11 @@ class PhotoSearchViewController: UITableViewController {
     private var searchTerm = ""
     private var loadPhotosCancellable: Cancellable?
     private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
-    private let loadImagePublisher: () -> LoadImagePublisher
+    private var loadImageCancellables = [IndexPath: Cancellable]()
+    private let loadImagePublisher: (Photo) -> LoadImagePublisher
     private let showError: (String, String) -> Void
     
-    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher, loadImagePublisher: @escaping () -> LoadImagePublisher,
+    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher, loadImagePublisher: @escaping (Photo) -> LoadImagePublisher,
          showError: @escaping (String, String) -> Void) {
         self.loadPhotosPublisher = loadPhotosPublisher
         self.loadImagePublisher = loadImagePublisher
@@ -86,6 +87,11 @@ class PhotoSearchViewController: UITableViewController {
         snapshot.appendSections([0])
         snapshot.appendItems(photos)
         dataSource.applySnapshotUsingReloadData(snapshot)
+    }
+    
+    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        loadImageCancellables[indexPath]?.cancel()
+        loadImageCancellables[indexPath] = nil
     }
 }
 

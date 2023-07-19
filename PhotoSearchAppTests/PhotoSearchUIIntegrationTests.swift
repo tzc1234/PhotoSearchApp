@@ -220,7 +220,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     // MARK: - Image View tests
     
-    func test_photoImageView_loadImageWhenVisiable() {
+    func test_photoImageView_loadImageForPhotoWhenVisiable() {
         let photo0 = makePhoto(id: "0")
         let photo1 = makePhoto(id: "1")
         let (sut, loader) = makeSUT()
@@ -228,15 +228,44 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.loadViewIfNeeded()
         loader.complete(with: [photo0, photo1], at: 0)
         
-        XCTAssertEqual(loader.loadImageCallCount, 0, "Expect no image load before image views rendered")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [], "Expect no image load before image views rendered")
         
         sut.simulatePhotoImageViewVisiable(at: 0)
         
-        XCTAssertEqual(loader.loadImageCallCount, 1, "Expect one image load once first image view is visiable")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect one image load once first image view is visiable")
         
         sut.simulatePhotoImageViewVisiable(at: 1)
         
-        XCTAssertEqual(loader.loadImageCallCount, 2, "Expect two image load once second image view is visiable")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect two image load once second image view is visiable")
+    }
+    
+    func test_photoImageView_cancelsImageLoadWhenInvisiable() throws {
+        let photo0 = makePhoto(id: "0")
+        let photo1 = makePhoto(id: "1")
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [photo0, photo1], at: 0)
+        
+        let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect one image load once first image view is visiable")
+        XCTAssertEqual(loader.cancelLoadImageCallCount, 0, "Expect no cancelled image load since no image views are invisible")
+        
+        sut.simulatePhotoImageViewInvisiable(firstView, at: 0)
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect no new image load since no image view is visible")
+        XCTAssertEqual(loader.cancelLoadImageCallCount, 1, "Expect one cancelled image load once first image view is invisible")
+        
+        let secondView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 1))
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect a new image load since second image view is visible")
+        XCTAssertEqual(loader.cancelLoadImageCallCount, 1, "Expect no new cancelled image load since no new image view is invisible")
+        
+        sut.simulatePhotoImageViewInvisiable(secondView, at: 1)
+        
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect no new image load since no new image view is visible")
+        XCTAssertEqual(loader.cancelLoadImageCallCount, 2, "Expect a new cancelled image load since second image view is invisible")
     }
     
     // MARK: - Helpers
@@ -321,15 +350,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         // MARK: - Image data loader
         typealias LoadImagePublisher = PassthroughSubject<Data, Error>
         
-        private var loadImageRequests = [LoadImagePublisher]()
-        var loadImageCallCount: Int {
-            loadImageRequests.count
+        private var loadImageRequests = [(publisher: LoadImagePublisher, photo: Photo)]()
+        var loggedPhotosForLoadImage: [Photo] {
+            loadImageRequests.map(\.photo)
         }
         
-        func loadImagePublisher() -> AnyPublisher<Data, Error> {
+        private(set) var cancelLoadImageCallCount = 0
+        
+        func loadImagePublisher(photo: Photo) -> AnyPublisher<Data, Error> {
             let publisher = LoadImagePublisher()
-            loadImageRequests.append(publisher)
-            return publisher.eraseToAnyPublisher()
+            loadImageRequests.append((publisher, photo))
+            return publisher.handleEvents(receiveCancel: { [weak self] in
+                self?.cancelLoadImageCallCount += 1
+            }).eraseToAnyPublisher()
         }
     }
     
@@ -368,10 +401,17 @@ extension PhotoSearchViewController {
         return tableView.cellForRow(at: indexPath) as? PhotoCell
     }
     
-    func simulatePhotoImageViewVisiable(at row: Int) {
+    @discardableResult
+    func simulatePhotoImageViewVisiable(at row: Int) -> PhotoCell? {
         let ds = tableView.dataSource
         let indexPath = IndexPath(row: row, section: section)
-        ds?.tableView(tableView, cellForRowAt: indexPath)
+        return ds?.tableView(tableView, cellForRowAt: indexPath) as? PhotoCell
+    }
+    
+    func simulatePhotoImageViewInvisiable(_ view: UITableViewCell, at row: Int) {
+        let d = tableView.delegate
+        let indexPath = IndexPath(row: row, section: section)
+        d?.tableView?(tableView, didEndDisplaying: view, forRowAt: indexPath)
     }
     
     private var section: Int { 0 }
