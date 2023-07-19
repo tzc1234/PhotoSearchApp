@@ -350,7 +350,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image load completed with error")
     }
     
-    func test_photoImageView_configuresCorrectlyWhenCellBecomeVisibleAgain() throws {
+    func test_photoImageView_configuresCorrectlyWhenViewBecomeVisibleAgain() throws {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
@@ -372,6 +372,21 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(view.renderedImage, imageData, "Expect rendered image after image reload completed successfully")
         XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image reload completed")
+    }
+    
+    func test_photoImageView_doesNotRenderImageWhenItIsInvisible() throws {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.complete(with: [makePhoto()], at: 0)
+        
+        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
+        view.prepareForReuse()
+        
+        sut.simulatePhotoImageViewInvisiable(view, at: 0)
+        loader.completeImageLoad(with: anyImageData(), at: 0)
+        
+        XCTAssertNil(view.renderedImage, "Expect no rendered image when view is invisible although image load completed")
     }
     
     // MARK: - Helpers
@@ -406,6 +421,10 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
                        "Expect title: \(photo.title) for row: \(row), got \(String(describing: sut.photoView(at: 0)?.titleText)) instead",
                        file: file,
                        line: line)
+    }
+    
+    private func anyImageData() -> Data {
+        UIImage.make(withColor: .red).pngData()!
     }
     
     private func makePhoto(id: String = "any id", title: String = "any title") -> Photo {
