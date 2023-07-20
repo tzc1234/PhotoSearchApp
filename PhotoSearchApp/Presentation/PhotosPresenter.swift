@@ -21,8 +21,8 @@ protocol PhotosLoadingView: AnyObject {
 
 final class PhotosPresenter {
     private let photosView: PhotosView
-    private weak var loadingView: PhotosLoadingView?
-    private weak var errorView: PhotosErrorView?
+    private let loadingView: PhotosLoadingView
+    private let errorView: PhotosErrorView
     
     init(photosView: PhotosView, loadingView: PhotosLoadingView, errorView: PhotosErrorView) {
         self.photosView = photosView
@@ -31,17 +31,17 @@ final class PhotosPresenter {
     }
     
     func didStartLoading() {
-        loadingView?.display(PhotosLoadingViewModel(isLoading: true))
-        errorView?.display(PhotosErrorViewModel(title: nil, message: nil))
+        loadingView.display(PhotosLoadingViewModel(isLoading: true))
+        errorView.display(PhotosErrorViewModel(title: nil, message: nil))
     }
     
     func didFinishLoading(with photos: [Photo]) {
-        loadingView?.display(PhotosLoadingViewModel(isLoading: false))
+        loadingView.display(PhotosLoadingViewModel(isLoading: false))
         photosView.display(PhotosViewModel(photos: photos))
     }
     
     func didFinishLoading(with error: Error) {
-        loadingView?.display(PhotosLoadingViewModel(isLoading: false))
-        errorView?.display(PhotosErrorViewModel(title: "Oops!", message: "Network error occurred, please try again."))
+        loadingView.display(PhotosLoadingViewModel(isLoading: false))
+        errorView.display(PhotosErrorViewModel(title: "Oops!", message: "Network error occurred, please try again."))
     }
 }
