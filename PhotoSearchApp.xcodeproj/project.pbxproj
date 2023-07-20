@@ -19,6 +19,7 @@
 		BE59B61B2A6939E9002C7E21 /* WeakRefProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B61A2A6939E9002C7E21 /* WeakRefProxy.swift */; };
 		BE59B61D2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B61C2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift */; };
 		BE59B61F2A693D82002C7E21 /* PhotoCell+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B61E2A693D82002C7E21 /* PhotoCell+TestHelpers.swift */; };
+		BE59B6212A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B6202A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift */; };
 		BE5BFEEC2A67E30F002C6E72 /* CombineHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */; };
 		BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8952A66C76F00073E46 /* AppDelegate.swift */; };
 		BE74D8982A66C76F00073E46 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8972A66C76F00073E46 /* SceneDelegate.swift */; };
@@ -55,6 +56,7 @@
 		BE59B61A2A6939E9002C7E21 /* WeakRefProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakRefProxy.swift; sourceTree = "<group>"; };
 		BE59B61C2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoSearchViewController+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE59B61E2A693D82002C7E21 /* PhotoCell+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoCell+TestHelpers.swift"; sourceTree = "<group>"; };
+		BE59B6202A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadPhotosPublisherAdapter.swift; sourceTree = "<group>"; };
 		BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineHelpers.swift; sourceTree = "<group>"; };
 		BE74D8922A66C76F00073E46 /* PhotoSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE74D8952A66C76F00073E46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				BE59B6192A69384E002C7E21 /* Helpers */,
 				BE4291742A685A8200AE86D7 /* PhotoSearchComposer.swift */,
 				BE59B61A2A6939E9002C7E21 /* WeakRefProxy.swift */,
+				BE59B6202A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -332,6 +335,7 @@
 				BE59B6122A692E1D002C7E21 /* PhotosLoadingViewModel.swift in Sources */,
 				BE479DDC2A671C2F0036898B /* PhotoSearchViewController.swift in Sources */,
 				BE479DDA2A671BF00036898B /* PhotoCell.swift in Sources */,
+				BE59B6212A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift in Sources */,
 				BE59B60A2A692965002C7E21 /* PhotosPresenter.swift in Sources */,
 				BE4291732A6858FC00AE86D7 /* PhotoCellController.swift in Sources */,
 				BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */,
