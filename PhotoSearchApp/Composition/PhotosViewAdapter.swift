@@ -9,17 +9,17 @@ import Foundation
 
 final class PhotosViewAdapter: PhotosView {
     private weak var viewController: PhotoSearchViewController?
-    private let loadImagePublisher: (Photo) -> LoadImagePublisher
+    private let cellControllerCreator: (Photo) -> PhotoCellController
     
     init(view: PhotoSearchViewController,
-         loadImagePublisher: @escaping (Photo) -> LoadImagePublisher) {
+         cellControllerCreator: @escaping (Photo) -> PhotoCellController) {
         self.viewController = view
-        self.loadImagePublisher = loadImagePublisher
+        self.cellControllerCreator = cellControllerCreator
     }
     
     func display(_ viewModel: PhotosViewModel) {
         viewController?.display(viewModel.photos.map { photo in
-            PhotoCellComposer.composeWith(photo: photo, loadImagePublisher: loadImagePublisher)
+            cellControllerCreator(photo)
         })
     }
 }

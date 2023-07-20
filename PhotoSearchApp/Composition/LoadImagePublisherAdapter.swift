@@ -8,19 +8,19 @@
 import Combine
 import UIKit
 
-final class LoadImagePublisherAdapter {
+final class LoadImagePublisherAdapter: ImageLoader {
     private var cancellable: Cancellable?
-    private let loadImagePublisher: (Photo) -> LoadImagePublisher
+    private let loadImagePublisher: () -> LoadImagePublisher
     var presenter: PhotoImagePresenter<WeakRefProxy<PhotoCellController>, UIImage>?
     
-    init(loadImagePublisher: @escaping (Photo) -> LoadImagePublisher) {
+    init(loadImagePublisher: @escaping () -> LoadImagePublisher) {
         self.loadImagePublisher = loadImagePublisher
     }
     
-    func loadImage(by photo: Photo) {
+    func load() {
         presenter?.didStartLoading()
         
-        cancellable = loadImagePublisher(photo)
+        cancellable = loadImagePublisher()
             .receive(on: DispatchQueue.immediateWhenOnMainQueueScheluder)
             .sink(receiveCompletion: { [weak self] completion in
                 if case let .failure(error) = completion {
@@ -31,7 +31,7 @@ final class LoadImagePublisherAdapter {
             })
     }
     
-    func cancelLoadImage() {
+    func cancel() {
         cancellable?.cancel()
         cancellable = nil
     }

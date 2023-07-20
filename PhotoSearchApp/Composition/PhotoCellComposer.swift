@@ -8,12 +8,11 @@
 import UIKit
 
 enum PhotoCellComposer {
-    static func composeWith(photo: Photo,
-                            loadImagePublisher: @escaping (Photo) -> LoadImagePublisher) -> PhotoCellController {
+    static func composeWith(photoTitle: String,
+                            loadImagePublisher: @escaping () -> LoadImagePublisher) -> PhotoCellController {
         let adapter = LoadImagePublisherAdapter(loadImagePublisher: loadImagePublisher)
-        let cellController = PhotoCellController(loadImage: { adapter.loadImage(by: photo) },
-                                                 cancelLoadImage: adapter.cancelLoadImage)
-        adapter.presenter = PhotoImagePresenter(title: photo.title,
+        let cellController = PhotoCellController(imageLoader: adapter)
+        adapter.presenter = PhotoImagePresenter(title: photoTitle,
                                                 view: WeakRefProxy(cellController),
                                                 loadingView: WeakRefProxy(cellController),
                                                 imageConverter: UIImage.init)

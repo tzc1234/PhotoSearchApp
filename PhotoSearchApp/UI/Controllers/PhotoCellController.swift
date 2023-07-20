@@ -7,20 +7,23 @@
 
 import UIKit
 
+protocol ImageLoader {
+    func load()
+    func cancel()
+}
+
 final class PhotoCellController {
     private var cell: PhotoCell?
-    private let loadImage: () -> Void
-    private let cancelLoadImage: () -> Void
+    private let imageLoader: ImageLoader
     
-    init(loadImage: @escaping () -> Void, cancelLoadImage: @escaping () -> Void) {
-        self.loadImage = loadImage
-        self.cancelLoadImage = cancelLoadImage
+    init(imageLoader: ImageLoader) {
+        self.imageLoader = imageLoader
     }
     
     func cell(in tableView: UITableView) -> PhotoCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
         self.cell = cell
-        loadImage()
+        imageLoader.load()
         cell.onReuse = { [weak self] in
             self?.cancelImageLoad()
         }
@@ -31,12 +34,12 @@ final class PhotoCellController {
         guard let cell = cell as? PhotoCell else { return }
         
         self.cell = cell
-        loadImage()
+        imageLoader.load()
     }
     
     func cancelImageLoad() {
         releaseForReuse()
-        cancelLoadImage()
+        imageLoader.cancel()
     }
     
     private func releaseForReuse() {
