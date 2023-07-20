@@ -21,8 +21,9 @@ final class PhotoSearchViewController: UITableViewController {
     }()
     
     private var searchTerm = ""
+    
     private let loadPhotos: (String) -> Void
-    let showError: (String, String) -> Void
+    private let showError: (String, String) -> Void
     
     init(loadPhotos: @escaping (String) -> Void, showError: @escaping (String, String) -> Void) {
         self.loadPhotos = loadPhotos
@@ -80,13 +81,15 @@ extension PhotoSearchViewController: UISearchBarDelegate {
     }
 }
 
-extension PhotoSearchViewController: PhotosErrorView, PhotosLoadingView {
+extension PhotoSearchViewController: PhotosErrorView {
     func display(_ viewModel: PhotosErrorViewModel) {
         if let title = viewModel.title, let message = viewModel.message {
             showError(title, message)
         }
     }
-    
+}
+
+extension PhotoSearchViewController: PhotosLoadingView {
     func display(_ viewModel: PhotosLoadingViewModel) {
         if viewModel.isLoading {
             refreshControl?.beginRefreshing()
