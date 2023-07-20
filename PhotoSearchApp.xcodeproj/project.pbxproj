@@ -103,6 +103,66 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		BE59B6132A6937AC002C7E21 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				BE479DD72A671B820036898B /* Photo.swift */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		BE59B6142A6937BA002C7E21 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				BE59B6172A693815002C7E21 /* Controllers */,
+				BE59B6162A693809002C7E21 /* Views */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		BE59B6152A6937F9002C7E21 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		BE59B6162A693809002C7E21 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BE59B6152A6937F9002C7E21 /* Helpers */,
+				BE479DD92A671BF00036898B /* PhotoCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BE59B6172A693815002C7E21 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				BE479DDB2A671C2F0036898B /* PhotoSearchViewController.swift */,
+				BE4291722A6858FC00AE86D7 /* PhotoCellController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		BE59B6182A693838002C7E21 /* Composition */ = {
+			isa = PBXGroup;
+			children = (
+				BE59B6192A69384E002C7E21 /* Helpers */,
+				BE4291742A685A8200AE86D7 /* PhotoSearchComposer.swift */,
+			);
+			path = Composition;
+			sourceTree = "<group>";
+		};
+		BE59B6192A69384E002C7E21 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		BE74D8892A66C76F00073E46 = {
 			isa = PBXGroup;
 			children = (
@@ -125,14 +185,10 @@
 		BE74D8942A66C76F00073E46 /* PhotoSearchApp */ = {
 			isa = PBXGroup;
 			children = (
+				BE59B6132A6937AC002C7E21 /* Features */,
 				BE59B60B2A692A51002C7E21 /* Presentation */,
-				BE479DD72A671B820036898B /* Photo.swift */,
-				BE479DD92A671BF00036898B /* PhotoCell.swift */,
-				BE4291722A6858FC00AE86D7 /* PhotoCellController.swift */,
-				BE479DDB2A671C2F0036898B /* PhotoSearchViewController.swift */,
-				BE4291742A685A8200AE86D7 /* PhotoSearchComposer.swift */,
-				BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */,
-				BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */,
+				BE59B6142A6937BA002C7E21 /* UI */,
+				BE59B6182A693838002C7E21 /* Composition */,
 				BE74D8952A66C76F00073E46 /* AppDelegate.swift */,
 				BE74D8972A66C76F00073E46 /* SceneDelegate.swift */,
 				BE74D89E2A66C77000073E46 /* Assets.xcassets */,
