@@ -9,14 +9,17 @@ import Combine
 import Foundation
 
 typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
+typealias LoadImagePublisher = AnyPublisher<Data, Error>
 
 enum PhotoSearchComposer {
     static func composeWith(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher,
-                            loadImagePublisher: @escaping (Photo) -> PhotoCellController.LoadImagePublisher,
+                            loadImagePublisher: @escaping (Photo) -> LoadImagePublisher,
                             showError: @escaping (String, String) -> Void) -> PhotoSearchViewController {
-        let adapter = LoadPhotosPublisherAdapter(loadPhotosPublisher: loadPhotosPublisher, loadImagePublisher: loadImagePublisher)
-        let viewController = PhotoSearchViewController(loadPhotos: adapter.loadPhotos, showError: showError)
-        adapter.viewController = viewController
+        let loadPhotosPublisherAdapter = LoadPhotosPublisherAdapter(loadPhotosPublisher: loadPhotosPublisher)
+        let viewController = PhotoSearchViewController(loadPhotos: loadPhotosPublisherAdapter.loadPhotos, showError: showError)
+        let photosViewAdapter = PhotosViewAdapter(viewController: viewController, loadImagePublisher: loadImagePublisher)
+        let presenter = PhotosPresenter(photosView: photosViewAdapter, loadingView: viewController, errorView: viewController)
+        loadPhotosPublisherAdapter.presenter = presenter
         return viewController
     }
 }
@@ -24,32 +27,40 @@ enum PhotoSearchComposer {
 final class LoadPhotosPublisherAdapter {
     private var loadPhotosCancellable: Cancellable?
     private let loadPhotosPublisher: (String) -> LoadPhotosPublisher
-    private let loadImagePublisher: (Photo) -> PhotoCellController.LoadImagePublisher
-    weak var viewController: PhotoSearchViewController?
+    var presenter: PhotosPresenter?
     
-    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher,
-         loadImagePublisher: @escaping (Photo) -> PhotoCellController.LoadImagePublisher) {
+    init(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher) {
         self.loadPhotosPublisher = loadPhotosPublisher
-        self.loadImagePublisher = loadImagePublisher
     }
     
     func loadPhotos(by searchTerm: String) {
-        viewController?.refreshControl?.beginRefreshing()
+        presenter?.didStartLoading()
         
         loadPhotosCancellable = loadPhotosPublisher(searchTerm)
             .receive(on: DispatchQueue.immediateWhenOnMainQueueScheluder)
             .sink(receiveCompletion: { [weak self] completion in
-                if case .failure = completion {
-                    self?.viewController?.showErrorView()
+                if case let .failure(error) = completion {
+                    self?.presenter?.didFinishLoading(with: error)
                 }
-                
-                self?.viewController?.refreshControl?.endRefreshing()
             }, receiveValue: { [weak self] photos in
-                guard let self else { return }
-                
-                self.viewController?.display(photos.map { photo in
-                    PhotoCellController(photo: photo, loadImagePublisher: self.loadImagePublisher)
-                })
+                self?.presenter?.didFinishLoading(with: photos)
             })
+    }
+}
+
+final class PhotosViewAdapter: PhotosView {
+    private weak var viewController: PhotoSearchViewController?
+    private let loadImagePublisher: (Photo) -> LoadImagePublisher
+    
+    init(viewController: PhotoSearchViewController,
+         loadImagePublisher: @escaping (Photo) -> LoadImagePublisher) {
+        self.viewController = viewController
+        self.loadImagePublisher = loadImagePublisher
+    }
+    
+    func display(_ viewModel: PhotosViewModel) {
+        viewController?.display(viewModel.photos.map { photo in
+            PhotoCellController(photo: photo, loadImagePublisher: loadImagePublisher)
+        })
     }
 }

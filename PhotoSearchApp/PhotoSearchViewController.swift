@@ -60,10 +60,6 @@ final class PhotoSearchViewController: UITableViewController {
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
     
-    func showErrorView() {
-        showError("Oops!", "Network error occurred, please try again.")
-    }
-    
     private func cellController(forRowAt indexPath: IndexPath) -> PhotoCellController? {
         dataSource.itemIdentifier(for: indexPath)
     }
@@ -81,5 +77,21 @@ extension PhotoSearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchTerm = searchText
         loadPhotos(searchTerm)
+    }
+}
+
+extension PhotoSearchViewController: PhotosErrorView, PhotosLoadingView {
+    func display(_ viewModel: PhotosErrorViewModel) {
+        if let title = viewModel.title, let message = viewModel.message {
+            showError(title, message)
+        }
+    }
+    
+    func display(_ viewModel: PhotosLoadingViewModel) {
+        if viewModel.isLoading {
+            refreshControl?.beginRefreshing()
+        } else {
+            refreshControl?.endRefreshing()
+        }
     }
 }

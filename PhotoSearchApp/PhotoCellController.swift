@@ -9,8 +9,6 @@ import Combine
 import UIKit
 
 final class PhotoCellController {
-    typealias LoadImagePublisher = AnyPublisher<Data, Error>
-    
     private var cell: PhotoCell?
     private var loadImageCancellable: Cancellable?
     
