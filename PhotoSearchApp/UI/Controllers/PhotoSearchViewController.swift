@@ -22,10 +22,15 @@ final class PhotoSearchViewController: UITableViewController {
     
     private var searchTerm = ""
     
-    private let loadPhotos: (String) -> Void
-    private let showError: (String, String) -> Void
+    struct ErrorMessage: Equatable {
+        let title: String
+        let message: String
+    }
     
-    init(loadPhotos: @escaping (String) -> Void, showError: @escaping (String, String) -> Void) {
+    private let loadPhotos: (String) -> Void
+    private let showError: (ErrorMessage) -> Void
+    
+    init(loadPhotos: @escaping (String) -> Void, showError: @escaping (ErrorMessage) -> Void) {
         self.loadPhotos = loadPhotos
         self.showError = showError
         super.init(nibName: nil, bundle: nil)
@@ -84,7 +89,7 @@ extension PhotoSearchViewController: UISearchBarDelegate {
 extension PhotoSearchViewController: PhotosErrorView {
     func display(_ viewModel: PhotosErrorViewModel) {
         if let title = viewModel.title, let message = viewModel.message {
-            showError(title, message)
+            showError(ErrorMessage(title: title, message: message))
         }
     }
 }

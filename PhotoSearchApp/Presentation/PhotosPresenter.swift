@@ -42,6 +42,9 @@ final class PhotosPresenter {
     
     func didFinishLoading(with error: Error) {
         loadingView.display(PhotosLoadingViewModel(isLoading: false))
-        errorView.display(PhotosErrorViewModel(title: "Oops!", message: "Network error occurred, please try again."))
+        errorView.display(PhotosErrorViewModel(title: Self.errorTitle, message: Self.errorMessage))
     }
+    
+    static var errorTitle: String { "Oops!" }
+    static var errorMessage: String { "Network error occurred, please try again." }
 }

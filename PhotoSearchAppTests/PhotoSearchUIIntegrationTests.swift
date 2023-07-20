@@ -10,32 +10,31 @@ import XCTest
 @testable import PhotoSearchApp
 
 final class PhotoSearchUIIntegrationTests: XCTestCase {
-
     func test_init_doesNotNotifyLoader() {
         let (_, loader) = makeSUT()
         
-        XCTAssertEqual(loader.loadCallCount, 0)
+        XCTAssertEqual(loader.loadPhotosCallCount, 0)
     }
 
     func test_photosLoading_requestsPhotosFromLoader() {
         let (sut, loader) = makeSUT()
         
-        XCTAssertEqual(loader.loadCallCount, 0, "Expect zero photos loads before the view rendering completed")
+        XCTAssertEqual(loader.loadPhotosCallCount, 0, "Expect zero photos loads before the view rendering completed")
         XCTAssertEqual(loader.cancelLoadCallCount, 0, "Expect zero cancel photos loads before a cancel the view rendering completed")
         
         sut.loadViewIfNeeded()
         
-        XCTAssertEqual(loader.loadCallCount, 1, "Expect a photos load after the view rendering completed")
+        XCTAssertEqual(loader.loadPhotosCallCount, 1, "Expect a photos load after the view rendering completed")
         
         sut.simulateUserInitiatedReload()
 
-        XCTAssertEqual(loader.loadCallCount, 2, "Expect two photos loads after user initiated a photos reload")
+        XCTAssertEqual(loader.loadPhotosCallCount, 2, "Expect two photos loads after user initiated a photos reload")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load after an uncompleted request")
         
-        loader.complete(with: anyNSError(), at: 1)
+        loader.completePhotosLoad(with: anyNSError(), at: 1)
         sut.simulateUserInitiatedReload()
         
-        XCTAssertEqual(loader.loadCallCount, 3, "Expect three photos loads after user initiated second photos reload")
+        XCTAssertEqual(loader.loadPhotosCallCount, 3, "Expect three photos loads after user initiated second photos reload")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect no changes because no more request uncompleted")
     }
     
@@ -48,14 +47,14 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let searchTerm0 = "term 0"
         sut.simulateSearchPhotos(by: searchTerm0)
         
-        XCTAssertEqual(loader.loadCallCount, 2, "Expect two photos loads after search photos")
+        XCTAssertEqual(loader.loadPhotosCallCount, 2, "Expect two photos loads after search photos")
         XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0], "Expect two search term logged after a search request")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load because of the inital uncompleted request")
         
         let searchTerm1 = "term 1"
         sut.simulateSearchPhotos(by: searchTerm1)
         
-        XCTAssertEqual(loader.loadCallCount, 3, "Expect three photos loads after search photos again")
+        XCTAssertEqual(loader.loadPhotosCallCount, 3, "Expect three photos loads after search photos again")
         XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0, searchTerm1], "Expect three search terms logged after more a search request")
         XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of more an uncompleted search request")
     }
@@ -66,7 +65,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once photos request begins")
         
-        loader.complete(with: anyNSError(), at: 0)
+        loader.completePhotosLoad(with: anyNSError(), at: 0)
         
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error")
         
@@ -78,7 +77,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searchs photos")
         
-        loader.complete(with: anyNSError(), at: 2)
+        loader.completePhotosLoad(with: anyNSError(), at: 2)
         
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
     }
@@ -90,9 +89,9 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once photos request begins")
         
-        loader.complete(with: photos, at: 0)
+        loader.completePhotosLoad(with: photos, at: 0)
         
-        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error")
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed successfully")
         
         sut.simulateUserInitiatedReload() // index 1
         
@@ -102,9 +101,9 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searchs photos")
         
-        loader.complete(with: photos, at: 2)
+        loader.completePhotosLoad(with: photos, at: 2)
         
-        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once search request completed with error again")
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once search request completed successfully")
     }
     
     func test_loadPhotosComplete_doesNotRenderPhotoViewsCompletedWithError() {
@@ -113,12 +112,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         assert(sut, isRending: [])
         
-        loader.complete(with: anyNSError(), at: 0)
+        loader.completePhotosLoad(with: anyNSError(), at: 0)
         
         assert(sut, isRending: [])
         
         sut.simulateSearchPhotos(by: anyTerm())
-        loader.complete(with: anyNSError(), at: 1)
+        loader.completePhotosLoad(with: anyNSError(), at: 1)
         
         assert(sut, isRending: [])
     }
@@ -130,12 +129,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         assert(sut, isRending: [])
         
-        loader.complete(with: emptyPhotos, at: 0)
+        loader.completePhotosLoad(with: emptyPhotos, at: 0)
         
         assert(sut, isRending: emptyPhotos)
         
         sut.simulateSearchPhotos(by: anyTerm())
-        loader.complete(with: emptyPhotos, at: 1)
+        loader.completePhotosLoad(with: emptyPhotos, at: 1)
         
         assert(sut, isRending: emptyPhotos)
     }
@@ -148,34 +147,34 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         assert(sut, isRending: [])
         
-        loader.complete(with: photos0, at: 0)
+        loader.completePhotosLoad(with: photos0, at: 0)
         
         assert(sut, isRending: photos0)
         
         sut.simulateSearchPhotos(by: anyTerm())
-        loader.complete(with: photos1, at: 1)
+        loader.completePhotosLoad(with: photos1, at: 1)
 
         assert(sut, isRending: photos1)
     }
     
     func test_loadPhotosComplete_doesNotAlterCurrentRenderedPhotoViewsOnLoaderError() {
-        let photos0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
+        let photos = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: photos0, at: 0)
+        loader.completePhotosLoad(with: photos, at: 0)
         
-        assert(sut, isRending: photos0)
+        assert(sut, isRending: photos)
         
         sut.simulateUserInitiatedReload()
-        loader.complete(with: anyNSError(), at: 1)
+        loader.completePhotosLoad(with: anyNSError(), at: 1)
         
-        assert(sut, isRending: photos0)
+        assert(sut, isRending: photos)
         
         sut.simulateSearchPhotos(by: anyTerm())
-        loader.complete(with: anyNSError(), at: 2)
+        loader.completePhotosLoad(with: anyNSError(), at: 2)
         
-        assert(sut, isRending: photos0)
+        assert(sut, isRending: photos)
     }
     
     func test_loadPhotosComplete_dispatchesFromBackgroundToMainThread() {
@@ -184,28 +183,26 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         let exp = expectation(description: "Wait for initial photos load")
         DispatchQueue.global().async {
-            loader.complete(with: [], at: 0)
+            loader.completePhotosLoad(with: [], at: 0)
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1)
     }
     
     func test_loadPhotosComplete_showsErrorOnLoaderError() throws {
-        let expectedError = LoggedError(title: "Oops!", message: "Network error occurred, please try again.")
-        var loggedErrors = [LoggedError]()
-        let (sut, loader) = makeSUT(showError: { title, message in
-            loggedErrors.append(.init(title: title, message: message))
-        })
+        let expectedError = PhotoSearchViewController.ErrorMessage(title: PhotosPresenter.errorTitle, message: PhotosPresenter.errorMessage)
+        var loggedErrors = [PhotoSearchViewController.ErrorMessage]()
+        let (sut, loader) = makeSUT(showError: { loggedErrors.append($0) })
         sut.loadViewIfNeeded()
         
         XCTAssertEqual(loggedErrors.count, 0, "Expect no errors shown before load photos completed")
         
-        loader.complete(with: anyNSError(), at: 0)
+        loader.completePhotosLoad(with: anyNSError(), at: 0)
         
         XCTAssertEqual(loggedErrors, [expectedError], "Expect one error shown after load photos completed with error")
         
         sut.simulateUserInitiatedReload()
-        loader.complete(with: [], at: 1)
+        loader.completePhotosLoad(with: [], at: 1)
         
         XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown after user initiated load photos completed successfully")
         
@@ -213,7 +210,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown before search photos completed")
         
-        loader.complete(with: anyNSError(), at: 2)
+        loader.completePhotosLoad(with: anyNSError(), at: 2)
         
         XCTAssertEqual(loggedErrors, [expectedError, expectedError], "Expect one new error shown after search photos completed with error")
     }
@@ -226,7 +223,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [photo0, photo1], at: 0)
+        loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         XCTAssertEqual(loader.loggedPhotosForLoadImage, [], "Expect no image load before image views rendered")
         
@@ -245,7 +242,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [photo0, photo1], at: 0)
+        loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
         
@@ -274,7 +271,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [photo0, photo1], at: 0)
+        loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
         
@@ -305,7 +302,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [photo0, photo1], at: 0)
+        loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
         let imageData0 = UIImage.make(withColor: .red).pngData()!
@@ -325,7 +322,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [makePhoto()], at: 0)
+        loader.completePhotosLoad(with: [makePhoto()], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
         let invalidData = Data("invaliad data".utf8)
@@ -338,7 +335,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [makePhoto()], at: 0)
+        loader.completePhotosLoad(with: [makePhoto()], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
         
@@ -354,7 +351,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [makePhoto()], at: 0)
+        loader.completePhotosLoad(with: [makePhoto()], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
         
@@ -378,28 +375,26 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [makePhoto()], at: 0)
+        loader.completePhotosLoad(with: [makePhoto()], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0))
-        view.prepareForReuse()
-        
         sut.simulatePhotoImageViewInvisiable(view, at: 0)
         loader.completeImageLoad(with: anyImageData(), at: 0)
         
-        XCTAssertNil(view.renderedImage, "Expect no rendered image when view is invisible although image load completed")
+        XCTAssertNil(view.renderedImage, "Expect no rendered image when view is invisible although image load completed successfully")
     }
     
     func test_photoImageView_doesNotRenderImageFromPreviousImageLoadWhenItIsReused() throws {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [makePhoto(id: "0"), makePhoto(id: "1")], at: 0)
+        loader.completePhotosLoad(with: [makePhoto(id: "0"), makePhoto(id: "1")], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisiable(at: 0)) // image request at 0
         sut.simulatePhotoImageViewVisiable(at: 1) // image request at 1
         
         sut.simulatePhotoImageViewBecomeVisiableAgain(view, at: 1) // view reused at row 1 and become visiable again, image request at 2
-        view.prepareForReuse() // then call prepareForReuse
+        view.prepareForReuse() // then view prepareForReuse
         
         let afterReusedImageData = UIImage.make(withColor: .red).pngData()!
         loader.completeImageLoad(with: afterReusedImageData, at: 2) // complete the reused image request first
@@ -413,7 +408,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.complete(with: [makePhoto()], at: 0)
+        loader.completePhotosLoad(with: [makePhoto()], at: 0)
         sut.simulatePhotoImageViewVisiable(at: 0)
         
         let exp = expectation(description: "Wait for image load completed")
@@ -426,10 +421,11 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(showError: @escaping (String, String) -> Void = { _, _ in },
-                         file: StaticString = #filePath, line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
+    private func makeSUT(showError: @escaping (PhotoSearchViewController.ErrorMessage) -> Void = { _ in },
+                         file: StaticString = #filePath,
+                         line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = PhotoSearchComposer.composeWith(loadPhotosPublisher: loader.loadPublisher,
+        let sut = PhotoSearchComposer.composeWith(loadPhotosPublisher: loader.loadPhotosPublisher,
                                                   loadImagePublisher: loader.loadImagePublisher,
                                                   showError: showError)
         trackForMemoryLeaks(loader, file: file, line: line)
@@ -475,36 +471,36 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     private class LoaderSpy {
-        typealias LoadPublisher = PassthroughSubject<[Photo], Error>
+        typealias LoadPhotosPublisher = PassthroughSubject<[Photo], Error>
         
-        private var loadRequests = [(publisher: LoadPublisher, searchTerm: String)]()
-        var loadCallCount: Int {
-            loadRequests.count
+        private var loadPhotosRequests = [(publisher: LoadPhotosPublisher, searchTerm: String)]()
+        var loadPhotosCallCount: Int {
+            loadPhotosRequests.count
         }
         var loggedSearchTerms: [String] {
-            loadRequests.map(\.searchTerm)
+            loadPhotosRequests.map(\.searchTerm)
         }
         
         private(set) var cancelLoadCallCount = 0
         
-        func loadPublisher(_ searchTerm: String) -> AnyPublisher<[Photo], Error> {
-            let publisher = LoadPublisher()
-            loadRequests.append((publisher, searchTerm))
+        func loadPhotosPublisher(searchTerm: String) -> AnyPublisher<[Photo], Error> {
+            let publisher = LoadPhotosPublisher()
+            loadPhotosRequests.append((publisher, searchTerm))
             return publisher.handleEvents(receiveCancel: { [weak self] in
                 self?.cancelLoadCallCount += 1
             }).eraseToAnyPublisher()
         }
         
-        func complete(with photos: [Photo], at index: Int) {
-            guard index < loadRequests.count else { return }
+        func completePhotosLoad(with photos: [Photo], at index: Int) {
+            guard index < loadPhotosRequests.count else { return }
             
-            loadRequests[index].publisher.send(photos)
-            loadRequests[index].publisher.send(completion: .finished)
+            loadPhotosRequests[index].publisher.send(photos)
+            loadPhotosRequests[index].publisher.send(completion: .finished)
         }
         
-        func complete(with error: Error, at index: Int) {
-            guard index < loadRequests.count else { return }
-            loadRequests[index].publisher.send(completion: .failure(error))
+        func completePhotosLoad(with error: Error, at index: Int) {
+            guard index < loadPhotosRequests.count else { return }
+            loadPhotosRequests[index].publisher.send(completion: .failure(error))
         }
         
         // MARK: - Image data loader
@@ -537,10 +533,4 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
             loadImageRequests[index].publisher.send(completion: .failure(error))
         }
     }
-    
-    private struct LoggedError: Equatable {
-        let title: String
-        let message: String
-    }
-    
 }

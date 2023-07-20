@@ -14,16 +14,15 @@ typealias LoadImagePublisher = AnyPublisher<Data, Error>
 enum PhotoSearchComposer {
     static func composeWith(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher,
                             loadImagePublisher: @escaping (Photo) -> LoadImagePublisher,
-                            showError: @escaping (String, String) -> Void) -> PhotoSearchViewController {
+                            showError: @escaping (PhotoSearchViewController.ErrorMessage) -> Void) -> PhotoSearchViewController {
         let loadPhotosPublisherAdapter = LoadPhotosPublisherAdapter(loadPhotosPublisher: loadPhotosPublisher)
         let viewController = PhotoSearchViewController(loadPhotos: loadPhotosPublisherAdapter.loadPhotos,
                                                        showError: showError)
         let photosViewAdapter = PhotosViewAdapter(view: viewController,
                                                   loadImagePublisher: loadImagePublisher)
-        let presenter = PhotosPresenter(photosView: photosViewAdapter,
-                                        loadingView: WeakRefProxy(viewController),
-                                        errorView: WeakRefProxy(viewController))
-        loadPhotosPublisherAdapter.presenter = presenter
+        loadPhotosPublisherAdapter.presenter = PhotosPresenter(photosView: photosViewAdapter,
+                                                               loadingView: WeakRefProxy(viewController),
+                                                               errorView: WeakRefProxy(viewController))
         return viewController
     }
 }
