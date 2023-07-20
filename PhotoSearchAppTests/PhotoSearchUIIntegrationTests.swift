@@ -544,19 +544,3 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
 }
-
-
-
-extension PhotoCell {
-    var titleText: String? {
-        titleLabel.text
-    }
-    
-    var renderedImage: Data? {
-        photoImageView.image?.pngData()
-    }
-    
-    var isShowingLoadingIndicator: Bool {
-        containerView.isShimmering
-    }
-}
