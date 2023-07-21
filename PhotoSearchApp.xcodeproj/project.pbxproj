@@ -38,6 +38,8 @@
 		BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */; };
 		BE7B999D2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */; };
 		BE81ECDA2A6AED0A00E67DB8 /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */; };
+		BE81ECDD2A6AED5C00E67DB8 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81ECDC2A6AED5C00E67DB8 /* URLSessionHTTPClient.swift */; };
+		BE81ECDF2A6AEDA000E67DB8 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81ECDE2A6AEDA000E67DB8 /* HTTPClient.swift */; };
 		BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */; };
 		BED8BA382A682C9B0068A202 /* UIView+Shimmering.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */; };
 /* End PBXBuildFile section */
@@ -88,6 +90,8 @@
 		BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadResourcePublisherAdapter.swift; sourceTree = "<group>"; };
 		BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
+		BE81ECDC2A6AED5C00E67DB8 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
+		BE81ECDE2A6AEDA000E67DB8 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
 		BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shimmering.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -219,6 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				BE59B6132A6937AC002C7E21 /* Features */,
+				BE81ECDB2A6AED3B00E67DB8 /* Networking */,
 				BE59B60B2A692A51002C7E21 /* Presentation */,
 				BE59B6142A6937BA002C7E21 /* UI */,
 				BE59B6182A693838002C7E21 /* Composition */,
@@ -255,6 +260,15 @@
 				BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		BE81ECDB2A6AED3B00E67DB8 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				BE81ECDE2A6AEDA000E67DB8 /* HTTPClient.swift */,
+				BE81ECDC2A6AED5C00E67DB8 /* URLSessionHTTPClient.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -363,6 +377,7 @@
 				BE59B6122A692E1D002C7E21 /* PhotosLoadingViewModel.swift in Sources */,
 				BE479DDC2A671C2F0036898B /* PhotoSearchViewController.swift in Sources */,
 				BE479DDA2A671BF00036898B /* PhotoCell.swift in Sources */,
+				BE81ECDF2A6AEDA000E67DB8 /* HTTPClient.swift in Sources */,
 				BE59B6252A697219002C7E21 /* PhotoImageViewModel.swift in Sources */,
 				BE59B60A2A692965002C7E21 /* PhotosPresenter.swift in Sources */,
 				BE59B6292A6972B6002C7E21 /* PhotoImagePresenter.swift in Sources */,
@@ -371,6 +386,7 @@
 				BED8BA382A682C9B0068A202 /* UIView+Shimmering.swift in Sources */,
 				BE479DD82A671B820036898B /* Photo.swift in Sources */,
 				BE59B6272A697287002C7E21 /* PhotoImageLoadingViewModel.swift in Sources */,
+				BE81ECDD2A6AED5C00E67DB8 /* URLSessionHTTPClient.swift in Sources */,
 				BE59B6232A694000002C7E21 /* PhotosViewAdapter.swift in Sources */,
 				BE59B6102A692E09002C7E21 /* PhotosViewModel.swift in Sources */,
 				BE59B62B2A69770B002C7E21 /* PhotoCellComposer.swift in Sources */,
