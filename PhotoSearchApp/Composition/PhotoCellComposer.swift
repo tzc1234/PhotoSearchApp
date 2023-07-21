@@ -5,12 +5,15 @@
 //  Created by Tsz-Lung on 20/07/2023.
 //
 
+import Combine
 import UIKit
 
 enum PhotoCellComposer {
+    typealias LoadImagePublisherAdapter = LoadResourcePublisherAdapter<PhotoImagePresenter<WeakRefProxy<PhotoCellController>, UIImage>, Void, Data>
+    
     static func composeWith(photoTitle: String,
-                            loadImagePublisher: @escaping () -> LoadImagePublisher) -> PhotoCellController {
-        let adapter = LoadImagePublisherAdapter(loadImagePublisher: loadImagePublisher)
+                            loadImagePublisher: @escaping () -> AnyPublisher<Data, Error>) -> PhotoCellController {
+        let adapter = LoadImagePublisherAdapter(publisher: loadImagePublisher)
         let cellController = PhotoCellController(imageLoader: adapter)
         adapter.presenter = PhotoImagePresenter(title: photoTitle,
                                                 view: WeakRefProxy(cellController),

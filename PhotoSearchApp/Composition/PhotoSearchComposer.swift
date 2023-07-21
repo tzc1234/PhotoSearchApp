@@ -8,15 +8,14 @@
 import Combine
 import Foundation
 
-typealias LoadPhotosPublisher = AnyPublisher<[Photo], Error>
-typealias LoadImagePublisher = AnyPublisher<Data, Error>
-
 enum PhotoSearchComposer {
-    static func composeWith(loadPhotosPublisher: @escaping (String) -> LoadPhotosPublisher,
-                            loadImagePublisher: @escaping (Photo) -> LoadImagePublisher,
+    typealias LoadPhotosPublisherAdapter = LoadResourcePublisherAdapter<PhotosPresenter, String, [Photo]>
+    
+    static func composeWith(loadPhotosPublisher: @escaping (String) -> AnyPublisher<[Photo], Error>,
+                            loadImagePublisher: @escaping (Photo) -> AnyPublisher<Data, Error>,
                             showError: @escaping (PhotoSearchViewController.ErrorMessage) -> Void) -> PhotoSearchViewController {
-        let loadPhotosPublisherAdapter = LoadPhotosPublisherAdapter(loadPhotosPublisher: loadPhotosPublisher)
-        let viewController = PhotoSearchViewController(loadPhotos: loadPhotosPublisherAdapter.loadPhotos,
+        let loadPhotosPublisherAdapter = LoadPhotosPublisherAdapter(publisher: loadPhotosPublisher)
+        let viewController = PhotoSearchViewController(loadPhotos: loadPhotosPublisherAdapter.load,
                                                        showError: showError)
         let photosViewAdapter = PhotosViewAdapter(
             view: viewController,

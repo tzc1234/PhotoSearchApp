@@ -19,13 +19,11 @@
 		BE59B61B2A6939E9002C7E21 /* WeakRefProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B61A2A6939E9002C7E21 /* WeakRefProxy.swift */; };
 		BE59B61D2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B61C2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift */; };
 		BE59B61F2A693D82002C7E21 /* PhotoCell+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B61E2A693D82002C7E21 /* PhotoCell+TestHelpers.swift */; };
-		BE59B6212A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B6202A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift */; };
 		BE59B6232A694000002C7E21 /* PhotosViewAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B6222A694000002C7E21 /* PhotosViewAdapter.swift */; };
 		BE59B6252A697219002C7E21 /* PhotoImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B6242A697219002C7E21 /* PhotoImageViewModel.swift */; };
 		BE59B6272A697287002C7E21 /* PhotoImageLoadingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B6262A697287002C7E21 /* PhotoImageLoadingViewModel.swift */; };
 		BE59B6292A6972B6002C7E21 /* PhotoImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B6282A6972B6002C7E21 /* PhotoImagePresenter.swift */; };
 		BE59B62B2A69770B002C7E21 /* PhotoCellComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */; };
-		BE59B62D2A697CA7002C7E21 /* LoadImagePublisherAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B62C2A697CA7002C7E21 /* LoadImagePublisherAdapter.swift */; };
 		BE5BFEEC2A67E30F002C6E72 /* CombineHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */; };
 		BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8952A66C76F00073E46 /* AppDelegate.swift */; };
 		BE74D8982A66C76F00073E46 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8972A66C76F00073E46 /* SceneDelegate.swift */; };
@@ -35,6 +33,7 @@
 		BE74D8C72A66D21500073E46 /* UIRefreshControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */; };
 		BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */; };
 		BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */; };
+		BE7B999D2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */; };
 		BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */; };
 		BED8BA382A682C9B0068A202 /* UIView+Shimmering.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */; };
 /* End PBXBuildFile section */
@@ -62,13 +61,11 @@
 		BE59B61A2A6939E9002C7E21 /* WeakRefProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakRefProxy.swift; sourceTree = "<group>"; };
 		BE59B61C2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoSearchViewController+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE59B61E2A693D82002C7E21 /* PhotoCell+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoCell+TestHelpers.swift"; sourceTree = "<group>"; };
-		BE59B6202A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadPhotosPublisherAdapter.swift; sourceTree = "<group>"; };
 		BE59B6222A694000002C7E21 /* PhotosViewAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewAdapter.swift; sourceTree = "<group>"; };
 		BE59B6242A697219002C7E21 /* PhotoImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImageViewModel.swift; sourceTree = "<group>"; };
 		BE59B6262A697287002C7E21 /* PhotoImageLoadingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImageLoadingViewModel.swift; sourceTree = "<group>"; };
 		BE59B6282A6972B6002C7E21 /* PhotoImagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImagePresenter.swift; sourceTree = "<group>"; };
 		BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCellComposer.swift; sourceTree = "<group>"; };
-		BE59B62C2A697CA7002C7E21 /* LoadImagePublisherAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImagePublisherAdapter.swift; sourceTree = "<group>"; };
 		BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineHelpers.swift; sourceTree = "<group>"; };
 		BE74D8922A66C76F00073E46 /* PhotoSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE74D8952A66C76F00073E46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +79,7 @@
 		BE74D8C62A66D21500073E46 /* UIRefreshControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
+		BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadResourcePublisherAdapter.swift; sourceTree = "<group>"; };
 		BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
 		BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shimmering.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -174,10 +172,9 @@
 			children = (
 				BE59B6192A69384E002C7E21 /* Helpers */,
 				BE4291742A685A8200AE86D7 /* PhotoSearchComposer.swift */,
-				BE59B6202A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift */,
 				BE59B6222A694000002C7E21 /* PhotosViewAdapter.swift */,
 				BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */,
-				BE59B62C2A697CA7002C7E21 /* LoadImagePublisherAdapter.swift */,
+				BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -348,13 +345,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE7B999D2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift in Sources */,
 				BE4291752A685A8200AE86D7 /* PhotoSearchComposer.swift in Sources */,
 				BE59B60E2A692DF6002C7E21 /* PhotosErrorViewModel.swift in Sources */,
 				BE59B6122A692E1D002C7E21 /* PhotosLoadingViewModel.swift in Sources */,
-				BE59B62D2A697CA7002C7E21 /* LoadImagePublisherAdapter.swift in Sources */,
 				BE479DDC2A671C2F0036898B /* PhotoSearchViewController.swift in Sources */,
 				BE479DDA2A671BF00036898B /* PhotoCell.swift in Sources */,
-				BE59B6212A693FA5002C7E21 /* LoadPhotosPublisherAdapter.swift in Sources */,
 				BE59B6252A697219002C7E21 /* PhotoImageViewModel.swift in Sources */,
 				BE59B60A2A692965002C7E21 /* PhotosPresenter.swift in Sources */,
 				BE59B6292A6972B6002C7E21 /* PhotoImagePresenter.swift in Sources */,

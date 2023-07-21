@@ -19,7 +19,9 @@ protocol PhotosLoadingView: AnyObject {
     func display(_ viewModel: PhotosLoadingViewModel)
 }
 
-final class PhotosPresenter {
+final class PhotosPresenter: ResourcePresenter {
+    typealias Resource = [Photo]
+    
     private let photosView: PhotosView
     private let loadingView: PhotosLoadingView
     private let errorView: PhotosErrorView
@@ -35,9 +37,9 @@ final class PhotosPresenter {
         errorView.display(PhotosErrorViewModel(title: nil, message: nil))
     }
     
-    func didFinishLoading(with photos: [Photo]) {
+    func didFinishLoading(with resource: Resource) {
         loadingView.display(PhotosLoadingViewModel(isLoading: false))
-        photosView.display(PhotosViewModel(photos: photos))
+        photosView.display(PhotosViewModel(photos: resource))
     }
     
     func didFinishLoading(with error: Error) {
