@@ -464,8 +464,4 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     private func anyTerm() -> String {
         "any term"
     }
-
-    private func anyNSError() -> NSError {
-        NSError(domain: "any error", code: 0)
-    }
 }
