@@ -37,6 +37,7 @@
 		BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */; };
 		BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */; };
 		BE7B999D2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */; };
+		BE81ECDA2A6AED0A00E67DB8 /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */; };
 		BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */; };
 		BED8BA382A682C9B0068A202 /* UIView+Shimmering.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */; };
 /* End PBXBuildFile section */
@@ -86,6 +87,7 @@
 		BE74D8C82A66D24800073E46 /* UIControl+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE74D8CB2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		BE7B999C2A6A7D7100B39C9B /* LoadResourcePublisherAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadResourcePublisherAdapter.swift; sourceTree = "<group>"; };
+		BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
 		BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
 		BED8BA372A682C9B0068A202 /* UIView+Shimmering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shimmering.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -250,6 +252,7 @@
 				BE59B61C2A693D1C002C7E21 /* PhotoSearchViewController+TestHelpers.swift */,
 				BE59B61E2A693D82002C7E21 /* PhotoCell+TestHelpers.swift */,
 				BE636D852A6AC47D00B288B8 /* LoaderSpy.swift */,
+				BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -384,6 +387,7 @@
 				BE59B61F2A693D82002C7E21 /* PhotoCell+TestHelpers.swift in Sources */,
 				BE636D882A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift in Sources */,
 				BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */,
+				BE81ECDA2A6AED0A00E67DB8 /* URLProtocolStub.swift in Sources */,
 				BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */,
 				BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */,
