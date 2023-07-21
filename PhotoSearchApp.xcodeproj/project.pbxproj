@@ -26,6 +26,7 @@
 		BE59B62B2A69770B002C7E21 /* PhotoCellComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */; };
 		BE5BFEEC2A67E30F002C6E72 /* CombineHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */; };
 		BE636D862A6AC47D00B288B8 /* LoaderSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE636D852A6AC47D00B288B8 /* LoaderSpy.swift */; };
+		BE636D882A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE636D872A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift */; };
 		BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8952A66C76F00073E46 /* AppDelegate.swift */; };
 		BE74D8982A66C76F00073E46 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8972A66C76F00073E46 /* SceneDelegate.swift */; };
 		BE74D89F2A66C77000073E46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE74D89E2A66C77000073E46 /* Assets.xcassets */; };
@@ -69,6 +70,7 @@
 		BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCellComposer.swift; sourceTree = "<group>"; };
 		BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineHelpers.swift; sourceTree = "<group>"; };
 		BE636D852A6AC47D00B288B8 /* LoaderSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderSpy.swift; sourceTree = "<group>"; };
+		BE636D872A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
 		BE74D8922A66C76F00073E46 /* PhotoSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE74D8952A66C76F00073E46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE74D8972A66C76F00073E46 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 			children = (
 				BE74D8CA2A66D2C800073E46 /* Helpers */,
 				BE74D8AC2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift */,
+				BE636D872A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift */,
 			);
 			path = PhotoSearchAppTests;
 			sourceTree = "<group>";
@@ -376,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE59B61F2A693D82002C7E21 /* PhotoCell+TestHelpers.swift in Sources */,
+				BE636D882A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift in Sources */,
 				BE74D8C92A66D24800073E46 /* UIControl+TestHelpers.swift in Sources */,
 				BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */,
