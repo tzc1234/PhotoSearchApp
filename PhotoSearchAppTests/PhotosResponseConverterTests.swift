@@ -75,13 +75,26 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertEqual(photos, [])
     }
     
-    func test_convert_deliversOnePhotoOn200ResponseWithOnePhoto() throws {
+    func test_convert_deliversOnePhotoOn200ResponseWithOnePhotoData() throws {
         let photo = Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")
         let onePhotoData = makePhotosData(photos: [photo])
         
         let photos = try PhotosResponseConverter.convert(from: onePhotoData, response: okResponse())
         
         XCTAssertEqual(photos, [photo])
+    }
+    
+    func test_convert_deliversMultiplePhotosOn200ResponseWithMultiplePhotosData() throws {
+        let expectedPhotos = [
+            Photo(id: "id0", title: "title0", server: "server0", secret: "secret0"),
+            Photo(id: "id1", title: "title1", server: "server1", secret: "secret1"),
+            Photo(id: "id2", title: "title2", server: "server2", secret: "secret2")
+        ]
+        let multiplePhotosData = makePhotosData(photos: expectedPhotos)
+        
+        let photos = try PhotosResponseConverter.convert(from: multiplePhotosData, response: okResponse())
+        
+        XCTAssertEqual(photos, expectedPhotos)
     }
     
     // MARK: - Helpers
