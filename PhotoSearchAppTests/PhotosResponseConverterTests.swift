@@ -18,7 +18,7 @@ enum PhotosResponseConverter {
         
         do {
             let response = try JSONDecoder().decode(Response.self, from: data)
-            return []
+            return response.photos.photos
         } catch {
             throw Error.invalidData
         }
@@ -29,14 +29,23 @@ enum PhotosResponseConverter {
     }
     
     private struct Response: Decodable {
-        let photos: Photos
+        let photos: PhotosResponse
         
-        struct Photos: Decodable {
-            let photo: [Photo]
+        struct PhotosResponse: Decodable {
+            let photo: [PhotoResponse]
             
-            struct Photo: Decodable {
-                
+            var photos: [Photo] {
+                photo.map {
+                    Photo(id: $0.id, title: $0.title, server: $0.server, secret: $0.secret)
+                }
             }
+        }
+        
+        struct PhotoResponse: Decodable {
+            let id: String
+            let secret: String
+            let server: String
+            let title: String
         }
     }
 }
@@ -67,6 +76,15 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertEqual(photos, [])
     }
     
+    func test_convert_deliversOnePhotoOn200ResponseWithOnePhoto() throws {
+        let onePhotoResponse = PhotosResponse(photos: .init(photo: [.init(id: "id0", secret: "secret0", server: "server0", title: "title0")]))
+        let onePhotoData = try JSONEncoder().encode(onePhotoResponse)
+        
+        let photos = try PhotosResponseConverter.convert(from: onePhotoData, response: okResponse())
+        
+        XCTAssertEqual(photos, [Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")])
+    }
+    
     // MARK: - Helpers
     
     private func okResponse() -> HTTPURLResponse {
@@ -78,10 +96,13 @@ final class PhotosResponseConverterTests: XCTestCase {
         
         struct Photos: Encodable {
             let photo: [Photo]
-            
-            struct Photo: Encodable {
-                
-            }
+        }
+        
+        struct Photo: Encodable {
+            let id: String
+            let secret: String
+            let server: String
+            let title: String
         }
     }
 }
