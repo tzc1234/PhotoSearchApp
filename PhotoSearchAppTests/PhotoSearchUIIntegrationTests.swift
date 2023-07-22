@@ -457,10 +457,6 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         UIImage.make(withColor: .gray).pngData()!
     }
     
-    private func makePhoto(id: String = "any id", title: String = "any title") -> Photo {
-        .init(id: id, title: title)
-    }
-    
     private func anyTerm() -> String {
         "any term"
     }
