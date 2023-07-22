@@ -40,6 +40,7 @@ final class PhotoSearchViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.titleView = searchBar
         configureTableView()
         setupRefreshControl()
         loadPhotos(searchTerm)
@@ -48,6 +49,8 @@ final class PhotoSearchViewController: UITableViewController {
     private func configureTableView() {
         tableView.dataSource = dataSource
         tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
+        tableView.separatorStyle = .none
+        tableView.rowHeight = UIScreen.main.bounds.width * 0.5625
     }
     
     private func setupRefreshControl() {
