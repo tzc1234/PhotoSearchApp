@@ -28,6 +28,19 @@ final class PhotosResponseConverterTests: XCTestCase {
             XCTAssertThrowsError(try PhotosResponseConverter.convert(from: data, response: response), "Expect an error at statusCode: \(statusCode)")
         }
     }
+    
+    func test_convert_deliversErrorOn200ResponseWithInvalidData() {
+        let invalidData = Data("invalid data".utf8)
+        
+        XCTAssertThrowsError(try PhotosResponseConverter.convert(from: invalidData, response: okResponse()))
+    }
+    
+    // MARK: - Helpers
+    
+    private func okResponse() -> HTTPURLResponse {
+        HTTPURLResponse(statusCode: 200)
+    }
+    
 }
 
 extension HTTPURLResponse {
