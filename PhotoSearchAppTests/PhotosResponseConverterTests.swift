@@ -14,7 +14,30 @@ enum PhotosResponseConverter {
     }
     
     static func convert(from data: Data, response: HTTPURLResponse) throws -> [Photo] {
-        throw Error.invalidData
+        guard isOK(response) else { throw Error.invalidData }
+        
+        do {
+            let response = try JSONDecoder().decode(Response.self, from: data)
+            return []
+        } catch {
+            throw Error.invalidData
+        }
+    }
+    
+    private static func isOK(_ response: HTTPURLResponse) -> Bool {
+        response.statusCode == 200
+    }
+    
+    private struct Response: Decodable {
+        let photos: Photos
+        
+        struct Photos: Decodable {
+            let photo: [Photo]
+            
+            struct Photo: Decodable {
+                
+            }
+        }
     }
 }
 
@@ -35,12 +58,32 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertThrowsError(try PhotosResponseConverter.convert(from: invalidData, response: okResponse()))
     }
     
+    func test_convert_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
+        let emptyPhotosResponse = PhotosResponse(photos: .init(photo: []))
+        let emptyPhotosData = try JSONEncoder().encode(emptyPhotosResponse)
+        
+        let photos = try PhotosResponseConverter.convert(from: emptyPhotosData, response: okResponse())
+        
+        XCTAssertEqual(photos, [])
+    }
+    
     // MARK: - Helpers
     
     private func okResponse() -> HTTPURLResponse {
         HTTPURLResponse(statusCode: 200)
     }
     
+    private struct PhotosResponse: Encodable {
+        let photos: Photos
+        
+        struct Photos: Encodable {
+            let photo: [Photo]
+            
+            struct Photo: Encodable {
+                
+            }
+        }
+    }
 }
 
 extension HTTPURLResponse {
