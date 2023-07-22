@@ -12,6 +12,14 @@ func anyNSError() -> Error {
     NSError(domain: "any error", code: 0)
 }
 
+func anyData() -> Data {
+    Data("any data".utf8)
+}
+
+func anyURL() -> URL {
+    URL(string: "https://any-url.com")!
+}
+
 func makePhoto(id: String = "any id", title: String = "any title",
                server: String = "any-server", secret: String = "any-secret") -> Photo {
     .init(id: id, title: title, server: server, secret: secret)
