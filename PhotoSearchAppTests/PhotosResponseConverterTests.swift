@@ -8,48 +8,6 @@
 import XCTest
 @testable import PhotoSearchApp
 
-enum PhotosResponseConverter {
-    enum Error: Swift.Error {
-        case invalidData
-    }
-    
-    static func convert(from data: Data, response: HTTPURLResponse) throws -> [Photo] {
-        guard isOK(response) else { throw Error.invalidData }
-        
-        do {
-            let response = try JSONDecoder().decode(Response.self, from: data)
-            return response.photos.photos
-        } catch {
-            throw Error.invalidData
-        }
-    }
-    
-    private static func isOK(_ response: HTTPURLResponse) -> Bool {
-        response.statusCode == 200
-    }
-    
-    private struct Response: Decodable {
-        let photos: PhotosResponse
-        
-        struct PhotosResponse: Decodable {
-            let photo: [PhotoResponse]
-            
-            var photos: [Photo] {
-                photo.map {
-                    Photo(id: $0.id, title: $0.title, server: $0.server, secret: $0.secret)
-                }
-            }
-        }
-        
-        struct PhotoResponse: Decodable {
-            let id: String
-            let secret: String
-            let server: String
-            let title: String
-        }
-    }
-}
-
 final class PhotosResponseConverterTests: XCTestCase {
     func test_convert_deliversErrorOnNon200Response() throws {
         let data = anyData()

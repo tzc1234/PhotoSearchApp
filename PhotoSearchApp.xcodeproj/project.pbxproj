@@ -33,6 +33,8 @@
 		BE70DF212A6BE05400973366 /* PhotoImageEndpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70DF202A6BE05400973366 /* PhotoImageEndpointTests.swift */; };
 		BE70DF232A6BE39A00973366 /* PhotoImageEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70DF222A6BE39A00973366 /* PhotoImageEndpoint.swift */; };
 		BE70DF252A6C017900973366 /* PhotosResponseConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70DF242A6C017900973366 /* PhotosResponseConverterTests.swift */; };
+		BE70DF272A6C0F1600973366 /* PhotosResponseConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70DF262A6C0F1600973366 /* PhotosResponseConverter.swift */; };
+		BE70DF2B2A6C0F8300973366 /* HTTPURLResponse+statusCode200.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70DF2A2A6C0F8300973366 /* HTTPURLResponse+statusCode200.swift */; };
 		BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8952A66C76F00073E46 /* AppDelegate.swift */; };
 		BE74D8982A66C76F00073E46 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE74D8972A66C76F00073E46 /* SceneDelegate.swift */; };
 		BE74D89F2A66C77000073E46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE74D89E2A66C77000073E46 /* Assets.xcassets */; };
@@ -86,6 +88,8 @@
 		BE70DF202A6BE05400973366 /* PhotoImageEndpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImageEndpointTests.swift; sourceTree = "<group>"; };
 		BE70DF222A6BE39A00973366 /* PhotoImageEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImageEndpoint.swift; sourceTree = "<group>"; };
 		BE70DF242A6C017900973366 /* PhotosResponseConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosResponseConverterTests.swift; sourceTree = "<group>"; };
+		BE70DF262A6C0F1600973366 /* PhotosResponseConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosResponseConverter.swift; sourceTree = "<group>"; };
+		BE70DF2A2A6C0F8300973366 /* HTTPURLResponse+statusCode200.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPURLResponse+statusCode200.swift"; sourceTree = "<group>"; };
 		BE74D8922A66C76F00073E46 /* PhotoSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE74D8952A66C76F00073E46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE74D8972A66C76F00073E46 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -219,6 +223,23 @@
 			path = Endpoints;
 			sourceTree = "<group>";
 		};
+		BE70DF282A6C0F4300973366 /* Converters */ = {
+			isa = PBXGroup;
+			children = (
+				BE70DF292A6C0F5C00973366 /* Helpers */,
+				BE70DF262A6C0F1600973366 /* PhotosResponseConverter.swift */,
+			);
+			path = Converters;
+			sourceTree = "<group>";
+		};
+		BE70DF292A6C0F5C00973366 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BE70DF2A2A6C0F8300973366 /* HTTPURLResponse+statusCode200.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		BE74D8892A66C76F00073E46 = {
 			isa = PBXGroup;
 			children = (
@@ -288,6 +309,7 @@
 			isa = PBXGroup;
 			children = (
 				BE70DF1D2A6BDFC600973366 /* Endpoints */,
+				BE70DF282A6C0F4300973366 /* Converters */,
 				BE81ECDE2A6AEDA000E67DB8 /* HTTPClient.swift */,
 				BE81ECDC2A6AED5C00E67DB8 /* URLSessionHTTPClient.swift */,
 			);
@@ -399,6 +421,7 @@
 				BE4291752A685A8200AE86D7 /* PhotoSearchComposer.swift in Sources */,
 				BE59B60E2A692DF6002C7E21 /* PhotosErrorViewModel.swift in Sources */,
 				BE59B6122A692E1D002C7E21 /* PhotosLoadingViewModel.swift in Sources */,
+				BE70DF272A6C0F1600973366 /* PhotosResponseConverter.swift in Sources */,
 				BE479DDC2A671C2F0036898B /* PhotoSearchViewController.swift in Sources */,
 				BE479DDA2A671BF00036898B /* PhotoCell.swift in Sources */,
 				BE81ECDF2A6AEDA000E67DB8 /* HTTPClient.swift in Sources */,
@@ -415,6 +438,7 @@
 				BE59B6102A692E09002C7E21 /* PhotosViewModel.swift in Sources */,
 				BE59B62B2A69770B002C7E21 /* PhotoCellComposer.swift in Sources */,
 				BE70DF1F2A6BDFD400973366 /* PhotosEndpoint.swift in Sources */,
+				BE70DF2B2A6C0F8300973366 /* HTTPURLResponse+statusCode200.swift in Sources */,
 				BE74D8982A66C76F00073E46 /* SceneDelegate.swift in Sources */,
 				BE59B61B2A6939E9002C7E21 /* WeakRefProxy.swift in Sources */,
 				BE5BFEEC2A67E30F002C6E72 /* CombineHelpers.swift in Sources */,
