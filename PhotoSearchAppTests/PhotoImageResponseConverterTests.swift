@@ -8,18 +8,6 @@
 import XCTest
 @testable import PhotoSearchApp
 
-enum PhotoImageResponseConverter {
-    enum Error: Swift.Error {
-        case invalidResponse
-    }
-    
-    static func convert(_ data: Data, response: HTTPURLResponse) throws -> Data {
-        guard response.isOK else { throw Error.invalidResponse }
-        
-        return data
-    }
-}
-
 final class PhotoImageResponseConverterTests: XCTestCase {
     func test_convert_deliversErrorOnNon200Response() throws {
         let samples = [100, 199, 201, 300, 400, 500]
