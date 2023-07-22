@@ -68,8 +68,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convert_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
-        let emptyPhotosResponse = PhotosResponse(photos: .init(photo: []))
-        let emptyPhotosData = try JSONEncoder().encode(emptyPhotosResponse)
+        let emptyPhotosData = makePhotosData(photos: [])
         
         let photos = try PhotosResponseConverter.convert(from: emptyPhotosData, response: okResponse())
         
@@ -77,18 +76,26 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convert_deliversOnePhotoOn200ResponseWithOnePhoto() throws {
-        let onePhotoResponse = PhotosResponse(photos: .init(photo: [.init(id: "id0", secret: "secret0", server: "server0", title: "title0")]))
-        let onePhotoData = try JSONEncoder().encode(onePhotoResponse)
+        let photo = Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")
+        let onePhotoData = makePhotosData(photos: [photo])
         
         let photos = try PhotosResponseConverter.convert(from: onePhotoData, response: okResponse())
         
-        XCTAssertEqual(photos, [Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")])
+        XCTAssertEqual(photos, [photo])
     }
     
     // MARK: - Helpers
     
     private func okResponse() -> HTTPURLResponse {
         HTTPURLResponse(statusCode: 200)
+    }
+    
+    private func makePhotosData(photos: [Photo]) -> Data {
+        let photoResponses = photos.map { photo in
+            PhotosResponse.Photo(id: photo.id, secret: photo.secret, server: photo.server, title: photo.title)
+        }
+        let response = PhotosResponse(photos: .init(photo: photoResponses))
+        return try! JSONEncoder().encode(response)
     }
     
     private struct PhotosResponse: Encodable {
