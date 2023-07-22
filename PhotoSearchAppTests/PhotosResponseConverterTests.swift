@@ -15,20 +15,20 @@ final class PhotosResponseConverterTests: XCTestCase {
         
         try samples.forEach { statusCode in
             let response = HTTPURLResponse(statusCode: statusCode)
-            XCTAssertThrowsError(try PhotosResponseConverter.convert(from: data, response: response), "Expect an error at statusCode: \(statusCode)")
+            XCTAssertThrowsError(try PhotosResponseConverter.convert(data, response: response), "Expect an error at statusCode: \(statusCode)")
         }
     }
     
     func test_convert_deliversErrorOn200ResponseWithInvalidData() {
         let invalidData = Data("invalid data".utf8)
         
-        XCTAssertThrowsError(try PhotosResponseConverter.convert(from: invalidData, response: ok200Response()))
+        XCTAssertThrowsError(try PhotosResponseConverter.convert(invalidData, response: ok200Response()))
     }
     
     func test_convert_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
         let emptyPhotosData = makePhotosData(photos: [])
         
-        let photos = try PhotosResponseConverter.convert(from: emptyPhotosData, response: ok200Response())
+        let photos = try PhotosResponseConverter.convert(emptyPhotosData, response: ok200Response())
         
         XCTAssertEqual(photos, [])
     }
@@ -37,7 +37,7 @@ final class PhotosResponseConverterTests: XCTestCase {
         let photo = Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")
         let onePhotoData = makePhotosData(photos: [photo])
         
-        let photos = try PhotosResponseConverter.convert(from: onePhotoData, response: ok200Response())
+        let photos = try PhotosResponseConverter.convert(onePhotoData, response: ok200Response())
         
         XCTAssertEqual(photos, [photo])
     }
@@ -50,7 +50,7 @@ final class PhotosResponseConverterTests: XCTestCase {
         ]
         let multiplePhotosData = makePhotosData(photos: expectedPhotos)
         
-        let photos = try PhotosResponseConverter.convert(from: multiplePhotosData, response: ok200Response())
+        let photos = try PhotosResponseConverter.convert(multiplePhotosData, response: ok200Response())
         
         XCTAssertEqual(photos, expectedPhotos)
     }
