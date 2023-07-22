@@ -8,7 +8,7 @@
 import UIKit
 
 final class PhotoCell: UITableViewCell {
-    private(set) lazy var shadowBackgroundView = {
+    private lazy var shadowBackgroundView = {
         let v = UIView()
         v.backgroundColor = .systemBackground
         v.layer.cornerRadius = 12
