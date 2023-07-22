@@ -24,3 +24,7 @@ func makePhoto(id: String = "any id", title: String = "any title",
                server: String = "any-server", secret: String = "any-secret") -> Photo {
     .init(id: id, title: title, server: server, secret: secret)
 }
+
+func ok200Response() -> HTTPURLResponse {
+    HTTPURLResponse(statusCode: 200)
+}

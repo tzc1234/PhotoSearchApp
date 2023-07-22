@@ -22,13 +22,13 @@ final class PhotosResponseConverterTests: XCTestCase {
     func test_convert_deliversErrorOn200ResponseWithInvalidData() {
         let invalidData = Data("invalid data".utf8)
         
-        XCTAssertThrowsError(try PhotosResponseConverter.convert(from: invalidData, response: okResponse()))
+        XCTAssertThrowsError(try PhotosResponseConverter.convert(from: invalidData, response: ok200Response()))
     }
     
     func test_convert_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
         let emptyPhotosData = makePhotosData(photos: [])
         
-        let photos = try PhotosResponseConverter.convert(from: emptyPhotosData, response: okResponse())
+        let photos = try PhotosResponseConverter.convert(from: emptyPhotosData, response: ok200Response())
         
         XCTAssertEqual(photos, [])
     }
@@ -37,7 +37,7 @@ final class PhotosResponseConverterTests: XCTestCase {
         let photo = Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")
         let onePhotoData = makePhotosData(photos: [photo])
         
-        let photos = try PhotosResponseConverter.convert(from: onePhotoData, response: okResponse())
+        let photos = try PhotosResponseConverter.convert(from: onePhotoData, response: ok200Response())
         
         XCTAssertEqual(photos, [photo])
     }
@@ -50,16 +50,12 @@ final class PhotosResponseConverterTests: XCTestCase {
         ]
         let multiplePhotosData = makePhotosData(photos: expectedPhotos)
         
-        let photos = try PhotosResponseConverter.convert(from: multiplePhotosData, response: okResponse())
+        let photos = try PhotosResponseConverter.convert(from: multiplePhotosData, response: ok200Response())
         
         XCTAssertEqual(photos, expectedPhotos)
     }
     
     // MARK: - Helpers
-    
-    private func okResponse() -> HTTPURLResponse {
-        HTTPURLResponse(statusCode: 200)
-    }
     
     private func makePhotosData(photos: [Photo]) -> Data {
         let photoResponses = photos.map { photo in
