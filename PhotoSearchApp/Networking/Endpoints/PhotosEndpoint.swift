@@ -18,7 +18,7 @@ enum PhotosEndpoint {
             components.host = "www.flickr.com"
             components.path = "/services/rest/"
             components.queryItems = [
-                .init(name: "method", value: "flickr.photos.search"),
+                .init(name: "method", value: "flickr.photos.\(searchTerm.isEmpty ? "getRecent" : "search")"),
                 .init(name: "api_key", value: apiKey),
                 .init(name: "text", value: searchTerm),
                 .init(name: "format", value: "json"),
