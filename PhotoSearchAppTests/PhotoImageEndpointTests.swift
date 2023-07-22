@@ -8,21 +8,6 @@
 import XCTest
 @testable import PhotoSearchApp
 
-enum PhotoImageEndpoint {
-    case get(photo: Photo)
-    
-    private var baseURL: URL {
-        URL(string: "https://live.staticflickr.com")!
-    }
-    
-    var url: URL {
-        switch self {
-        case let .get(photo):
-            return baseURL.appending(path: "/\(photo.server)/\(photo.id)_\(photo.secret)_b.jpg")
-        }
-    }
-}
-
 final class PhotoImageEndpointTests: XCTestCase {
     func test_url_getURLForPhoto() {
         let photo = makePhoto(id: "photoID", title: "any", server: "photo-server", secret: "photo-secret")
