@@ -21,6 +21,17 @@ final class SceneDelegateTests: XCTestCase {
         XCTAssertEqual(windowSpy.keyAndVisibleCallCount, 1)
     }
     
+    func test_configureWindow_setsRootViewController() throws {
+        let sut = SceneDelegate()
+        let windowSpy = WindowSpy()
+        sut.window = windowSpy
+        
+        sut.configureWindow()
+        
+        let root = try XCTUnwrap(windowSpy.rootViewController as? UINavigationController)
+        XCTAssertTrue(root.topViewController is PhotoSearchViewController)
+    }
+    
     // MARK: - Helpers
     
     private class WindowSpy: UIWindow {
