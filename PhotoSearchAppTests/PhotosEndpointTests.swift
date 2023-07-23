@@ -16,6 +16,7 @@ final class PhotosEndpointTests: XCTestCase {
         
         XCTAssertTrue(url.contains("https://www.flickr.com/services/rest/?"))
         XCTAssertTrue(url.contains("method=flickr.photos.search"))
+        XCTAssertTrue(url.contains("safe_search=1"))
         XCTAssertTrue(url.contains("api_key=\(apiKey)"))
         XCTAssertTrue(url.contains("text=search%20term"))
         XCTAssertTrue(url.contains("format=json"))
@@ -29,6 +30,7 @@ final class PhotosEndpointTests: XCTestCase {
         
         XCTAssertTrue(url.contains("https://www.flickr.com/services/rest/?"))
         XCTAssertTrue(url.contains("method=flickr.photos.getRecent"))
+        XCTAssertTrue(url.contains("safe_search=1"))
         XCTAssertTrue(url.contains("api_key=\(apiKey)"))
         XCTAssertTrue(url.contains("format=json"))
         XCTAssertTrue(url.contains("nojsoncallback=1"))
