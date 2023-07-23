@@ -50,7 +50,7 @@ final class PhotoSearchViewController: UITableViewController {
         tableView.dataSource = dataSource
         tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = UIScreen.main.bounds.width * 0.5625
+        tableView.rowHeight = PhotoCell.cellHeight
     }
     
     private func setupRefreshControl() {

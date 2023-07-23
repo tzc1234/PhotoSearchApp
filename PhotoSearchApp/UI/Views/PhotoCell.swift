@@ -24,6 +24,8 @@ final class PhotoCell: UITableViewCell {
         let v = UIView()
         v.backgroundColor = .systemGray5
         v.layer.cornerRadius = 12
+        v.layer.borderWidth = 1
+        v.layer.borderColor = UIColor.systemGray4.cgColor
         v.clipsToBounds = true
         v.translatesAutoresizingMaskIntoConstraints = false
         return v
@@ -35,7 +37,7 @@ final class PhotoCell: UITableViewCell {
         return iv
     }()
     private lazy var placeholderView = {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 75)
+        let configuration = UIImage.SymbolConfiguration(pointSize: 70)
         let image = UIImage(systemName: "photo", withConfiguration: configuration)
         let iv = UIImageView(image: image)
         iv.tintColor = .secondaryLabel
@@ -74,10 +76,10 @@ final class PhotoCell: UITableViewCell {
         containerView.addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
-            shadowBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            shadowBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
             shadowBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             shadowBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            shadowBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            shadowBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
             
             containerView.topAnchor.constraint(equalTo: shadowBackgroundView.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: shadowBackgroundView.leadingAnchor),
@@ -101,6 +103,15 @@ final class PhotoCell: UITableViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
             titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -8)
         ])
+        
+        forceContentViewRenderingCorrectly()
+    }
+    
+    private func forceContentViewRenderingCorrectly() {
+        var frame = contentView.frame
+        frame.size.height = Self.cellHeight
+        contentView.frame = frame
+        contentView.layoutIfNeeded()
     }
     
     override func prepareForReuse() {
@@ -108,5 +119,6 @@ final class PhotoCell: UITableViewCell {
         onReuse?()
     }
     
+    static var cellHeight: CGFloat { UIScreen.main.bounds.width * 0.5625 }
     static var identifier: String { String(describing: Self.self) }
 }
