@@ -8,6 +8,10 @@
 import Foundation
 
 struct PhotosErrorViewModel {
-    let title: String?
-    let message: String?
+    let message: ErrorMessage?
+}
+
+struct ErrorMessage: Equatable {
+    let title: String
+    let message: String
 }

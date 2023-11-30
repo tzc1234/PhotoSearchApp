@@ -37,7 +37,7 @@ final class PhotosPresenter: ResourcePresenter {
     
     func didStartLoading() {
         loadingView.display(PhotosLoadingViewModel(isLoading: true))
-        errorView.display(PhotosErrorViewModel(title: nil, message: nil))
+        errorView.display(PhotosErrorViewModel(message: nil))
     }
     
     func didFinishLoading(with resource: Resource) {
@@ -47,6 +47,9 @@ final class PhotosPresenter: ResourcePresenter {
     
     func didFinishLoading(with error: Error) {
         loadingView.display(PhotosLoadingViewModel(isLoading: false))
-        errorView.display(PhotosErrorViewModel(title: Self.errorTitle, message: Self.errorMessage))
+        errorView.display(PhotosErrorViewModel(message: ErrorMessage(
+            title: Self.errorTitle, 
+            message: Self.errorMessage
+        )))
     }
 }

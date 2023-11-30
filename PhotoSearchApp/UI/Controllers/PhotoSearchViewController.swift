@@ -7,11 +7,6 @@
 
 import UIKit
 
-struct ErrorMessage: Equatable {
-    let title: String
-    let message: String
-}
-
 final class PhotoSearchViewController: UITableViewController {
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
@@ -102,9 +97,7 @@ extension PhotoSearchViewController: UISearchBarDelegate {
 
 extension PhotoSearchViewController: PhotosErrorView {
     func display(_ viewModel: PhotosErrorViewModel) {
-        if let title = viewModel.title, let message = viewModel.message {
-            showError(ErrorMessage(title: title, message: message))
-        }
+        viewModel.message.map(showError)
     }
 }
 
