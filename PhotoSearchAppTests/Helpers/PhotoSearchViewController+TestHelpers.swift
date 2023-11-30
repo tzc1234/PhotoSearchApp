@@ -18,7 +18,7 @@ extension PhotoSearchViewController {
         beginAppearanceTransition(true, animated: false)
         endAppearanceTransition()
         
-        tableView.frame = CGRect(x: 0, y: 0, width: 1, height: 9999)
+        makeHigherTableFrameToRenderCellSuccessfully()
     }
     
     private func replaceRefreshControlToSpyForiOS17Support() {
@@ -31,6 +31,10 @@ extension PhotoSearchViewController {
         }
         
         refreshControl = refreshControlSpy
+    }
+    
+    private func makeHigherTableFrameToRenderCellSuccessfully() {
+        tableView.frame = CGRect(x: 0, y: 0, width: 1, height: 9999)
     }
     
     func simulateUserInitiatedReload() {
