@@ -13,19 +13,26 @@ enum PhotoSearchComposer {
     
     static func composeWith(loadPhotosPublisher: @escaping (String) -> AnyPublisher<[Photo], Error>,
                             loadImagePublisher: @escaping (Photo) -> AnyPublisher<Data, Error>,
-                            showError: @escaping (PhotoSearchViewController.ErrorMessage) -> Void) -> PhotoSearchViewController {
+                            showError: @escaping (ErrorMessage) -> Void) -> PhotoSearchViewController {
         let loadPhotosPublisherAdapter = LoadPhotosPublisherAdapter(publisher: loadPhotosPublisher)
-        let viewController = PhotoSearchViewController(loadPhotos: loadPhotosPublisherAdapter.load,
-                                                       showError: showError)
+        let viewController = PhotoSearchViewController(
+            loadPhotos: loadPhotosPublisherAdapter.load,
+            showError: showError)
+        
         let photosViewAdapter = PhotosViewAdapter(
             view: viewController,
             cellControllerCreator: { photo in
-                PhotoCellComposer.composeWith(photoTitle: photo.title, loadImagePublisher: { loadImagePublisher(photo) })
+                PhotoCellComposer.composeWith(
+                    photoTitle: photo.title,
+                    loadImagePublisher: { loadImagePublisher(photo) }
+                )
             })
         
-        loadPhotosPublisherAdapter.presenter = PhotosPresenter(photosView: photosViewAdapter,
-                                                               loadingView: WeakRefProxy(viewController),
-                                                               errorView: WeakRefProxy(viewController))
+        loadPhotosPublisherAdapter.presenter = PhotosPresenter(
+            photosView: photosViewAdapter,
+            loadingView: WeakRefProxy(viewController),
+            errorView: WeakRefProxy(viewController))
+        
         return viewController
     }
 }

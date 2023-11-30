@@ -189,8 +189,8 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     func test_loadPhotosComplete_showsErrorOnLoaderError() throws {
-        let expectedError = PhotoSearchViewController.ErrorMessage(title: PhotosPresenter.errorTitle, message: PhotosPresenter.errorMessage)
-        var loggedErrors = [PhotoSearchViewController.ErrorMessage]()
+        let expectedError = ErrorMessage(title: PhotosPresenter.errorTitle, message: PhotosPresenter.errorMessage)
+        var loggedErrors = [ErrorMessage]()
         let (sut, loader) = makeSUT(showError: { loggedErrors.append($0) })
         sut.loadViewIfNeeded()
         
@@ -420,7 +420,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(showError: @escaping (PhotoSearchViewController.ErrorMessage) -> Void = { _ in },
+    private func makeSUT(showError: @escaping (ErrorMessage) -> Void = { _ in },
                          file: StaticString = #filePath,
                          line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()

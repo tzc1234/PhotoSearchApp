@@ -50,7 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .eraseToAnyPublisher()
     }
     
-    private func showErrorAlert(error: PhotoSearchViewController.ErrorMessage) {
+    private func showErrorAlert(error: ErrorMessage) {
         let alert = UIAlertController(title: error.title, message: error.message, preferredStyle: .alert)
         alert.addAction(.init(title: "Cancel", style: .cancel))
         navigation?.present(alert, animated: true)

@@ -7,6 +7,11 @@
 
 import UIKit
 
+struct ErrorMessage: Equatable {
+    let title: String
+    let message: String
+}
+
 final class PhotoSearchViewController: UITableViewController {
     private(set) lazy var searchBar = {
         let bar = UISearchBar()
@@ -21,11 +26,6 @@ final class PhotoSearchViewController: UITableViewController {
     }()
     
     private var searchTerm = ""
-    
-    struct ErrorMessage: Equatable {
-        let title: String
-        let message: String
-    }
     
     private let loadPhotos: (String) -> Void
     private let showError: (ErrorMessage) -> Void
