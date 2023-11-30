@@ -1,5 +1,5 @@
 //
-//  UIView+Shimmering.swift
+//  ShimmeringView.swift
 //  PhotoSearchApp
 //
 //  Created by Tsz-Lung on 19/07/2023.
@@ -7,13 +7,22 @@
 
 import UIKit
 
-extension UIView {
+final class ShimmeringView: UIView {
     public var isShimmering: Bool {
         set { newValue ? startShimmering() : stopShimmering() }
         get { layer.mask?.animation(forKey: shimmerAnimationKey) != nil }
     }
     
-    private var shimmerAnimationKey: String { "shimmer" }
+    private let shimmerAnimationKey = "shimmer"
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if isShimmering {
+            stopShimmering()
+            startShimmering()
+        }
+    }
     
     private func startShimmering() {
         let white = UIColor.white.cgColor

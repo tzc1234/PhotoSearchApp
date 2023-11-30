@@ -7,7 +7,13 @@
 
 import UIKit
 
+extension UITableViewCell {
+    static var identifier: String { String(describing: Self.self) }
+}
+
 final class PhotoCell: UITableViewCell {
+    static var cellHeight: CGFloat { UIScreen.main.bounds.width * 0.56 }
+    
     private lazy var shadowBackgroundView = {
         let v = UIView()
         v.backgroundColor = .systemBackground
@@ -21,11 +27,11 @@ final class PhotoCell: UITableViewCell {
     }()
     
     private(set) lazy var containerView = {
-        let v = UIView()
-        v.backgroundColor = .systemGray5
+        let v = ShimmeringView()
+        v.backgroundColor = .systemGray3
         v.layer.cornerRadius = 12
         v.layer.borderWidth = 1
-        v.layer.borderColor = UIColor.systemGray4.cgColor
+        v.layer.borderColor = UIColor.systemGray2.cgColor
         v.clipsToBounds = true
         v.translatesAutoresizingMaskIntoConstraints = false
         return v
@@ -50,11 +56,11 @@ final class PhotoCell: UITableViewCell {
         return bv
     }()
     private(set) lazy var titleLabel = {
-        let l = UILabel()
-        l.font = .preferredFont(forTextStyle: .caption1)
-        l.numberOfLines = 0
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
+        let lbl = UILabel()
+        lbl.font = .preferredFont(forTextStyle: .caption1)
+        lbl.numberOfLines = 0
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
     }()
     
     var onReuse: (() -> Void)?
@@ -103,22 +109,10 @@ final class PhotoCell: UITableViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
             titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -8)
         ])
-        
-        forceContentViewRenderingCorrectly()
-    }
-    
-    private func forceContentViewRenderingCorrectly() {
-        var frame = contentView.frame
-        frame.size.height = Self.cellHeight
-        contentView.frame = frame
-        contentView.layoutIfNeeded()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         onReuse?()
     }
-    
-    static var cellHeight: CGFloat { UIScreen.main.bounds.width * 0.5625 }
-    static var identifier: String { String(describing: Self.self) }
 }
