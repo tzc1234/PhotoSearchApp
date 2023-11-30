@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol PhotosErrorView: AnyObject {
+protocol PhotosErrorView {
     func display(_ viewModel: PhotosErrorViewModel)
 }
 
@@ -15,12 +15,15 @@ protocol PhotosView {
     func display(_ viewModel: PhotosViewModel)
 }
 
-protocol PhotosLoadingView: AnyObject {
+protocol PhotosLoadingView {
     func display(_ viewModel: PhotosLoadingViewModel)
 }
 
 final class PhotosPresenter: ResourcePresenter {
     typealias Resource = [Photo]
+    
+    static var errorTitle: String { "Oops!" }
+    static var errorMessage: String { "Network error occurred, please try again." }
     
     private let photosView: PhotosView
     private let loadingView: PhotosLoadingView
@@ -46,7 +49,4 @@ final class PhotosPresenter: ResourcePresenter {
         loadingView.display(PhotosLoadingViewModel(isLoading: false))
         errorView.display(PhotosErrorViewModel(title: Self.errorTitle, message: Self.errorMessage))
     }
-    
-    static var errorTitle: String { "Oops!" }
-    static var errorMessage: String { "Network error occurred, please try again." }
 }
