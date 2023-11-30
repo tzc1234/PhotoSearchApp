@@ -216,7 +216,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     // MARK: - Image View tests
     
-    func test_photoImageView_loadImageForPhotoWhenVisiable() {
+    func test_photoImageView_loadImageForPhotoWhenVisible() {
         let photo0 = makePhoto(id: "0")
         let photo1 = makePhoto(id: "1")
         let (sut, loader) = makeSUT()
@@ -228,14 +228,14 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         sut.simulatePhotoImageViewVisible(at: 0)
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect one image load once first image view is visiable")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect one image load once first image view is visible")
         
         sut.simulatePhotoImageViewVisible(at: 1)
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect two image load once second image view is visiable")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo1], "Expect two image load once second image view is visible")
     }
     
-    func test_photoImageView_cancelsImageLoadForPhotoWhenInvisiable() throws {
+    func test_photoImageView_cancelsImageLoadForPhotoWhenInvisible() throws {
         let photo0 = makePhoto(id: "0")
         let photo1 = makePhoto(id: "1")
         let (sut, loader) = makeSUT()
@@ -245,7 +245,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect one image load once first image view is visiable")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect one image load once first image view is visible")
         XCTAssertEqual(loader.cancelLoadImageCallCount, 0, "Expect no cancelled image load since no image views are invisible")
         
         sut.simulatePhotoImageViewInvisible(firstView, at: 0)
@@ -274,25 +274,25 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect a image load once first image view is visiable")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0], "Expect a image load once first image view is visible")
         
         sut.simulatePhotoImageViewInvisible(firstView, at: 0)
         sut.simulatePhotoImageViewBecomeVisibleAgain(firstView, at: 0)
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo0], "Expect a image reload once first image view becomes visiable again")
+        XCTAssertEqual(loader.loggedPhotosForLoadImage, [photo0, photo0], "Expect a image reload once first image view becomes visible again")
         
         let secondView = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 1))
         
         XCTAssertEqual(loader.loggedPhotosForLoadImage,
                        [photo0, photo0, photo1],
-                       "Expect a image load for second image view once second image view is visiable")
+                       "Expect a image load for second image view once second image view is visible")
         
         sut.simulatePhotoImageViewInvisible(secondView, at: 1)
         sut.simulatePhotoImageViewBecomeVisibleAgain(secondView, at: 1)
         
         XCTAssertEqual(loader.loggedPhotosForLoadImage,
                        [photo0, photo0, photo1, photo1],
-                       "Expect a image reload for second image view once second image view becomes visiable again")
+                       "Expect a image reload for second image view once second image view becomes visible again")
     }
     
     func test_photoImageView_rendersLoadedImage() throws {
@@ -304,13 +304,13 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let firstView = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
-        let imageData0 = UIImage.make(withColor: .red).pngData()!
+        let imageData0 = UIImage.makeData(withColor: .red)
         loader.completeImageLoad(with: imageData0, at: 0)
         
         XCTAssertEqual(firstView.renderedImage, imageData0, "Expect rendered image for first image view after first view image load successfully")
         
         let secondView = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
-        let imageData1 = UIImage.make(withColor: .green).pngData()!
+        let imageData1 = UIImage.makeData(withColor: .green)
         loader.completeImageLoad(with: imageData1, at: 1)
         
         XCTAssertEqual(firstView.renderedImage, imageData0, "Expect rendered image for first image no changes")
@@ -324,7 +324,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.completePhotosLoad(with: [makePhoto()], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
-        let invalidData = Data("invaliad data".utf8)
+        let invalidData = Data("invalid data".utf8)
         loader.completeImageLoad(with: invalidData, at: 0)
         
         XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after image load completed with invalid data")
@@ -354,16 +354,16 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
         
-        XCTAssertNil(view.renderedImage, "Expect no rendered image before image load complete when view is visiable")
+        XCTAssertNil(view.renderedImage, "Expect no rendered image before image load complete when view is visible")
         XCTAssertTrue(view.isShowingLoadingIndicator, "Expect a loading before image load completed")
         
         sut.simulatePhotoImageViewInvisible(view, at: 0)
         sut.simulatePhotoImageViewBecomeVisibleAgain(view, at: 0)
         
-        XCTAssertNil(view.renderedImage, "Expect no rendered image before image reload complete when view becomes visiable again")
+        XCTAssertNil(view.renderedImage, "Expect no rendered image before image reload complete when view becomes visible again")
         XCTAssertTrue(view.isShowingLoadingIndicator, "Expect a loading before image reload completed")
         
-        let imageData = UIImage.make(withColor: .red).pngData()!
+        let imageData = UIImage.makeData(withColor: .red)
         loader.completeImageLoad(with: imageData, at: 1)
         
         XCTAssertEqual(view.renderedImage, imageData, "Expect rendered image after image reload completed successfully")
@@ -392,12 +392,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0)) // image request at 0
         sut.simulatePhotoImageViewVisible(at: 1) // image request at 1
         
-        sut.simulatePhotoImageViewBecomeVisibleAgain(view, at: 1) // view reused at row 1 and become visiable again, image request at 2
-        view.prepareForReuse() // then view prepareForReuse
+        sut.simulatePhotoImageViewBecomeVisibleAgain(view, at: 1) // view reused at row 1 and become visible again, image request at 2
+        view.prepareForReuse()
         
-        let afterReusedImageData = UIImage.make(withColor: .red).pngData()!
+        let afterReusedImageData = UIImage.makeData(withColor: .red)
         loader.completeImageLoad(with: afterReusedImageData, at: 2) // complete the reused image request first
-        let previousImageData = UIImage.make(withColor: .gray).pngData()!
+        let previousImageData = UIImage.makeData(withColor: .gray)
         loader.completeImageLoad(with: previousImageData, at: 0) // then complete the previous image request
         
         XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image after view reused when image load completed successfully")
@@ -424,9 +424,10 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
                          file: StaticString = #filePath,
                          line: UInt = #line) -> (sut: PhotoSearchViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = PhotoSearchComposer.composeWith(loadPhotosPublisher: loader.loadPhotosPublisher,
-                                                  loadImagePublisher: loader.loadImagePublisher,
-                                                  showError: showError)
+        let sut = PhotoSearchComposer.composeWith(
+            loadPhotosPublisher: loader.loadPhotosPublisher,
+            loadImagePublisher: loader.loadImagePublisher,
+            showError: showError)
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
@@ -446,15 +447,16 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     private func assert(_ sut: PhotoSearchViewController, hasConfigureFor photo: Photo, at row: Int,
                         file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(sut.photoView(at: row)?.titleText,
-                       photo.title,
-                       "Expect title: \(photo.title) for row: \(row), got \(String(describing: sut.photoView(at: 0)?.titleText)) instead",
-                       file: file,
-                       line: line)
+        XCTAssertEqual(
+            sut.photoView(at: row)?.titleText,
+            photo.title,
+            "Expect title: \(photo.title) for row: \(row), got \(String(describing: sut.photoView(at: 0)?.titleText)) instead",
+            file: file,
+            line: line)
     }
     
     private func anyImageData() -> Data {
-        UIImage.make(withColor: .gray).pngData()!
+        UIImage.makeData(withColor: .gray)
     }
     
     private func anyTerm() -> String {
