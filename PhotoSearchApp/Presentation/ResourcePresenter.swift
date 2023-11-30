@@ -11,6 +11,6 @@ protocol ResourcePresenter {
     associatedtype Resource
     
     func didStartLoading()
-    func didFinishLoading(with error: Error)
+    func didFinishLoadingWithError()
     func didFinishLoading(with resource: Resource)
 }

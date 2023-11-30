@@ -42,7 +42,7 @@ final class PhotoImagePresenter<View: PhotoImageView, Image>: ResourcePresenter 
         view.display(PhotoImageViewModel(title: title, image: imageConverter(resource)))
     }
     
-    func didFinishLoading(with error: Error) {
+    func didFinishLoadingWithError() {
         loadingView.display(PhotoImageLoadingViewModel(isLoading: false))
     }
 }

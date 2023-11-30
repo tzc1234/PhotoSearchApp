@@ -24,8 +24,8 @@ final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Re
         cancellable = publisher(input)
             .receive(on: DispatchQueue.immediateWhenOnMainQueueScheduler)
             .sink(receiveCompletion: { [weak self] completion in
-                if case let .failure(error) = completion {
-                    self?.presenter?.didFinishLoading(with: error)
+                if case .failure = completion {
+                    self?.presenter?.didFinishLoadingWithError()
                 }
             }, receiveValue: { [weak self] resource in
                 self?.presenter?.didFinishLoading(with: resource)

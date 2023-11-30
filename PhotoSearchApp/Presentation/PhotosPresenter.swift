@@ -45,7 +45,7 @@ final class PhotosPresenter: ResourcePresenter {
         photosView.display(PhotosViewModel(photos: resource))
     }
     
-    func didFinishLoading(with error: Error) {
+    func didFinishLoadingWithError() {
         loadingView.display(PhotosLoadingViewModel(isLoading: false))
         errorView.display(PhotosErrorViewModel(message: ErrorMessage(
             title: Self.errorTitle, 
