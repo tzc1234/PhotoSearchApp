@@ -8,18 +8,11 @@
 import Combine
 import Foundation
 
-protocol ResourcePresenter {
-    associatedtype Resource
-    
-    func didStartLoading()
-    func didFinishLoading(with error: Error)
-    func didFinishLoading(with resource: Resource)
-}
-
 final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Resource> where Presenter.Resource == Resource {
     private var cancellable: Cancellable?
-    private let publisher: (Input) -> AnyPublisher<Resource, Error>
     var presenter: Presenter?
+    
+    private let publisher: (Input) -> AnyPublisher<Resource, Error>
     
     init(publisher: @escaping (Input) -> AnyPublisher<Resource, Error>) {
         self.publisher = publisher

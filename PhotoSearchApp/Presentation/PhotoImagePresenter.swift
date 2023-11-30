@@ -9,6 +9,7 @@ import Foundation
 
 protocol PhotoImageView {
     associatedtype Image
+    
     func display(_ viewModel: PhotoImageViewModel<Image>)
 }
 
