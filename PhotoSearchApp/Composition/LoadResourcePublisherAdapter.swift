@@ -33,7 +33,7 @@ final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Re
     }
 }
 
-extension LoadResourcePublisherAdapter: ImageLoader where Input == Void {
+extension LoadResourcePublisherAdapter: PhotoCellControllerDelegate where Input == Void {
     func load() {
         load(())
     }

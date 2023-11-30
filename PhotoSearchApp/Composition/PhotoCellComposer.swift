@@ -14,11 +14,13 @@ enum PhotoCellComposer {
     static func composeWith(photoTitle: String,
                             loadImagePublisher: @escaping () -> AnyPublisher<Data, Error>) -> PhotoCellController {
         let adapter = LoadImagePublisherAdapter(publisher: loadImagePublisher)
-        let cellController = PhotoCellController(imageLoader: adapter)
-        adapter.presenter = PhotoImagePresenter(title: photoTitle,
-                                                view: WeakRefProxy(cellController),
-                                                loadingView: WeakRefProxy(cellController),
-                                                imageConverter: UIImage.init)
+        let cellController = PhotoCellController(delegate: adapter)
+        adapter.presenter = PhotoImagePresenter(
+            title: photoTitle,
+            view: WeakRefProxy(cellController),
+            loadingView: WeakRefProxy(cellController),
+            imageConverter: UIImage.init)
+        
         return cellController
     }
 }
