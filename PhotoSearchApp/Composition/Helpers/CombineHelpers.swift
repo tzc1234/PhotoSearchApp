@@ -9,11 +9,11 @@ import Combine
 import Foundation
 
 extension DispatchQueue {
-    static var immediateWhenOnMainQueueScheluder: ImmediateWhenOnMainQueueScheluder {
+    static var immediateWhenOnMainQueueScheduler: ImmediateWhenOnMainQueueScheduler {
         .shared
     }
     
-    struct ImmediateWhenOnMainQueueScheluder: Scheduler {
+    struct ImmediateWhenOnMainQueueScheduler: Scheduler {
         typealias SchedulerTimeType = DispatchQueue.SchedulerTimeType
         typealias SchedulerOptions = DispatchQueue.SchedulerOptions
 

@@ -29,7 +29,7 @@ final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Re
         presenter?.didStartLoading()
         
         cancellable = publisher(input)
-            .receive(on: DispatchQueue.immediateWhenOnMainQueueScheluder)
+            .receive(on: DispatchQueue.immediateWhenOnMainQueueScheduler)
             .sink(receiveCompletion: { [weak self] completion in
                 if case let .failure(error) = completion {
                     self?.presenter?.didFinishLoading(with: error)
