@@ -48,7 +48,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(loader.loadPhotosCallCount, 2, "Expect two photos loads after search photos")
         XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0], "Expect two search term logged after a search request")
-        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load because of the inital uncompleted request")
+        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load because of the initial uncompleted request")
         
         let searchTerm1 = "term 1"
         sut.simulateSearchPhotos(by: searchTerm1)
