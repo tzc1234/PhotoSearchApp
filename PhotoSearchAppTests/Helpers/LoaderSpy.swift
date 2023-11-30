@@ -46,17 +46,17 @@ class LoaderSpy {
     typealias LoadImagePublisher = PassthroughSubject<Data, Error>
     
     private var loadImageRequests = [(publisher: LoadImagePublisher, photo: Photo)]()
-    var loggedPhotosForLoadImage: [Photo] {
+    var loggedPhotosForLoadImageRequest: [Photo] {
         loadImageRequests.map(\.photo)
     }
     
-    private(set) var cancelLoadImageCallCount = 0
+    private(set) var loggedPhotosForCancelImageRequest = [Photo]()
     
     func loadImagePublisher(photo: Photo) -> AnyPublisher<Data, Error> {
         let publisher = LoadImagePublisher()
         loadImageRequests.append((publisher, photo))
         return publisher.handleEvents(receiveCancel: { [weak self] in
-            self?.cancelLoadImageCallCount += 1
+            self?.loggedPhotosForCancelImageRequest.append(photo)
         }).eraseToAnyPublisher()
     }
     
