@@ -41,6 +41,18 @@ extension PhotoSearchViewController {
         searchBar(searchBar, textDidChange: searchTerm)
     }
     
+    func simulateFocusOnSearchBar() {
+        searchBar.becomeFirstResponder()
+    }
+    
+    func simulateSearchBarSearchButtonClicked() {
+        searchBarSearchButtonClicked(searchBar)
+    }
+    
+    var isFocusingOnSearchBar: Bool {
+        searchBar.isFirstResponder
+    }
+    
     var isShowingLoadingIndicator: Bool {
         refreshControl?.isRefreshing == true
     }

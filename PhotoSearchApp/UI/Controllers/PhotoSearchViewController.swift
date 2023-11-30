@@ -93,6 +93,10 @@ extension PhotoSearchViewController: UISearchBarDelegate {
         searchTerm = searchText
         loadPhotos(searchTerm)
     }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.endEditing(true)
+    }
 }
 
 extension PhotoSearchViewController: PhotosErrorView {

@@ -55,7 +55,21 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(loader.loadPhotosCallCount, 3, "Expect three photos loads after search photos again")
         XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0, searchTerm1], "Expect three search terms logged after more a search request")
-        XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of more an uncompleted search request")
+        XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of one more uncompleted search request")
+    }
+    
+    func test_photoSearching_unfocusesSearchBarAfterUserFinishedSearch() {
+        let (sut, _) = makeSUT()
+        let window = UIWindow()
+        window.addSubview(sut.searchBar)
+        sut.simulateAppearance()
+        sut.simulateFocusOnSearchBar()
+        
+        XCTAssertTrue(sut.isFocusingOnSearchBar, "Expect focusing on search bar after user focused on it")
+        
+        sut.simulateSearchBarSearchButtonClicked()
+        
+        XCTAssertFalse(sut.isFocusingOnSearchBar, "Expect not focusing on search bar after user unfocused on it")
     }
     
     func test_loadingIndicator_showsBeforePhotosLoadedCompletedWithError() {
