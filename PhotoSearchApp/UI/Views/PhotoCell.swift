@@ -7,10 +7,6 @@
 
 import UIKit
 
-extension UITableViewCell {
-    static var identifier: String { String(describing: Self.self) }
-}
-
 final class PhotoCell: UITableViewCell {
     static var cellHeight: CGFloat { UIScreen.main.bounds.width * 0.56 }
     
