@@ -26,6 +26,7 @@ final class PhotoSearchViewController: UITableViewController {
     }()
     
     private var searchTerm = ""
+    private var onViewIsAppearing: (() -> Void)?
     
     private let loadPhotos: (String) -> Void
     private let showError: (ErrorMessage) -> Void
@@ -40,10 +41,14 @@ final class PhotoSearchViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationItem.titleView = searchBar
         configureTableView()
         setupRefreshControl()
-        loadPhotos(searchTerm)
+        onViewIsAppearing = { [weak self, searchTerm] in
+            self?.loadPhotos(searchTerm)
+            self?.onViewIsAppearing = nil
+        }
     }
     
     private func configureTableView() {
@@ -56,6 +61,12 @@ final class PhotoSearchViewController: UITableViewController {
     private func setupRefreshControl() {
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(reloadPhotos), for: .valueChanged)
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        
+        onViewIsAppearing?()
     }
     
     @objc private func reloadPhotos() {
