@@ -12,8 +12,8 @@
 5. XCTest
 
 ## Techniques
-1. Follow SOLID principles (MUST!)
-2. Adopt TDD, >90% code coverage
+1. Follow SOLID principles
+2. Adopt TDD
 3. Use of dependency injection
 4. Refactor from MVC to MVP, safeguard by tests
 5. "Glue" the components by Combine in the composition root
