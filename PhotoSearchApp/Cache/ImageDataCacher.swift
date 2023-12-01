@@ -23,4 +23,8 @@ final class ImageDataCacher {
             completion(result)
         }
     }
+    
+    func loadData(for id: String) {
+        store.retrieveData(for: id)
+    }
 }

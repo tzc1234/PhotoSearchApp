@@ -11,6 +11,7 @@ import Foundation
 final class ImageDataStoreSpy: ImageDataStore {
     enum Message: Equatable {
         case insert(Data, for: String)
+        case retrieveData(for: String)
     }
     
     private(set) var messages = [Message]()
@@ -27,5 +28,9 @@ final class ImageDataStoreSpy: ImageDataStore {
     
     func completeInsertionSuccessfully(at index: Int = 0) {
         completions[index](.success(()))
+    }
+    
+    func retrieveData(for key: String) {
+        messages.append(.retrieveData(for: key))
     }
 }

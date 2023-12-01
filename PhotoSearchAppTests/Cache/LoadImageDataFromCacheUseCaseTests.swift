@@ -15,6 +15,15 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         XCTAssertTrue(store.messages.isEmpty)
     }
     
+    func test_loadData_requestsCachedDataForId() {
+        let (sut, store) = makeSUT()
+        let id = "image id"
+        
+        sut.loadData(for: id)
+        
+        XCTAssertEqual(store.messages, [.retrieveData(for: id)])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: ImageDataStoreSpy) {
