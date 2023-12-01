@@ -39,35 +39,17 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     func test_saveData_deliversErrorOnStoreError() {
         let (sut, store) = makeSUT()
         
-        let exp = expectation(description: "Wait for completion")
-        sut.save(data: anyData(), for: anyId()) { result in
-            switch result {
-            case let .failure(error):
-                XCTAssertNotNil(error)
-            default:
-                XCTFail("Should be failure")
-            }
-            exp.fulfill()
-        }
-        store.completeWithError()
-        wait(for: [exp], timeout: 1)
+        expect(sut, completeWith: failureWithAnyError(), when: {
+            store.completeWithError()
+        })
     }
     
     func test_saveData_deliversNoErrorOnCachingSuccessfully() {
         let (sut, store) = makeSUT()
         
-        let exp = expectation(description: "Wait for completion")
-        sut.save(data: anyData(), for: anyId()) { result in
-            switch result {
-            case .success:
-                break
-            default:
-                XCTFail("Should be success")
-            }
-            exp.fulfill()
-        }
-        store.completeWithNoData()
-        wait(for: [exp], timeout: 1)
+        expect(sut, completeWith: .success(()), when: {
+            store.completeSuccessfully()
+        })
     }
     
     // MARK: - Helpers
@@ -78,6 +60,29 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, store)
+    }
+    
+    private func expect(_ sut: ImageDataCacher,
+                        completeWith expectedResult: Result<Void, Error>,
+                        when action: () -> Void,
+                        file: StaticString = #filePath,
+                        line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        sut.save(data: anyData(), for: anyId()) { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case (.success, .success), (.failure, .failure):
+                break
+            default:
+                XCTFail("Expect \(expectedResult), got \(receivedResult), instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        action()
+        wait(for: [exp], timeout: 1)
+    }
+    
+    private func failureWithAnyError() -> Result<Void, Error> {
+        .failure(anyNSError())
     }
     
     private func anyId() -> String {
@@ -101,7 +106,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
             completions[index](.failure(anyNSError()))
         }
         
-        func completeWithNoData(at index: Int = 0) {
+        func completeSuccessfully(at index: Int = 0) {
             completions[index](.success(()))
         }
     }
