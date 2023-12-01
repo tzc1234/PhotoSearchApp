@@ -40,6 +40,15 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_loadData_deliversCachedDataWhenCachedDataFoundInStore() {
+        let (sut, store) = makeSUT()
+        let cachedData = Data("cached data".utf8)
+        
+        expect(sut, completeWith: .success(cachedData), when: {
+            store.completeRetrieval(with: cachedData)
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: ImageDataStoreSpy) {
