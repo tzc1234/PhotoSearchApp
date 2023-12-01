@@ -49,6 +49,19 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_saveData_doesNotDeliverResultWhenSUTIsDeallocated() {
+        let store = ImageDataStoreSpy()
+        var sut: ImageDataCacher? = ImageDataCacher(store: store)
+        
+        var loggedResults = [ImageDataCacher.LoadResult]()
+        sut?.loadData(for: anyId()) { loggedResults.append($0) }
+        
+        sut = nil
+        store.completeRetrieval(with: anyData())
+        
+        XCTAssertTrue(loggedResults.isEmpty)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: ImageDataStoreSpy) {
