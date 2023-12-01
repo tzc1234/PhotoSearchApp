@@ -15,7 +15,11 @@ final class ImageDataCacher {
     }
     
     func save(data: Data, for id: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        store.insert(data: data, for: id, completion: completion)
+        store.insert(data: data, for: id) { [weak self] result in
+            guard self != nil else { return }
+            
+            completion(result)
+        }
     }
 }
 
@@ -50,6 +54,19 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         expect(sut, completeWith: .success(()), when: {
             store.completeSuccessfully()
         })
+    }
+    
+    func test_saveData_doesNotDeliverResultWhenSUTIsDeallocated() {
+        let store = StoreSpy()
+        var sut: ImageDataCacher? = ImageDataCacher(store: store)
+        
+        var loggedResults = [Result<Void, Error>]()
+        sut?.save(data: anyData(), for: anyId()) { loggedResults.append($0) }
+        
+        sut = nil
+        store.completeSuccessfully()
+        
+        XCTAssertTrue(loggedResults.isEmpty)
     }
     
     // MARK: - Helpers
