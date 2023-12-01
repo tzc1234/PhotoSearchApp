@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ImageDataCacherLoadingTask {
+protocol ImageDataCacherTask {
     func cancel()
 }
 
@@ -30,7 +30,7 @@ final class ImageDataCacher {
     
     typealias LoadResult = Result<Data?, Error>
     
-    private class TaskWrapper: ImageDataCacherLoadingTask {
+    private class TaskWrapper: ImageDataCacherTask {
         private var completion: ((LoadResult) -> Void)?
         
         init(_ completion: (@escaping (LoadResult) -> Void)) {
@@ -46,7 +46,7 @@ final class ImageDataCacher {
         }
     }
     
-    func loadData(for id: String, completion: @escaping (LoadResult) -> Void) -> ImageDataCacherLoadingTask {
+    func loadData(for id: String, completion: @escaping (LoadResult) -> Void) -> ImageDataCacherTask {
         let task = TaskWrapper(completion)
         store.retrieveData(for: id) { [weak self] result in
             guard self != nil else { return }
