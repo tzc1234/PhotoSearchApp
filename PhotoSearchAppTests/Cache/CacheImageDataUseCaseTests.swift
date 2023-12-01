@@ -14,9 +14,8 @@ final class ImageDataCacher {
         self.store = store
     }
     
-    func save(data: Data, for id: String, completion: @escaping (Result<Data?, Error>) -> Void) {
-        store.insert(data: data, for: id) { _ in }
-        completion(.failure(anyNSError()))
+    func save(data: Data, for id: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        store.insert(data: data, for: id, completion: completion)
     }
 }
 
@@ -54,6 +53,23 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
+    func test_saveData_deliversNoErrorOnCachingSuccessfully() {
+        let (sut, store) = makeSUT()
+        
+        let exp = expectation(description: "Wait for completion")
+        sut.save(data: anyData(), for: anyId()) { result in
+            switch result {
+            case .success:
+                break
+            default:
+                XCTFail("Should be success")
+            }
+            exp.fulfill()
+        }
+        store.completeWithNoData()
+        wait(for: [exp], timeout: 1)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: StoreSpy) {
@@ -74,15 +90,19 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         }
         
         private(set) var messages = [Message]()
-        private var completions = [(Result<Data?, Error>) -> Void]()
+        private var completions = [(Result<Void, Error>) -> Void]()
         
-        func insert(data: Data, for key: String, completion: @escaping (Result<Data?, Error>) -> Void) {
+        func insert(data: Data, for key: String, completion: @escaping (Result<Void, Error>) -> Void) {
             messages.append(.insert(data, for: key))
             completions.append(completion)
         }
         
         func completeWithError(at index: Int = 0) {
             completions[index](.failure(anyNSError()))
+        }
+        
+        func completeWithNoData(at index: Int = 0) {
+            completions[index](.success(()))
         }
     }
 }
