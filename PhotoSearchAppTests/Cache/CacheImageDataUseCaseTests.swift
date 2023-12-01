@@ -42,7 +42,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     }
     
     func test_saveData_doesNotDeliverResultWhenSUTIsDeallocated() {
-        let store = StoreSpy()
+        let store = ImageDataStoreSpy()
         var sut: ImageDataCacher? = ImageDataCacher(store: store)
         
         var loggedResults = [Result<Void, Error>]()
@@ -56,8 +56,8 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: StoreSpy) {
-        let store = StoreSpy()
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: ImageDataStoreSpy) {
+        let store = ImageDataStoreSpy()
         let sut = ImageDataCacher(store: store)
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
@@ -89,27 +89,5 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     
     private func anyId() -> String {
         "any id"
-    }
-    
-    final class StoreSpy: ImageDataStore {
-        enum Message: Equatable {
-            case insert(Data, for: String)
-        }
-        
-        private(set) var messages = [Message]()
-        private var completions = [(Result<Void, Error>) -> Void]()
-        
-        func insert(data: Data, for key: String, completion: @escaping (Result<Void, Error>) -> Void) {
-            messages.append(.insert(data, for: key))
-            completions.append(completion)
-        }
-        
-        func completeWithError(at index: Int = 0) {
-            completions[index](.failure(anyNSError()))
-        }
-        
-        func completeSuccessfully(at index: Int = 0) {
-            completions[index](.success(()))
-        }
     }
 }
