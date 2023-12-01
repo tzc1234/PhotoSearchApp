@@ -7,6 +7,10 @@
 
 import Foundation
 
+protocol ImageDataCacherLoadingTask {
+    func cancel()
+}
+
 final class ImageDataCacher {
     private let store: ImageDataStore
     
@@ -26,11 +30,29 @@ final class ImageDataCacher {
     
     typealias LoadResult = Result<Data?, Error>
     
-    func loadData(for id: String, completion: @escaping (LoadResult) -> Void) {
+    private class TaskWrapper: ImageDataCacherLoadingTask {
+        private var completion: ((LoadResult) -> Void)?
+        
+        init(_ completion: (@escaping (LoadResult) -> Void)) {
+            self.completion = completion
+        }
+        
+        func complete(with result: LoadResult) {
+            completion?(result)
+        }
+        
+        func cancel() {
+            completion = nil
+        }
+    }
+    
+    func loadData(for id: String, completion: @escaping (LoadResult) -> Void) -> ImageDataCacherLoadingTask {
+        let task = TaskWrapper(completion)
         store.retrieveData(for: id) { [weak self] result in
             guard self != nil else { return }
             
-            completion(result)
+            task.complete(with: result)
         }
+        return task
     }
 }

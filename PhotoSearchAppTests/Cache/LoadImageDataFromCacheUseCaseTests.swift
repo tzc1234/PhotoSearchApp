@@ -19,7 +19,7 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         let id = "image id"
         
-        sut.loadData(for: id) { _ in }
+        _ = sut.loadData(for: id) { _ in }
         
         XCTAssertEqual(store.messages, [.retrieveData(for: id)])
     }
@@ -49,12 +49,26 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_loadData_doesNotDeliverResultAfterCancellingLoadDataTask() {
+        let (sut, store) = makeSUT()
+        
+        var loggedResults = [ImageDataCacher.LoadResult]()
+        let task = sut.loadData(for: anyId()) { loggedResults.append($0) }
+        
+        task.cancel()
+        store.completeRetrieval(with: anyData())
+        store.completeRetrievalWithNoData()
+        store.completeRetrievalWithError()
+        
+        XCTAssertTrue(loggedResults.isEmpty)
+    }
+    
     func test_saveData_doesNotDeliverResultWhenSUTIsDeallocated() {
         let store = ImageDataStoreSpy()
         var sut: ImageDataCacher? = ImageDataCacher(store: store)
         
         var loggedResults = [ImageDataCacher.LoadResult]()
-        sut?.loadData(for: anyId()) { loggedResults.append($0) }
+        _ = sut?.loadData(for: anyId()) { loggedResults.append($0) }
         
         sut = nil
         store.completeRetrieval(with: anyData())
@@ -78,7 +92,7 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
                         file: StaticString = #filePath,
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for completion")
-        sut.loadData(for: anyId()) { receivedResult in
+        _ = sut.loadData(for: anyId()) { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.success(receivedData), .success(expectedData)):
                 XCTAssertEqual(receivedData, expectedData, file: file, line: line)
