@@ -51,6 +51,17 @@ final class NSCacheDataStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(cachedData), for: key)
     }
     
+    func test_retrieveDataTwice_deliversCachedDataTwiceWithNoSideEffects() {
+        let sut = makeSUT()
+        let cachedData = anyData()
+        let key = anyKey()
+        
+        insert(cachedData, for: key, into: sut)
+        
+        expect(sut, toRetrieve: .success(cachedData), for: key)
+        expect(sut, toRetrieve: .success(cachedData), for: key)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> NSCacheDataStore {
