@@ -14,7 +14,9 @@ final class ImageDataCacher {
         self.store = store
     }
     
-    func save(data: Data, for id: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    typealias SaveResult = Result<Void, Error>
+    
+    func save(data: Data, for id: String, completion: @escaping (SaveResult) -> Void) {
         store.insert(data: data, for: id) { [weak self] result in
             guard self != nil else { return }
             

@@ -45,7 +45,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         let store = ImageDataStoreSpy()
         var sut: ImageDataCacher? = ImageDataCacher(store: store)
         
-        var loggedResults = [Result<Void, Error>]()
+        var loggedResults = [ImageDataCacher.SaveResult]()
         sut?.save(data: anyData(), for: anyId()) { loggedResults.append($0) }
         
         sut = nil
@@ -65,7 +65,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     }
     
     private func expect(_ sut: ImageDataCacher,
-                        completeWith expectedResult: Result<Void, Error>,
+                        completeWith expectedResult: ImageDataCacher.SaveResult,
                         when action: () -> Void,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
@@ -83,7 +83,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
-    private func failureWithAnyError() -> Result<Void, Error> {
+    private func failureWithAnyError() -> ImageDataCacher.SaveResult {
         .failure(anyNSError())
     }
     
