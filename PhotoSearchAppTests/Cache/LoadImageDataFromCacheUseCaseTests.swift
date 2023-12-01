@@ -32,6 +32,14 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_loadData_deliversNoDataWhenNoCachedData() {
+        let (sut, store) = makeSUT()
+        
+        expect(sut, completeWith: .success(nil), when: {
+            store.completeRetrievalWithNoData()
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: ImageDataCacher, store: ImageDataStoreSpy) {
@@ -50,6 +58,8 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         let exp = expectation(description: "Wait for completion")
         sut.loadData(for: anyId()) { receivedResult in
             switch (receivedResult, expectedResult) {
+            case let (.success(receivedData), .success(expectedData)):
+                XCTAssertEqual(receivedData, expectedData, file: file, line: line)
             case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
             default:

@@ -39,4 +39,8 @@ final class ImageDataStoreSpy: ImageDataStore {
     func completeRetrievalWithError(at index: Int = 0) {
         retrievalCompletions[index](.failure(anyNSError()))
     }
+    
+    func completeRetrievalWithNoData(at index: Int = 0) {
+        retrievalCompletions[index](.success(nil))
+    }
 }

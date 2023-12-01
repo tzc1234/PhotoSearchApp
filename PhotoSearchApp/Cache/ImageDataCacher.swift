@@ -24,7 +24,7 @@ final class ImageDataCacher {
         }
     }
     
-    typealias LoadResult = Result<Any, Error>
+    typealias LoadResult = Result<Data?, Error>
     
     func loadData(for id: String, completion: @escaping (LoadResult) -> Void) {
         store.retrieveData(for: id, completion: completion)

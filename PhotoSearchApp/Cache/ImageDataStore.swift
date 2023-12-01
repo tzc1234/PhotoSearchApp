@@ -9,7 +9,7 @@ import Foundation
 
 protocol ImageDataStore {
     typealias InsertResult = Result<Void, Error>
-    typealias RetrieveResult = Result<Any, Error>
+    typealias RetrieveResult = Result<Data?, Error>
     
     func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void)
     func retrieveData(for key: String, completion: @escaping (RetrieveResult) -> Void)
