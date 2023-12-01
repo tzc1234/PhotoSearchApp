@@ -7,10 +7,14 @@
 
 import XCTest
 
+protocol ImageDataStore {
+    func insert(data: Data, for key: String, completion: @escaping (Result<Void, Error>) -> Void)
+}
+
 final class ImageDataCacher {
-    private let store: CacheImageDataUseCaseTests.StoreSpy
+    private let store: ImageDataStore
     
-    init(store: CacheImageDataUseCaseTests.StoreSpy) {
+    init(store: ImageDataStore) {
         self.store = store
     }
     
@@ -106,7 +110,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         "any id"
     }
     
-    final class StoreSpy {
+    final class StoreSpy: ImageDataStore {
         enum Message: Equatable {
             case insert(Data, for: String)
         }
