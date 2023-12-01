@@ -29,7 +29,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         
         expect(sut, completeWith: failureWithAnyError(), when: {
-            store.completeWithError()
+            store.completeInsertionWithError()
         })
     }
     
@@ -37,7 +37,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         
         expect(sut, completeWith: .success(()), when: {
-            store.completeSuccessfully()
+            store.completeInsertionSuccessfully()
         })
     }
     
@@ -49,7 +49,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         sut?.save(anyData(), for: anyId()) { loggedResults.append($0) }
         
         sut = nil
-        store.completeSuccessfully()
+        store.completeInsertionSuccessfully()
         
         XCTAssertTrue(loggedResults.isEmpty)
     }

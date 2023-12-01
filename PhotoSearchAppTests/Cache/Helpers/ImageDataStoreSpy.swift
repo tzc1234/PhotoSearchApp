@@ -21,11 +21,11 @@ final class ImageDataStoreSpy: ImageDataStore {
         completions.append(completion)
     }
     
-    func completeWithError(at index: Int = 0) {
+    func completeInsertionWithError(at index: Int = 0) {
         completions[index](.failure(anyNSError()))
     }
     
-    func completeSuccessfully(at index: Int = 0) {
+    func completeInsertionSuccessfully(at index: Int = 0) {
         completions[index](.success(()))
     }
 }
