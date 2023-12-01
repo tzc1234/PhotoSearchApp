@@ -62,6 +62,18 @@ final class NSCacheDataStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(cachedData), for: key)
     }
     
+    func test_insertData_overridesPreviousCachedData() {
+        let sut = makeSUT()
+        let firstCachedData = Data("first".utf8)
+        let lastCachedData = Data("last".utf8)
+        let key = anyKey()
+        
+        insert(firstCachedData, for: key, into: sut)
+        insert(lastCachedData, for: key, into: sut)
+        
+        expect(sut, toRetrieve: .success(lastCachedData), for: key)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> NSCacheDataStore {
