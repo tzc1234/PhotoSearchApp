@@ -10,5 +10,5 @@ import Foundation
 protocol ImageDataStore {
     typealias InsertResult = Result<Void, Error>
     
-    func insert(data: Data, for key: String, completion: @escaping (InsertResult) -> Void)
+    func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void)
 }

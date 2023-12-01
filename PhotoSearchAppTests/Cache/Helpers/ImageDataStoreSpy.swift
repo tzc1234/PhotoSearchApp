@@ -16,7 +16,7 @@ final class ImageDataStoreSpy: ImageDataStore {
     private(set) var messages = [Message]()
     private var completions = [(InsertResult) -> Void]()
     
-    func insert(data: Data, for key: String, completion: @escaping (InsertResult) -> Void) {
+    func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void) {
         messages.append(.insert(data, for: key))
         completions.append(completion)
     }
