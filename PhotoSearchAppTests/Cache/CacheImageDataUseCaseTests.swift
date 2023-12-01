@@ -6,26 +6,7 @@
 //
 
 import XCTest
-
-protocol ImageDataStore {
-    func insert(data: Data, for key: String, completion: @escaping (Result<Void, Error>) -> Void)
-}
-
-final class ImageDataCacher {
-    private let store: ImageDataStore
-    
-    init(store: ImageDataStore) {
-        self.store = store
-    }
-    
-    func save(data: Data, for id: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        store.insert(data: data, for: id) { [weak self] result in
-            guard self != nil else { return }
-            
-            completion(result)
-        }
-    }
-}
+@testable import PhotoSearchApp
 
 final class CacheImageDataUseCaseTests: XCTestCase {
     func test_init_doesNotMessageStoreUponCreation() {
