@@ -30,7 +30,7 @@ final class NSCacheDataStoreTests: XCTestCase {
         
         insert(cachedData, for: key, into: sut)
         
-        expect(sut, toRetrieve: .success(cachedData), for: key)
+        expect(sut, toRetrieve: cachedData, for: key)
     }
     
     func test_retrieveDataTwice_deliversCachedDataTwiceWithNoSideEffects() {
@@ -40,8 +40,8 @@ final class NSCacheDataStoreTests: XCTestCase {
         
         insert(cachedData, for: key, into: sut)
         
-        expect(sut, toRetrieve: .success(cachedData), for: key)
-        expect(sut, toRetrieve: .success(cachedData), for: key)
+        expect(sut, toRetrieve: cachedData, for: key)
+        expect(sut, toRetrieve: cachedData, for: key)
     }
     
     func test_insertData_overridesPreviousCachedData() {
@@ -53,7 +53,7 @@ final class NSCacheDataStoreTests: XCTestCase {
         insert(firstCachedData, for: key, into: sut)
         insert(lastCachedData, for: key, into: sut)
         
-        expect(sut, toRetrieve: .success(lastCachedData), for: key)
+        expect(sut, toRetrieve: lastCachedData, for: key)
     }
     
     func test_operations_runsSerially() {
@@ -98,27 +98,25 @@ final class NSCacheDataStoreTests: XCTestCase {
     }
     
     private func expect(_ sut: NSCacheDataStore,
-                        toRetrieve expectedResult: ImageDataStore.RetrieveResult,
+                        toRetrieve expectedData: Data?,
                         for key: String,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval completion")
-        sut.retrieveData(for: key) { receivedResult in
-            switch (receivedResult, expectedResult) {
-            case let (.success(receivedData), .success(expectedData)):
-                XCTAssertEqual(receivedData, expectedData, file: file, line: line)
-            case (.failure, .failure):
-                break
-            default:
-                XCTFail("Expect \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+        sut.retrieveData(for: key) { result in
+            switch result {
+            case let .success(data):
+                XCTAssertEqual(data, expectedData, file: file, line: line)
+            case let .failure(error):
+                XCTFail("Expect \(String(describing: expectedData)), got \(error) instead", file: file, line: line)
             }
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1)
     }
     
-    private func noData() -> ImageDataStore.RetrieveResult {
-        .success(nil)
+    private func noData() -> Data? {
+        nil
     }
     
     private func anyKey() -> String {
