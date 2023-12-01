@@ -15,22 +15,28 @@ final class ImageDataStoreSpy: ImageDataStore {
     }
     
     private(set) var messages = [Message]()
-    private var completions = [(InsertResult) -> Void]()
+    private var insertionCompletions = [(InsertResult) -> Void]()
+    private var retrievalCompletions = [(RetrieveResult) -> Void]()
     
     func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void) {
         messages.append(.insert(data, for: key))
-        completions.append(completion)
+        insertionCompletions.append(completion)
     }
     
     func completeInsertionWithError(at index: Int = 0) {
-        completions[index](.failure(anyNSError()))
+        insertionCompletions[index](.failure(anyNSError()))
     }
     
     func completeInsertionSuccessfully(at index: Int = 0) {
-        completions[index](.success(()))
+        insertionCompletions[index](.success(()))
     }
     
-    func retrieveData(for key: String) {
+    func retrieveData(for key: String, completion: @escaping (RetrieveResult) -> Void) {
         messages.append(.retrieveData(for: key))
+        retrievalCompletions.append(completion)
+    }
+    
+    func completeRetrievalWithError(at index: Int = 0) {
+        retrievalCompletions[index](.failure(anyNSError()))
     }
 }

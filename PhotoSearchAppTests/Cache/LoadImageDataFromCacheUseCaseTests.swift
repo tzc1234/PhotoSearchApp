@@ -19,9 +19,17 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         let id = "image id"
         
-        sut.loadData(for: id)
+        sut.loadData(for: id) { _ in }
         
         XCTAssertEqual(store.messages, [.retrieveData(for: id)])
+    }
+    
+    func test_loadData_deliversErrorOnStoreError() {
+        let (sut, store) = makeSUT()
+        
+        expect(sut, completeWith: failureWithAnyError(), when: {
+            store.completeRetrievalWithError()
+        })
     }
     
     // MARK: - Helpers
@@ -32,5 +40,32 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, store)
+    }
+    
+    private func expect(_ sut: ImageDataCacher,
+                        completeWith expectedResult: ImageDataCacher.LoadResult,
+                        when action: () -> Void,
+                        file: StaticString = #filePath,
+                        line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        sut.loadData(for: anyId()) { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+            default:
+                XCTFail("Expect \(expectedResult), got \(receivedResult)", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        action()
+        wait(for: [exp], timeout: 1)
+    }
+    
+    private func failureWithAnyError() -> ImageDataCacher.LoadResult {
+        .failure(anyNSError())
+    }
+    
+    private func anyId() -> String {
+        "any id"
     }
 }
