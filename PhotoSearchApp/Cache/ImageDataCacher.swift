@@ -17,7 +17,9 @@ final class ImageDataCacher {
     init(store: ImageDataStore) {
         self.store = store
     }
-    
+}
+
+extension ImageDataCacher {
     typealias SaveResult = Result<Void, Error>
     
     func save(_ data: Data, for id: String, completion: @escaping (SaveResult) -> Void) {
@@ -27,7 +29,9 @@ final class ImageDataCacher {
             completion(result)
         }
     }
-    
+}
+
+extension ImageDataCacher {
     typealias LoadResult = Result<Data?, Error>
     
     private class TaskWrapper: ImageDataCacherTask {
