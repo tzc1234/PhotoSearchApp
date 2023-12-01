@@ -11,6 +11,6 @@ protocol ImageDataStore {
     typealias InsertResult = Result<Void, Error>
     typealias RetrieveResult = Result<Data?, Error>
     
-    func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void)
-    func retrieveData(for key: String, completion: @escaping (RetrieveResult) -> Void)
+    func insert(_ data: Data, for url: URL, completion: @escaping (InsertResult) -> Void)
+    func retrieveData(for url: URL, completion: @escaping (RetrieveResult) -> Void)
 }

@@ -12,7 +12,6 @@
 		BE1A2C512B1A1A75002974D7 /* ImageDataCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1A2C502B1A1A75002974D7 /* ImageDataCacher.swift */; };
 		BE1A2C542B1A1AE4002974D7 /* ImageDataStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1A2C532B1A1AE4002974D7 /* ImageDataStoreSpy.swift */; };
 		BE1A2C562B1A25D3002974D7 /* LoadImageDataFromCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1A2C552B1A25D3002974D7 /* LoadImageDataFromCacheUseCaseTests.swift */; };
-		BE1A2C582B1A32D1002974D7 /* CacheTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1A2C572B1A32D1002974D7 /* CacheTestHelpers.swift */; };
 		BE1A2C5A2B1A3D52002974D7 /* NSCacheDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1A2C592B1A3D52002974D7 /* NSCacheDataStoreTests.swift */; };
 		BE1A2C5C2B1A4AF4002974D7 /* NSCacheDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1A2C5B2B1A4AF4002974D7 /* NSCacheDataStore.swift */; };
 		BE4291732A6858FC00AE86D7 /* PhotoCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4291722A6858FC00AE86D7 /* PhotoCellController.swift */; };
@@ -80,7 +79,6 @@
 		BE1A2C502B1A1A75002974D7 /* ImageDataCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataCacher.swift; sourceTree = "<group>"; };
 		BE1A2C532B1A1AE4002974D7 /* ImageDataStoreSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataStoreSpy.swift; sourceTree = "<group>"; };
 		BE1A2C552B1A25D3002974D7 /* LoadImageDataFromCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageDataFromCacheUseCaseTests.swift; sourceTree = "<group>"; };
-		BE1A2C572B1A32D1002974D7 /* CacheTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTestHelpers.swift; sourceTree = "<group>"; };
 		BE1A2C592B1A3D52002974D7 /* NSCacheDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCacheDataStoreTests.swift; sourceTree = "<group>"; };
 		BE1A2C5B2B1A4AF4002974D7 /* NSCacheDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCacheDataStore.swift; sourceTree = "<group>"; };
 		BE4291722A6858FC00AE86D7 /* PhotoCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCellController.swift; sourceTree = "<group>"; };
@@ -179,7 +177,6 @@
 			isa = PBXGroup;
 			children = (
 				BE1A2C532B1A1AE4002974D7 /* ImageDataStoreSpy.swift */,
-				BE1A2C572B1A32D1002974D7 /* CacheTestHelpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -527,7 +524,6 @@
 				BE81ECDA2A6AED0A00E67DB8 /* URLProtocolStub.swift in Sources */,
 				BE1A2C4C2B19F6F8002974D7 /* CacheImageDataUseCaseTests.swift in Sources */,
 				BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
-				BE1A2C582B1A32D1002974D7 /* CacheTestHelpers.swift in Sources */,
 				BE70DF2D2A6C480700973366 /* PhotoImageResponseConverterTests.swift in Sources */,
 				BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */,
 				BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */,

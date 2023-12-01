@@ -17,11 +17,11 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
     
     func test_loadData_requestsCachedDataForId() {
         let (sut, store) = makeSUT()
-        let id = "image id"
+        let url = URL(string: "https://a-url.com")!
         
-        _ = sut.loadData(for: id) { _ in }
+        _ = sut.loadData(for: url) { _ in }
         
-        XCTAssertEqual(store.messages, [.retrieveData(for: id)])
+        XCTAssertEqual(store.messages, [.retrieveData(for: url)])
     }
     
     func test_loadData_deliversErrorOnStoreError() {
@@ -53,7 +53,7 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         
         var loggedResults = [ImageDataCacher.LoadResult]()
-        let task = sut.loadData(for: anyId()) { loggedResults.append($0) }
+        let task = sut.loadData(for: anyURL()) { loggedResults.append($0) }
         
         task.cancel()
         store.completeRetrieval(with: anyData())
@@ -68,7 +68,7 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         var sut: ImageDataCacher? = ImageDataCacher(store: store)
         
         var loggedResults = [ImageDataCacher.LoadResult]()
-        _ = sut?.loadData(for: anyId()) { loggedResults.append($0) }
+        _ = sut?.loadData(for: anyURL()) { loggedResults.append($0) }
         
         sut = nil
         store.completeRetrieval(with: anyData())
@@ -92,7 +92,7 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
                         file: StaticString = #filePath,
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for completion")
-        _ = sut.loadData(for: anyId()) { receivedResult in
+        _ = sut.loadData(for: anyURL()) { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.success(receivedData), .success(expectedData)):
                 XCTAssertEqual(receivedData, expectedData, file: file, line: line)

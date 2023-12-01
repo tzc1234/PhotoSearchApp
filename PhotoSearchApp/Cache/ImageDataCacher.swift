@@ -22,8 +22,8 @@ final class ImageDataCacher {
 extension ImageDataCacher {
     typealias SaveResult = Result<Void, Error>
     
-    func save(_ data: Data, for id: String, completion: @escaping (SaveResult) -> Void) {
-        store.insert(data, for: id) { [weak self] result in
+    func save(_ data: Data, for url: URL, completion: @escaping (SaveResult) -> Void) {
+        store.insert(data, for: url) { [weak self] result in
             guard self != nil else { return }
             
             completion(result)
@@ -50,9 +50,9 @@ extension ImageDataCacher {
         }
     }
     
-    func loadData(for id: String, completion: @escaping (LoadResult) -> Void) -> ImageDataCacherTask {
+    func loadData(for url: URL, completion: @escaping (LoadResult) -> Void) -> ImageDataCacherTask {
         let task = TaskWrapper(completion)
-        store.retrieveData(for: id) { [weak self] result in
+        store.retrieveData(for: url) { [weak self] result in
             guard self != nil else { return }
             
             task.complete(with: result)

@@ -10,16 +10,16 @@ import Foundation
 
 final class ImageDataStoreSpy: ImageDataStore {
     enum Message: Equatable {
-        case insert(Data, for: String)
-        case retrieveData(for: String)
+        case insert(Data, for: URL)
+        case retrieveData(for: URL)
     }
     
     private(set) var messages = [Message]()
     private var insertionCompletions = [(InsertResult) -> Void]()
     private var retrievalCompletions = [(RetrieveResult) -> Void]()
     
-    func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void) {
-        messages.append(.insert(data, for: key))
+    func insert(_ data: Data, for url: URL, completion: @escaping (InsertResult) -> Void) {
+        messages.append(.insert(data, for: url))
         insertionCompletions.append(completion)
     }
     
@@ -31,8 +31,8 @@ final class ImageDataStoreSpy: ImageDataStore {
         insertionCompletions[index](.success(()))
     }
     
-    func retrieveData(for key: String, completion: @escaping (RetrieveResult) -> Void) {
-        messages.append(.retrieveData(for: key))
+    func retrieveData(for url: URL, completion: @escaping (RetrieveResult) -> Void) {
+        messages.append(.retrieveData(for: url))
         retrievalCompletions.append(completion)
     }
     

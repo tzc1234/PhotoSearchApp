@@ -8,19 +8,19 @@
 import Foundation
 
 final class NSCacheDataStore: ImageDataStore {
-    private let cache: NSCache<NSString, NSData>
+    private let cache: NSCache<NSURL, NSData>
     
     init() {
-        self.cache = NSCache<NSString, NSData>()
+        self.cache = NSCache<NSURL, NSData>()
     }
     
-    func insert(_ data: Data, for key: String, completion: @escaping (InsertResult) -> Void) {
-        cache.setObject(data as NSData, forKey: key as NSString)
+    func insert(_ data: Data, for url: URL, completion: @escaping (InsertResult) -> Void) {
+        cache.setObject(data as NSData, forKey: url as NSURL)
         completion(.success(()))
     }
     
-    func retrieveData(for key: String, completion: @escaping (RetrieveResult) -> Void) {
-        let data = cache.object(forKey: key as NSString) as? Data
+    func retrieveData(for url: URL, completion: @escaping (RetrieveResult) -> Void) {
+        let data = cache.object(forKey: url as NSURL) as? Data
         completion(.success(data))
     }
 }

@@ -18,11 +18,11 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     func test_saveData_requestsStoreCachingWithDataAndId() {
         let (sut, store) = makeSUT()
         let data = Data("save data".utf8)
-        let id = "image id"
+        let url = URL(string: "https://a-url.com")!
         
-        sut.save(data, for: id) { _ in }
+        sut.save(data, for: url) { _ in }
         
-        XCTAssertEqual(store.messages, [.insert(data, for: id)])
+        XCTAssertEqual(store.messages, [.insert(data, for: url)])
     }
     
     func test_saveData_deliversErrorOnStoreError() {
@@ -46,7 +46,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
         var sut: ImageDataCacher? = ImageDataCacher(store: store)
         
         var loggedResults = [ImageDataCacher.SaveResult]()
-        sut?.save(anyData(), for: anyId()) { loggedResults.append($0) }
+        sut?.save(anyData(), for: anyURL()) { loggedResults.append($0) }
         
         sut = nil
         store.completeInsertionSuccessfully()
@@ -70,7 +70,7 @@ final class CacheImageDataUseCaseTests: XCTestCase {
                         file: StaticString = #filePath,
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for completion")
-        sut.save(anyData(), for: anyId()) { receivedResult in
+        sut.save(anyData(), for: anyURL()) { receivedResult in
             switch (receivedResult, expectedResult) {
             case (.success, .success), (.failure, .failure):
                 break
