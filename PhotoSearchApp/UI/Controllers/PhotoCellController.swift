@@ -48,16 +48,6 @@ final class PhotoCellController {
     }
 }
 
-extension PhotoCellController: Hashable {
-    static func == (lhs: PhotoCellController, rhs: PhotoCellController) -> Bool {
-        lhs === rhs
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-    }
-}
-
 extension PhotoCellController: PhotoImageView {
     func display(_ viewModel: PhotoImageViewModel<UIImage>) {
         cell?.titleLabel.text = viewModel.title
@@ -68,5 +58,15 @@ extension PhotoCellController: PhotoImageView {
 extension PhotoCellController: PhotoImageLoadingView {
     func display(_ viewModel: PhotoImageLoadingViewModel) {
         cell?.containerView.isShimmering = viewModel.isLoading
+    }
+}
+
+extension PhotoCellController: Hashable {
+    static func == (lhs: PhotoCellController, rhs: PhotoCellController) -> Bool {
+        lhs === rhs
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

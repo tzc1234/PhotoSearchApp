@@ -94,7 +94,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     }
     
     func test_loadingIndicator_showsBeforePhotosLoadedCompletedSuccessfully() {
-        let photos = [makePhoto(id: "0")]
+        let photos = [makePhoto()]
         let (sut, loader) = makeSUT()
         sut.simulateAppearance()
         
@@ -397,14 +397,18 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     
     func test_photoImageView_doesNotRenderImageFromPreviousImageLoadWhenItIsReused() throws {
         let (sut, loader) = makeSUT()
-        
         sut.simulateAppearance()
-        loader.completePhotosLoad(with: [makePhoto(id: "0"), makePhoto(id: "1")], at: 0)
+        let photo0 = makePhoto(id: "0", title: "title 0")
+        let photo1 = makePhoto(id: "1", title: "title 1")
+        loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0)) // image request at 0
-        sut.simulatePhotoImageViewVisible(at: 1) // image request at 1
+        XCTAssertEqual(view.titleText, photo0.title, "Expect view set the first photo title")
         
+        sut.simulatePhotoImageViewVisible(at: 1) // image request at 1
         sut.simulatePhotoImageViewBecomeVisibleAgain(view, at: 1) // view reused at row 1 and become visible again, image request at 2
+        XCTAssertEqual(view.titleText, photo1.title, "Expect view set the second photo title")
+        
         view.prepareForReuse()
         
         let afterReusedImageData = UIImage.makeData(withColor: .red)
@@ -413,6 +417,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.completeImageLoad(with: previousImageData, at: 0) // then complete the previous image request
         
         XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image after view reused when image load completed successfully")
+        XCTAssertEqual(view.titleText, photo1.title, "Expect view set the second photo title without changes")
     }
     
     func test_photoImageView_cancelImageRequestAfterViewDeallocated() {
