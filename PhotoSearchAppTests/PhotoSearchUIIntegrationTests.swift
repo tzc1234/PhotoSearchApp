@@ -37,7 +37,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect no changes because no more request uncompleted")
     }
     
-    func test_photosSearching_requestsPhotosWithSearchTermFromLoader() {
+    func test_photosSearching_requestsPhotosBySearchTermFromLoader() {
         let (sut, loader) = makeSUT()
         sut.simulateAppearance()
         
@@ -46,19 +46,17 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let searchTerm0 = "term 0"
         sut.simulateSearchPhotos(by: searchTerm0)
         
-        XCTAssertEqual(loader.loadPhotosCallCount, 2, "Expect two photos loads after search photos")
-        XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0], "Expect two search term logged after a search request")
+        XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0], "Expect two search terms logged after a search request")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load because of the initial uncompleted request")
         
         let searchTerm1 = "term 1"
         sut.simulateSearchPhotos(by: searchTerm1)
         
-        XCTAssertEqual(loader.loadPhotosCallCount, 3, "Expect three photos loads after search photos again")
-        XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0, searchTerm1], "Expect three search terms logged after more a search request")
+        XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0, searchTerm1], "Expect three search terms logged after more one search request")
         XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of one more uncompleted search request")
     }
     
-    func test_photoSearching_unfocusesSearchBarAfterUserFinishedSearch() {
+    func test_photoSearching_unfocusesSearchBarAfterUserFinishedSearching() {
         let (sut, _) = makeSUT()
         let window = UIWindow()
         window.addSubview(sut.searchBar)
