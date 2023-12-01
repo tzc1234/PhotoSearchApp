@@ -86,8 +86,4 @@ final class CacheImageDataUseCaseTests: XCTestCase {
     private func failureWithAnyError() -> ImageDataCacher.SaveResult {
         .failure(anyNSError())
     }
-    
-    private func anyId() -> String {
-        "any id"
-    }
 }
