@@ -12,7 +12,7 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
     func test_loadData_deliversNoDataWhenNoCachedData() {
         let sut = makeSUT()
         
-        expect(sut, toRetrieve: noData(), for: anyURL())
+        expect(sut, toLoad: noData(), for: anyURL())
     }
     
     func test_loadData_deliversCachedData() {
@@ -20,9 +20,9 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
         let cachedData = anyData()
         let url = anyURL()
         
-        insert(cachedData, for: url, into: sut)
+        save(cachedData, for: url, into: sut)
         
-        expect(sut, toRetrieve: cachedData, for: url)
+        expect(sut, toLoad: cachedData, for: url)
     }
     
     func test_saveData_overridesPerviousCachedData() {
@@ -31,10 +31,10 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
         let lastCachedData = Data("last".utf8)
         let url = anyURL()
         
-        insert(firstCachedData, for: url, into: sut)
-        insert(lastCachedData, for: url, into: sut)
+        save(firstCachedData, for: url, into: sut)
+        save(lastCachedData, for: url, into: sut)
         
-        expect(sut, toRetrieve: lastCachedData, for: url)
+        expect(sut, toLoad: lastCachedData, for: url)
     }
     
     // MARK: - Helpers
@@ -47,7 +47,7 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
         return sut
     }
     
-    private func insert(_ data: Data,
+    private func save(_ data: Data,
                         for url: URL,
                         into sut: ImageDataCacher,
                         file: StaticString = #filePath,
@@ -66,7 +66,7 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
     }
     
     private func expect(_ sut: ImageDataCacher,
-                        toRetrieve expectedData: Data?,
+                        toLoad expectedData: Data?,
                         for url: URL,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
