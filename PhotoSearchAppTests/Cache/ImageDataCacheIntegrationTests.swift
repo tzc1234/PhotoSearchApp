@@ -15,6 +15,16 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
         expect(sut, toRetrieve: noData(), for: anyURL())
     }
     
+    func test_loadData_deliversCachedData() {
+        let sut = makeSUT()
+        let cachedData = anyData()
+        let url = anyURL()
+        
+        insert(cachedData, for: url, into: sut)
+        
+        expect(sut, toRetrieve: cachedData, for: url)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> ImageDataCacher {
@@ -23,6 +33,24 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
+    }
+    
+    private func insert(_ data: Data,
+                        for url: URL,
+                        into sut: ImageDataCacher,
+                        file: StaticString = #filePath,
+                        line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        sut.save(data, for: url) { receivedResult in
+            switch receivedResult {
+            case .success:
+                break
+            case .failure:
+                XCTFail("Expect save successfully, got a failure instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
     }
     
     private func expect(_ sut: ImageDataCacher,
