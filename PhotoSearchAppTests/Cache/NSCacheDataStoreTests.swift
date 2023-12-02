@@ -114,8 +114,4 @@ final class NSCacheDataStoreTests: XCTestCase {
         }
         wait(for: [exp], timeout: 1)
     }
-    
-    private func noData() -> Data? {
-        nil
-    }
 }
