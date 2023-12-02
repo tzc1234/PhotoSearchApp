@@ -25,6 +25,18 @@ final class ImageDataCacheIntegrationTests: XCTestCase {
         expect(sut, toRetrieve: cachedData, for: url)
     }
     
+    func test_saveData_overridesPerviousCachedData() {
+        let sut = makeSUT()
+        let firstCachedData = Data("first".utf8)
+        let lastCachedData = Data("last".utf8)
+        let url = anyURL()
+        
+        insert(firstCachedData, for: url, into: sut)
+        insert(lastCachedData, for: url, into: sut)
+        
+        expect(sut, toRetrieve: lastCachedData, for: url)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> ImageDataCacher {
