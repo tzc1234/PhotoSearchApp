@@ -8,6 +8,59 @@
 import Combine
 import Foundation
 
+extension Publisher where Output == Data, Failure == Error {
+    func cache(into cacher: ImageDataCacher, for url: URL) -> AnyPublisher<Output, Failure> {
+        handleEvents(receiveOutput: { data in
+            cacher.saveIgnoringCompletion(data, for: url)
+        })
+        .eraseToAnyPublisher()
+    }
+    
+    func fallback(to publisher: Self) -> AnyPublisher<Output, Failure> {
+        self.catch { _ in publisher }.eraseToAnyPublisher()
+    }
+}
+
+extension ImageDataCacher {
+    func saveIgnoringCompletion(_ data: Data, for url: URL) {
+        save(data, for: url) { _ in }
+    }
+    
+    struct NoDataFound: Error {}
+    
+    func getPublisher(url: URL) -> AnyPublisher<Data, Error> {
+        var task: ImageDataCacherTask?
+        
+        return Deferred {
+            Future { completion in
+                task = self.loadData(for: url, completion: completion)
+            }
+        }
+        .tryMap { data in
+            guard let data else { throw ImageDataCacher.NoDataFound() }
+            return data
+        }
+        .handleEvents(receiveCancel: { task?.cancel() })
+        .eraseToAnyPublisher()
+    }
+}
+
+extension HTTPClient {
+    typealias Publisher = AnyPublisher<(Data, HTTPURLResponse), Error>
+    
+    func getPublisher(url: URL) -> Publisher {
+        var task: HTTPClientTask?
+        
+        return Deferred {
+            Future { completion in
+                task = get(from: url, completion: completion)
+            }
+        }
+        .handleEvents(receiveCancel: { task?.cancel() })
+        .eraseToAnyPublisher()
+    }
+}
+
 extension DispatchQueue {
     static var immediateWhenOnMainQueueScheduler: ImmediateWhenOnMainQueueScheduler {
         .shared

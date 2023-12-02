@@ -10,6 +10,8 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private lazy var httpClient = URLSessionHTTPClient(session: .shared)
+    private lazy var store = NSCacheDataStore()
+    private lazy var imageDataCacher = ImageDataCacher(store: store)
     
     var window: UIWindow?
     private var navigation: UINavigationController?
@@ -34,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makePhotosPublisher(searchTerm: String) -> AnyPublisher<[Photo], Error> {
         let apiKey = ""
-        assert(!apiKey.isEmpty, "Set flickr api key here.")
+        assert(!apiKey.isEmpty, "Set Flickr api key here.")
         let url = PhotosEndpoint.get(searchTerm: searchTerm).url(apiKey: apiKey)
         return httpClient
             .getPublisher(url: url)
@@ -44,31 +46,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makePhotoImagePublisher(photo: Photo) -> AnyPublisher<Data, Error> {
         let url = PhotoImageEndpoint.get(photo: photo).url
-        return httpClient
+        return imageDataCacher
             .getPublisher(url: url)
-            .tryMap(PhotoImageResponseConverter.convert)
-            .eraseToAnyPublisher()
+            .fallback(to: httpClient
+                .getPublisher(url: url)
+                .tryMap(PhotoImageResponseConverter.convert)
+                .cache(into: imageDataCacher, for: url)
+                .eraseToAnyPublisher())
     }
     
     private func showErrorAlert(error: ErrorMessage) {
         let alert = UIAlertController(title: error.title, message: error.message, preferredStyle: .alert)
         alert.addAction(.init(title: "Cancel", style: .cancel))
         navigation?.present(alert, animated: true)
-    }
-}
-
-extension HTTPClient {
-    typealias Publisher = AnyPublisher<(Data, HTTPURLResponse), Error>
-    
-    func getPublisher(url: URL) -> Publisher {
-        var task: HTTPClientTask?
-        
-        return Deferred {
-            Future { completion in
-                task = get(from: url, completion: completion)
-            }
-        }
-        .handleEvents(receiveCancel: { task?.cancel() })
-        .eraseToAnyPublisher()
     }
 }
