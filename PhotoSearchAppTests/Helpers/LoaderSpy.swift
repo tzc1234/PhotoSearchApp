@@ -6,7 +6,7 @@
 //
 
 import Combine
-import Foundation
+import XCTest
 @testable import PhotoSearchApp
 
 class LoaderSpy {
@@ -30,15 +30,22 @@ class LoaderSpy {
         }).eraseToAnyPublisher()
     }
     
-    func completePhotosLoad(with photos: [Photo], at index: Int) {
-        guard index < loadPhotosRequests.count else { return }
+    func completePhotosLoad(with photos: [Photo], at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        guard index < loadPhotosRequests.count else {
+            XCTFail("Index: \(index) is out of range.", file: file, line: line)
+            return
+        }
         
         loadPhotosRequests[index].publisher.send(photos)
         loadPhotosRequests[index].publisher.send(completion: .finished)
     }
     
-    func completePhotosLoad(with error: Error, at index: Int) {
-        guard index < loadPhotosRequests.count else { return }
+    func completePhotosLoad(with error: Error, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        guard index < loadPhotosRequests.count else {
+            XCTFail("Index: \(index) is out of range.", file: file, line: line)
+            return
+        }
+        
         loadPhotosRequests[index].publisher.send(completion: .failure(error))
     }
     
@@ -60,15 +67,22 @@ class LoaderSpy {
         }).eraseToAnyPublisher()
     }
     
-    func completeImageLoad(with data: Data, at index: Int) {
-        guard index < loadImageRequests.count else { return }
+    func completeImageLoad(with data: Data, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        guard index < loadImageRequests.count else {
+            XCTFail("Index: \(index) is out of range.", file: file, line: line)
+            return
+        }
         
         loadImageRequests[index].publisher.send(data)
         loadImageRequests[index].publisher.send(completion: .finished)
     }
     
-    func completeImageLoad(with error: Error, at index: Int) {
-        guard index < loadImageRequests.count else { return }
+    func completeImageLoad(with error: Error, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        guard index < loadImageRequests.count else {
+            XCTFail("Index: \(index) is out of range.", file: file, line: line)
+            return
+        }
+        
         loadImageRequests[index].publisher.send(completion: .failure(error))
     }
 }
