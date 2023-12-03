@@ -26,8 +26,6 @@ extension ImageDataCacher {
         save(data, for: url) { _ in }
     }
     
-    struct NoDataFound: Error {}
-    
     func getPublisher(url: URL) -> AnyPublisher<Data, Error> {
         var task: ImageDataCacherTask?
         
