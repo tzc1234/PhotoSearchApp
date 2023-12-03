@@ -26,7 +26,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convert_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
-        let emptyPhotosData = makePhotosData(photos: [])
+        let emptyPhotosData = makeData(from: [])
         
         let photos = try PhotosResponseConverter.convert(emptyPhotosData, response: ok200Response())
         
@@ -35,7 +35,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     
     func test_convert_deliversOnePhotoOn200ResponseWithOnePhotoData() throws {
         let photo = Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")
-        let onePhotoData = makePhotosData(photos: [photo])
+        let onePhotoData = makeData(from: [photo])
         
         let photos = try PhotosResponseConverter.convert(onePhotoData, response: ok200Response())
         
@@ -48,7 +48,7 @@ final class PhotosResponseConverterTests: XCTestCase {
             Photo(id: "id1", title: "title1", server: "server1", secret: "secret1"),
             Photo(id: "id2", title: "title2", server: "server2", secret: "secret2")
         ]
-        let multiplePhotosData = makePhotosData(photos: expectedPhotos)
+        let multiplePhotosData = makeData(from: expectedPhotos)
         
         let photos = try PhotosResponseConverter.convert(multiplePhotosData, response: ok200Response())
         
@@ -57,7 +57,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makePhotosData(photos: [Photo]) -> Data {
+    private func makeData(from photos: [Photo]) -> Data {
         let photoResponses = photos.map { photo in
             PhotosResponse.Photo(id: photo.id, secret: photo.secret, server: photo.server, title: photo.title)
         }
@@ -78,11 +78,5 @@ final class PhotosResponseConverterTests: XCTestCase {
             let server: String
             let title: String
         }
-    }
-}
-
-extension HTTPURLResponse {
-    convenience init(statusCode: Int) {
-        self.init(url: anyURL(), statusCode: statusCode, httpVersion: nil, headerFields: nil)!
     }
 }

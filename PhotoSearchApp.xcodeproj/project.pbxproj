@@ -33,6 +33,7 @@
 		BE59B62B2A69770B002C7E21 /* PhotoCellComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */; };
 		BE59F7552A6D30E3009CA422 /* SceneDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE59F7542A6D30E3009CA422 /* SceneDelegateTests.swift */; };
 		BE5BFEEC2A67E30F002C6E72 /* CombineHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */; };
+		BE6188632B1CD2DF00557918 /* HTTPURLResponse+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6188622B1CD2DF00557918 /* HTTPURLResponse+TestHelpers.swift */; };
 		BE636D862A6AC47D00B288B8 /* LoaderSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE636D852A6AC47D00B288B8 /* LoaderSpy.swift */; };
 		BE636D882A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE636D872A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift */; };
 		BE636D8A2A6ADE1E00B288B8 /* CommonHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE636D892A6ADE1E00B288B8 /* CommonHelpers.swift */; };
@@ -102,6 +103,7 @@
 		BE59B62A2A69770B002C7E21 /* PhotoCellComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCellComposer.swift; sourceTree = "<group>"; };
 		BE59F7542A6D30E3009CA422 /* SceneDelegateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegateTests.swift; sourceTree = "<group>"; };
 		BE5BFEEB2A67E30F002C6E72 /* CombineHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineHelpers.swift; sourceTree = "<group>"; };
+		BE6188622B1CD2DF00557918 /* HTTPURLResponse+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPURLResponse+TestHelpers.swift"; sourceTree = "<group>"; };
 		BE636D852A6AC47D00B288B8 /* LoaderSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderSpy.swift; sourceTree = "<group>"; };
 		BE636D872A6AD0FC00B288B8 /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
 		BE636D892A6ADE1E00B288B8 /* CommonHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHelpers.swift; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 				BE59B61E2A693D82002C7E21 /* PhotoCell+TestHelpers.swift */,
 				BE636D852A6AC47D00B288B8 /* LoaderSpy.swift */,
 				BE81ECD92A6AED0A00E67DB8 /* URLProtocolStub.swift */,
+				BE6188622B1CD2DF00557918 /* HTTPURLResponse+TestHelpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -530,6 +533,7 @@
 				BE81ECDA2A6AED0A00E67DB8 /* URLProtocolStub.swift in Sources */,
 				BE1A2C4C2B19F6F8002974D7 /* CacheImageDataUseCaseTests.swift in Sources */,
 				BE74D8CC2A66D72000073E46 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
+				BE6188632B1CD2DF00557918 /* HTTPURLResponse+TestHelpers.swift in Sources */,
 				BE70DF2D2A6C480700973366 /* PhotoImageResponseConverterTests.swift in Sources */,
 				BE6C2D902B1BA2590018A688 /* CacheTestHelpers.swift in Sources */,
 				BE74D8AD2A66C77000073E46 /* PhotoSearchUIIntegrationTests.swift in Sources */,
