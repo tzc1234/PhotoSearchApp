@@ -18,18 +18,8 @@ enum PhotoSearchComposer {
         let viewController = PhotoSearchViewController(
             loadPhotos: loadPhotosPublisherAdapter.load,
             showError: showError)
-        
-        let photosViewAdapter = PhotosViewAdapter(
-            view: viewController,
-            cellControllerCreator: { photo in
-                PhotoCellComposer.composeWith(
-                    photoTitle: photo.title,
-                    loadImagePublisher: { loadImagePublisher(photo) }
-                )
-            })
-        
         loadPhotosPublisherAdapter.presenter = PhotosPresenter(
-            photosView: photosViewAdapter,
+            photosView: PhotosViewAdapter(view: viewController, loadImagePublisher: loadImagePublisher),
             loadingView: WeakRefProxy(viewController),
             errorView: WeakRefProxy(viewController))
         
