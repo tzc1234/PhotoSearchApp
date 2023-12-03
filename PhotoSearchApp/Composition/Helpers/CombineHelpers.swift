@@ -36,10 +36,6 @@ extension ImageDataCacher {
                 task = self.loadData(for: url, completion: completion)
             }
         }
-        .tryMap { data in
-            guard let data else { throw ImageDataCacher.NoDataFound() }
-            return data
-        }
         .handleEvents(receiveCancel: { task?.cancel() })
         .eraseToAnyPublisher()
     }

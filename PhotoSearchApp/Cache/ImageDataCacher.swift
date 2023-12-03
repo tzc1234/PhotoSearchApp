@@ -32,7 +32,11 @@ extension ImageDataCacher {
 }
 
 extension ImageDataCacher {
-    typealias LoadResult = Result<Data?, Error>
+    typealias LoadResult = Result<Data, Error>
+    
+    enum LoadError: Error {
+        case notFound
+    }
     
     private class TaskWrapper: ImageDataCacherTask {
         private var completion: ((LoadResult) -> Void)?
@@ -55,7 +59,10 @@ extension ImageDataCacher {
         store.retrieveData(for: url) { [weak self] result in
             guard self != nil else { return }
             
-            task.complete(with: result)
+            task.complete(with: result
+                .flatMap { data in
+                    data.map { .success($0) } ?? .failure(LoadError.notFound)
+                })
         }
         return task
     }

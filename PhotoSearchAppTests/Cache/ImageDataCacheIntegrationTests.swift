@@ -9,12 +9,6 @@ import XCTest
 @testable import PhotoSearchApp
 
 final class ImageDataCacheIntegrationTests: XCTestCase {
-    func test_loadData_deliversNoDataWhenNoCachedData() {
-        let sut = makeSUT()
-        
-        expect(sut, toLoad: noData(), for: anyURL())
-    }
-    
     func test_loadData_deliversCachedData() {
         let sut = makeSUT()
         let cachedData = anyData()

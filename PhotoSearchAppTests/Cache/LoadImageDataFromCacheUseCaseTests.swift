@@ -32,10 +32,10 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         })
     }
     
-    func test_loadData_deliversNoDataWhenNoCachedData() {
+    func test_loadData_deliversNotFoundErrorWhenNoCachedData() {
         let (sut, store) = makeSUT()
         
-        expect(sut, completeWith: .success(nil), when: {
+        expect(sut, completeWith: notFound(), when: {
             store.completeRetrievalWithNoData()
         })
     }
@@ -109,5 +109,9 @@ final class LoadImageDataFromCacheUseCaseTests: XCTestCase {
     
     private func failureWithAnyError() -> ImageDataCacher.LoadResult {
         .failure(anyNSError())
+    }
+    
+    private func notFound() -> ImageDataCacher.LoadResult {
+        .failure(ImageDataCacher.LoadError.notFound)
     }
 }
