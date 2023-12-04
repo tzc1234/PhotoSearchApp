@@ -34,11 +34,21 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         XCTAssertEqual(alert.message, PhotosPresenter.errorMessage)
         XCTAssertEqual(photos.numberOfPhotoViews, 0)
         
-        photos.simulateSearchPhotos(by: searchKeyword())
+        let exp = expectation(description: "Wait for alert dismissed")
+        var alertAfterSearch: UIAlertController?
+        let keyword = searchKeyword()
+        alert.dismiss(animated: false, completion: {
+            photos.simulateSearchPhotos(by: keyword)
+            
+            alertAfterSearch = photos.presentedViewController as? UIAlertController
+            
+            exp.fulfill()
+        })
+        wait(for: [exp], timeout: 1)
         
-        let alertAfterSearch = try XCTUnwrap(photos.presentedViewController as? UIAlertController)
-        XCTAssertEqual(alertAfterSearch.title, PhotosPresenter.errorTitle)
-        XCTAssertEqual(alertAfterSearch.message, PhotosPresenter.errorMessage)
+        XCTAssertNotIdentical(alert, alertAfterSearch)
+        XCTAssertEqual(alertAfterSearch?.title, PhotosPresenter.errorTitle)
+        XCTAssertEqual(alertAfterSearch?.message, PhotosPresenter.errorMessage)
         XCTAssertEqual(photos.numberOfPhotoViews, 0)
     }
     
