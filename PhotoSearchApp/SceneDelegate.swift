@@ -51,8 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .fallback(to: httpClient
                 .getPublisher(url: url)
                 .tryMap(PhotoImageResponseConverter.convert)
-                .cache(into: imageDataCacher, for: url)
-                .eraseToAnyPublisher())
+                .cache(into: imageDataCacher, for: url))
     }
     
     private func showErrorAlert(error: ErrorMessage) {
