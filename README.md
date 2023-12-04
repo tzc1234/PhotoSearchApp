@@ -21,3 +21,56 @@
 
 ## TODO
 1. Pagination
+
+## Photo Search Feature Specs
+
+### Story: User requests to search photos
+
+### Narrative #1
+
+```
+As an online user
+I want the app automatically load photos
+So I can enjoy those photos
+```
+
+#### Scenarios (Acceptance criteria)
+
+```
+Given the user has connectivity
+When the user request to see the photos
+Then the app should display the photos from remote
+```
+
+### Narrative #2
+
+```
+As an online user
+I want to search the photos by keywords from the app
+So I can enjoy photos of the category by the keyword I entered
+```
+
+#### Scenarios (Acceptance criteria)
+
+```
+Given the user has connectivity
+When the user search photos by entering keywords
+Then the app should display photos of specific category by the entered keyword
+```
+
+### Narrative #3
+
+```
+As an offline user
+I want the app to show an message to tell me I am offline
+So I know what's going on
+```
+
+### Scenarios (Acceptance criteria)
+
+```
+Given the user has no connectivity
+When the user requests photos or search photos
+Then the app should display an error message
+```
+---
