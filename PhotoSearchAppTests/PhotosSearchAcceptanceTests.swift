@@ -10,7 +10,7 @@ import XCTest
 
 final class PhotosSearchAcceptanceTests: XCTestCase {
     func test_onLaunch_displaysPhotosWhenUserHasConnectivity() throws {
-        let photos = try onLaunch(stub: { .success(self.response(for: $0)) })
+        let photos = try onLaunch(.online(response))
         
         XCTAssertEqual(photos.numberOfPhotoViews, 2)
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeImageData0())
@@ -18,7 +18,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     }
     
     func test_onLaunch_displaysPhotosWhenUserHasConnectivityAndSearchesByKeyword() throws {
-        let photos = try onLaunch(stub: { .success(self.response(for: $0)) })
+        let photos = try onLaunch(.online(response))
         
         photos.simulateSearchPhotos(by: searchKeyword())
         
@@ -26,11 +26,26 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeSearchedImageData())
     }
     
+    func test_onLaunch_displaysErrorMessageWhenUserHasNoConnectivity() throws {
+        let photos = try onLaunch(.offline)
+        
+        let alert = try XCTUnwrap(photos.presentedViewController as? UIAlertController)
+        XCTAssertEqual(alert.title, PhotosPresenter.errorTitle)
+        XCTAssertEqual(alert.message, PhotosPresenter.errorMessage)
+        XCTAssertEqual(photos.numberOfPhotoViews, 0)
+        
+        photos.simulateSearchPhotos(by: searchKeyword())
+        
+        let alertAfterSearch = try XCTUnwrap(photos.presentedViewController as? UIAlertController)
+        XCTAssertEqual(alertAfterSearch.title, PhotosPresenter.errorTitle)
+        XCTAssertEqual(alertAfterSearch.message, PhotosPresenter.errorMessage)
+        XCTAssertEqual(photos.numberOfPhotoViews, 0)
+    }
+    
     // MARK: - Helpers
     
-    private func onLaunch(stub: @escaping (URL) -> HTTPClient.Result) throws -> PhotoSearchViewController {
-        let httpClientStub = HTTPClientStub(stub: stub)
-        let sceneDelegate = SceneDelegate(httpClient: httpClientStub)
+    private func onLaunch(_ stub: HTTPClientStub) throws -> PhotoSearchViewController {
+        let sceneDelegate = SceneDelegate(httpClient: stub)
         let window = UIWindow()
         sceneDelegate.window = window
         sceneDelegate.configureWindow()
@@ -47,7 +62,6 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     }
     
     private func makeData(for url: URL) -> Data {
-        print("url: \(url)")
         switch url.path() {
         case "/services/rest/" where url.query()?.contains("text=\(searchKeyword())") == true:
             return makeSearchedPhotosData()
@@ -137,6 +151,14 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
             completion(stub(url))
             return Task()
+        }
+        
+        static var offline: Self {
+            .init(stub: { _ in .failure(anyNSError()) })
+        }
+        
+        static func online(_ response: @escaping (URL) -> (Data, HTTPURLResponse)) -> Self {
+            .init(stub: { .success(response($0)) })
         }
     }
 }
