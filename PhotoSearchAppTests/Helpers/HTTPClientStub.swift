@@ -25,7 +25,7 @@ final class HTTPClientStub: HTTPClient {
     }
     
     static var offline: Self {
-        .init(stub: { _ in .failure(anyNSError()) })
+        .init(stub: { _ in .failure(NSError(domain: "offline", code: 0)) })
     }
     
     static func online(_ response: @escaping (URL) -> (Data, HTTPURLResponse)) -> Self {
