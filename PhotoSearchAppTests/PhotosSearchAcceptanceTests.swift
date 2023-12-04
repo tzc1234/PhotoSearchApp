@@ -10,39 +10,37 @@ import XCTest
 
 final class PhotosSearchAcceptanceTests: XCTestCase {
     func test_onLaunch_displaysPhotosWhenUserHasConnectivity() throws {
-        let httpClientStub = HTTPClientStub(stub: { .success(self.response(for: $0)) })
-        let sceneDelegate = SceneDelegate(httpClient: httpClientStub)
-        let window = UIWindow()
-        sceneDelegate.window = window
-        sceneDelegate.configureWindow()
-        
-        let nav = try XCTUnwrap(window.rootViewController as? UINavigationController)
-        let photos = try XCTUnwrap(nav.topViewController as? PhotoSearchViewController)
-        photos.simulateAppearance()
+        let photos = try onLaunch(stub: { .success(self.response(for: $0)) })
         
         XCTAssertEqual(photos.numberOfPhotoViews, 2)
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeImageData0())
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
     }
     
-    func test_onLunch_displaysPhotosWhenUserHasConnectivityAndSearchesByKeyword() throws {
-        let httpClientStub = HTTPClientStub(stub: { .success(self.response(for: $0)) })
-        let sceneDelegate = SceneDelegate(httpClient: httpClientStub)
-        let window = UIWindow()
-        sceneDelegate.window = window
-        sceneDelegate.configureWindow()
+    func test_onLaunch_displaysPhotosWhenUserHasConnectivityAndSearchesByKeyword() throws {
+        let photos = try onLaunch(stub: { .success(self.response(for: $0)) })
         
-        let nav = try XCTUnwrap(window.rootViewController as? UINavigationController)
-        let photos = try XCTUnwrap(nav.topViewController as? PhotoSearchViewController)
-        photos.simulateAppearance()
         photos.simulateSearchPhotos(by: searchKeyword())
-        RunLoop.current.run(until: .now)
         
         XCTAssertEqual(photos.numberOfPhotoViews, 1)
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeSearchedImageData())
     }
     
     // MARK: - Helpers
+    
+    private func onLaunch(stub: @escaping (URL) -> HTTPClient.Result) throws -> PhotoSearchViewController {
+        let httpClientStub = HTTPClientStub(stub: stub)
+        let sceneDelegate = SceneDelegate(httpClient: httpClientStub)
+        let window = UIWindow()
+        sceneDelegate.window = window
+        sceneDelegate.configureWindow()
+        
+        let nav = try XCTUnwrap(window.rootViewController as? UINavigationController)
+        let vc = try XCTUnwrap(nav.topViewController as? PhotoSearchViewController)
+        vc.simulateAppearance()
+        
+        return vc
+    }
     
     private func response(for url: URL) -> (Data, HTTPURLResponse) {
         (makeData(for: url), ok200Response())
