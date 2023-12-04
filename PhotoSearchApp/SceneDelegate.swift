@@ -9,12 +9,18 @@ import Combine
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    private lazy var httpClient = URLSessionHTTPClient(session: .shared)
     private lazy var store = NSCacheDataStore()
     private lazy var imageDataCacher = ImageDataCacher(store: store)
     
     var window: UIWindow?
     private var navigation: UINavigationController?
+    
+    private lazy var httpClient: HTTPClient = URLSessionHTTPClient(session: .shared)
+    
+    convenience init(httpClient: HTTPClient) {
+        self.init()
+        self.httpClient = httpClient
+    }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
