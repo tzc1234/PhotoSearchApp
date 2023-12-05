@@ -47,7 +47,7 @@ extension UIViewController {
             self.configuration = configuration
             self.frame.size = configuration.size
             self.layoutMargins = configuration.layoutMargins
-            self.rootViewController = root
+            self.rootViewController = UINavigationController(rootViewController: root)
             self.isHidden = false
             root.view.layoutMargins = configuration.layoutMargins
         }
