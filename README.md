@@ -1,6 +1,7 @@
 # PhotoSearchApp
 ## Practice the learnings from iOS Lead Essentials, episode 2. 
-**Note that you will need a flickr API key to run this app.**
+**Note that you will need a flickr API key to run this app.
+All snapshot tests in this project are run on iPhone 15(iOS 17.0.1) simulator.**
 
 ## Screenshot
 <img src="https://github.com/tzc1234/PhotoSearchApp/blob/main/Screenshots/preview.png" alt="preview" width="256" height="554"/>
