@@ -27,6 +27,15 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone(style: .dark)), named: "PHOTOS_WITH_CONTENT_dark")
     }
     
+    func test_photosWithFailedImageLoading() {
+        let sut = makeSUT()
+        
+        sut.display(photosWithFailedImageLoading())
+        
+        assert(snapshot: sut.snapshot(for: .iPhone(style: .light)), named: "PHOTOS_WITH_FAILED_IMAGE_LOADING_light")
+        assert(snapshot: sut.snapshot(for: .iPhone(style: .dark)), named: "PHOTOS_WITH_FAILED_IMAGE_LOADING_dark")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT() -> PhotoSearchViewController {
@@ -43,18 +52,29 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
         []
     }
     
-    private func photosWithContent() -> [PhotoCellController] {
-        let stubs = [
+    private func photosWithContent() -> [PhotoStub] {
+        [
             PhotoStub(title: "Short title", image: UIImage.make(withColor: .red)),
             PhotoStub(title: "Multi\nline\ntitle", image: UIImage.make(withColor: .green)),
-            PhotoStub(title: "", image: UIImage.make(withColor: .blue)),
+            PhotoStub(title: "", image: UIImage.make(withColor: .blue))
         ]
-        
-        return stubs.map { stub in
+    }
+    
+    private func photosWithFailedImageLoading() -> [PhotoStub] {
+        [
+            PhotoStub(title: "Title", image: nil),
+            PhotoStub(title: "", image: nil)
+        ]
+    }
+}
+
+private extension PhotoSearchViewController {
+    func display(_ stubs: [PhotoStub]) {
+        display(stubs.map { stub in
             let controller = PhotoCellController(delegate: stub)
             stub.controller = controller
             return controller
-        }
+        })
     }
 }
 

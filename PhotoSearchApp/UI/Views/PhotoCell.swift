@@ -39,7 +39,7 @@ final class PhotoCell: UITableViewCell {
         return iv
     }()
     private lazy var placeholderView = {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 70)
+        let configuration = UIImage.SymbolConfiguration(pointSize: 80)
         let image = UIImage(systemName: "photo", withConfiguration: configuration)
         let iv = UIImageView(image: image)
         iv.tintColor = .secondaryLabel
