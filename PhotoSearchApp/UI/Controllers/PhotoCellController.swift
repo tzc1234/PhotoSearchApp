@@ -51,6 +51,7 @@ final class PhotoCellController {
 extension PhotoCellController: PhotoImageView {
     func display(_ viewModel: PhotoImageViewModel<UIImage>) {
         cell?.titleLabel.text = viewModel.title
+        cell?.blurView.isHidden = viewModel.title.isEmpty
         cell?.photoImageView.image = viewModel.image
     }
 }

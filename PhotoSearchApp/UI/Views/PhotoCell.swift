@@ -14,8 +14,8 @@ final class PhotoCell: UITableViewCell {
         let v = UIView()
         v.backgroundColor = .systemBackground
         v.layer.cornerRadius = 12
-        v.layer.shadowColor = UIColor.systemGray3.cgColor
-        v.layer.shadowOpacity = 1
+        v.layer.shadowColor = UIColor.secondaryLabel.cgColor
+        v.layer.shadowOpacity = 0.9
         v.layer.shadowRadius = 2
         v.layer.shadowOffset = .init(width: 0, height: 3)
         v.translatesAutoresizingMaskIntoConstraints = false
@@ -27,7 +27,7 @@ final class PhotoCell: UITableViewCell {
         v.backgroundColor = .systemGray3
         v.layer.cornerRadius = 12
         v.layer.borderWidth = 1
-        v.layer.borderColor = UIColor.systemGray2.cgColor
+        v.layer.borderColor = UIColor.tertiaryLabel.cgColor
         v.clipsToBounds = true
         v.translatesAutoresizingMaskIntoConstraints = false
         return v
@@ -46,8 +46,8 @@ final class PhotoCell: UITableViewCell {
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
-    private lazy var blurView = {
-        let bv = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    private(set) lazy var blurView = {
+        let bv = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
         bv.translatesAutoresizingMaskIntoConstraints = false
         return bv
     }()
