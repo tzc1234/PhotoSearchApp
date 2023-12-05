@@ -40,6 +40,7 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
     
     private func makeSUT() -> PhotoSearchViewController {
         let sut = PhotoSearchViewController(loadPhotos: loadPhotos, showError: { _ in })
+        PhotoCellController.configure(tableView: sut.tableView)
         sut.tableView.showsVerticalScrollIndicator = false
         sut.tableView.showsHorizontalScrollIndicator = false
         sut.loadViewIfNeeded()
@@ -48,7 +49,7 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
     
     private func loadPhotos(id: String) {}
     
-    private func emptyPhotos() -> [PhotoCellController] {
+    private func emptyPhotos() -> [PhotoStub] {
         []
     }
     
@@ -71,9 +72,9 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
 private extension PhotoSearchViewController {
     func display(_ stubs: [PhotoStub]) {
         display(stubs.map { stub in
-            let controller = PhotoCellController(delegate: stub)
-            stub.controller = controller
-            return controller
+            let cell = PhotoCellController(delegate: stub)
+            stub.controller = cell
+            return CellController(dataSource: cell)
         })
     }
 }

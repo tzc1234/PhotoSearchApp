@@ -12,7 +12,7 @@ protocol PhotoCellControllerDelegate {
     func cancel()
 }
 
-final class PhotoCellController {
+final class PhotoCellController: NSObject {
     private var cell: PhotoCell?
     
     private let delegate: PhotoCellControllerDelegate
@@ -21,7 +21,33 @@ final class PhotoCellController {
         self.delegate = delegate
     }
     
-    func cell(in tableView: UITableView) -> PhotoCell {
+    static func configure(tableView: UITableView) {
+        tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
+    }
+    
+    private func loadImage(on cell: UITableViewCell) {
+        guard let cell = cell as? PhotoCell else { return }
+        
+        self.cell = cell
+        delegate.load()
+    }
+    
+    private func cancelImageLoad() {
+        releaseForReuse()
+        delegate.cancel()
+    }
+    
+    private func releaseForReuse() {
+        cell = nil
+    }
+}
+
+extension PhotoCellController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: PhotoCell.identifier) as! PhotoCell
         self.cell = cell
         delegate.load()
@@ -31,20 +57,18 @@ final class PhotoCellController {
         return cell
     }
     
-    func loadImage(on cell: UITableViewCell) {
-        guard let cell = cell as? PhotoCell else { return }
-        
-        self.cell = cell
-        delegate.load()
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        PhotoCell.cellHeight
+    }
+}
+
+extension PhotoCellController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cancelImageLoad()
     }
     
-    func cancelImageLoad() {
-        releaseForReuse()
-        delegate.cancel()
-    }
-    
-    private func releaseForReuse() {
-        cell = nil
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        loadImage(on: cell)
     }
 }
 
@@ -59,15 +83,5 @@ extension PhotoCellController: PhotoImageView {
 extension PhotoCellController: PhotoImageLoadingView {
     func display(_ viewModel: PhotoImageLoadingViewModel) {
         cell?.containerView.isShimmering = viewModel.isLoading
-    }
-}
-
-extension PhotoCellController: Hashable {
-    static func == (lhs: PhotoCellController, rhs: PhotoCellController) -> Bool {
-        lhs === rhs
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
     }
 }

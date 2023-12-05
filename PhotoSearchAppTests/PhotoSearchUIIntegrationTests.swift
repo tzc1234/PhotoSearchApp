@@ -86,7 +86,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         sut.simulateSearchPhotos(by: anyTerm()) // index 2
         
-        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searchs photos")
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searches photos")
         
         loader.completePhotosLoad(with: anyNSError(), at: 2)
         
@@ -110,7 +110,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         sut.simulateSearchPhotos(by: anyTerm()) // index 2
         
-        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searchs photos")
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searches photos")
         
         loader.completePhotosLoad(with: photos, at: 2)
         

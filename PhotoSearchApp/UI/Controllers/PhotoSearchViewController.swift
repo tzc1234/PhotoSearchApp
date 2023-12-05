@@ -14,9 +14,9 @@ final class PhotoSearchViewController: UITableViewController {
         return bar
     }()
     
-    private lazy var dataSource: UITableViewDiffableDataSource<Int, PhotoCellController> = {
+    private lazy var dataSource: UITableViewDiffableDataSource<Int, CellController> = {
         .init(tableView: tableView) { [weak self] tableView, indexPath, cellController in
-            cellController.cell(in: tableView)
+            cellController.dataSource.tableView(tableView, cellForRowAt: indexPath)
         }
     }()
     
@@ -48,9 +48,7 @@ final class PhotoSearchViewController: UITableViewController {
     
     private func configureTableView() {
         tableView.dataSource = dataSource
-        tableView.register(PhotoCell.self, forCellReuseIdentifier: PhotoCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = PhotoCell.cellHeight
     }
     
     private func setupRefreshControl() {
@@ -68,23 +66,27 @@ final class PhotoSearchViewController: UITableViewController {
         loadPhotos(searchTerm)
     }
     
-    func display(_ cellControllers: [PhotoCellController]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, PhotoCellController>()
+    func display(_ cellControllers: [CellController]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, CellController>()
         snapshot.appendSections([0])
         snapshot.appendItems(cellControllers)
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
     
-    private func cellController(forRowAt indexPath: IndexPath) -> PhotoCellController? {
-        dataSource.itemIdentifier(for: indexPath)
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        cellController(forRowAt: indexPath)?.delegate.tableView?(tableView, heightForRowAt: indexPath) ?? 0
     }
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellController(forRowAt: indexPath)?.cancelImageLoad()
+        cellController(forRowAt: indexPath)?.delegate.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellController(forRowAt: indexPath)?.loadImage(on: cell)
+        cellController(forRowAt: indexPath)?.delegate.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+    }
+    
+    private func cellController(forRowAt indexPath: IndexPath) -> CellController? {
+        dataSource.itemIdentifier(for: indexPath)
     }
 }
 

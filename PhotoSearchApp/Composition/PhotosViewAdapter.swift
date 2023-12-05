@@ -19,11 +19,12 @@ final class PhotosViewAdapter: PhotosView {
     
     func display(_ viewModel: PhotosViewModel) {
         viewController?.display(viewModel.photos.map { photo in
-            PhotoCellComposer.composeWith(
+            let cell = PhotoCellComposer.composeWith(
                 photoTitle: photo.title,
                 loadImagePublisher: { [loadImagePublisher] in
                     loadImagePublisher(photo)
                 })
+            return CellController(dataSource: cell)
         })
     }
 }

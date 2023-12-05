@@ -10,10 +10,7 @@ import UIKit
 
 extension PhotoSearchViewController {
     func simulateAppearance() {
-        if !isViewLoaded {
-            loadViewIfNeeded()
-            replaceRefreshControlToSpyForiOS17Support()
-        }
+        replaceRefreshControlToSpyForiOS17Support()
         
         beginAppearanceTransition(true, animated: false)
         endAppearanceTransition()
