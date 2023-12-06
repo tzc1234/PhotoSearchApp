@@ -58,40 +58,52 @@ extension PhotoSearchViewController {
         refreshControl?.isRefreshing == true
     }
     
-    var numberOfPhotoViews: Int {
+    private func cell(at row: Int, inSection section: Int) -> UITableViewCell? {
+        guard numberOfRows(inSection: section) > row else { return nil }
+        
+        let ds = tableView.dataSource
+        let indexPath = IndexPath(row: row, section: photosSection)
+        return ds?.tableView(tableView, cellForRowAt: indexPath)
+    }
+    
+    private func numberOfRows(inSection section: Int) -> Int {
         tableView.numberOfSections > section ? tableView.numberOfRows(inSection: section) : 0
     }
+}
 
+extension PhotoSearchViewController {
+    var numberOfPhotoViews: Int {
+        numberOfRows(inSection: photosSection)
+    }
+    
     func photoView(at row: Int) -> PhotoCell? {
-        let indexPath = IndexPath(row: row, section: section)
+        let indexPath = IndexPath(row: row, section: photosSection)
         return tableView.cellForRow(at: indexPath) as? PhotoCell
     }
     
     @discardableResult
     func simulatePhotoImageViewVisible(at row: Int) -> PhotoCell? {
-        let ds = tableView.dataSource
-        let indexPath = IndexPath(row: row, section: section)
-        return ds?.tableView(tableView, cellForRowAt: indexPath) as? PhotoCell
+        cell(at: row, inSection: photosSection) as? PhotoCell
     }
     
     func simulatePhotoImageViewInvisible(_ view: UITableViewCell, at row: Int) {
         let d = tableView.delegate
-        let indexPath = IndexPath(row: row, section: section)
+        let indexPath = IndexPath(row: row, section: photosSection)
         d?.tableView?(tableView, didEndDisplaying: view, forRowAt: indexPath)
     }
     
     func simulatePhotoImageViewBecomeVisibleAgain(_ view: UITableViewCell, at row: Int) {
         let d = tableView.delegate
-        let indexPath = IndexPath(row: row, section: section)
+        let indexPath = IndexPath(row: row, section: photosSection)
         d?.tableView?(tableView, willDisplay: view, forRowAt: indexPath)
     }
     
-    private var section: Int { 0 }
-    
+    private var photosSection: Int { 0 }
+}
+
+extension PhotoSearchViewController {
     func simulateLoadMoreAction() {
-        guard let cell = cell(at: 0, inSection: loadMoreSection) else {
-            return
-        }
+        guard let cell = cell(at: 0, inSection: loadMoreSection) else { return }
         
         let d = tableView.delegate
         let indexPath = IndexPath(row: 0, section: loadMoreSection)
@@ -99,14 +111,6 @@ extension PhotoSearchViewController {
     }
     
     private var loadMoreSection: Int { 1 }
-    
-    private func cell(at row: Int, inSection: Int) -> UITableViewCell? {
-        guard tableView.numberOfRows(inSection: section) > row else { return nil }
-        
-        let ds = tableView.dataSource
-        let indexPath = IndexPath(row: row, section: section)
-        return ds?.tableView(tableView, cellForRowAt: indexPath)
-    }
 }
 
 final class RefreshControlSpy: UIRefreshControl {

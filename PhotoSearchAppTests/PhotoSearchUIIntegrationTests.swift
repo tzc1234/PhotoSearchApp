@@ -235,7 +235,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateAppearance()
         
         loader.completePhotosLoad(with: page0, at: 0)
-        XCTAssertEqual(loader.loadMorePhotosCallCount, 0, "Expect no loads more requests just after the view rendered")
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 0, "Expect no load more requests just after the view rendered")
         
         sut.simulateLoadMoreAction()
         XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect 1 load more request after the 1st load more action")
