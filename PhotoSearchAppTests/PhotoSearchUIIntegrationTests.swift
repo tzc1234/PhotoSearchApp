@@ -30,7 +30,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadPhotosCallCount, 2, "Expect two photos loads after user initiated a photos reload")
         XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load after an uncompleted request")
         
-        loader.completePhotosLoad(with: anyNSError(), at: 1)
+        loader.completePhotosLoadWithError(at: 1)
         sut.simulateUserInitiatedReload()
         
         XCTAssertEqual(loader.loadPhotosCallCount, 3, "Expect three photos loads after user initiated second photos reload")
@@ -76,7 +76,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once photos request begins")
         
-        loader.completePhotosLoad(with: anyNSError(), at: 0)
+        loader.completePhotosLoadWithError(at: 0)
         
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error")
         
@@ -88,7 +88,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searches photos")
         
-        loader.completePhotosLoad(with: anyNSError(), at: 2)
+        loader.completePhotosLoadWithError(at: 2)
         
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
     }
@@ -123,12 +123,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         assert(sut, isRending: [])
         
-        loader.completePhotosLoad(with: anyNSError(), at: 0)
+        loader.completePhotosLoadWithError(at: 0)
         
         assert(sut, isRending: [])
         
         sut.simulateSearchPhotos(by: anyTerm())
-        loader.completePhotosLoad(with: anyNSError(), at: 1)
+        loader.completePhotosLoadWithError(at: 1)
         
         assert(sut, isRending: [])
     }
@@ -178,12 +178,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         assert(sut, isRending: photos)
         
         sut.simulateUserInitiatedReload()
-        loader.completePhotosLoad(with: anyNSError(), at: 1)
+        loader.completePhotosLoadWithError(at: 1)
         
         assert(sut, isRending: photos)
         
         sut.simulateSearchPhotos(by: anyTerm())
-        loader.completePhotosLoad(with: anyNSError(), at: 2)
+        loader.completePhotosLoadWithError(at: 2)
         
         assert(sut, isRending: photos)
     }
@@ -208,7 +208,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(loggedErrors.count, 0, "Expect no errors shown before load photos completed")
         
-        loader.completePhotosLoad(with: anyNSError(), at: 0)
+        loader.completePhotosLoadWithError(at: 0)
         
         XCTAssertEqual(loggedErrors, [expectedError], "Expect one error shown after load photos completed with error")
         
@@ -221,7 +221,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown before search photos completed")
         
-        loader.completePhotosLoad(with: anyNSError(), at: 2)
+        loader.completePhotosLoadWithError(at: 2)
         
         XCTAssertEqual(loggedErrors, [expectedError, expectedError], "Expect one new error shown after search photos completed with error")
     }

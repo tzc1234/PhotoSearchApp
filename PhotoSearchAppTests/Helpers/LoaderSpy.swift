@@ -51,13 +51,13 @@ class LoaderSpy {
         loadPhotosRequests[index].publisher.send(completion: .finished)
     }
     
-    func completePhotosLoad(with error: Error, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+    func completePhotosLoadWithError(at index: Int, file: StaticString = #filePath, line: UInt = #line) {
         guard index < loadPhotosRequests.count else {
             XCTFail("Index: \(index) is out of range.", file: file, line: line)
             return
         }
         
-        loadPhotosRequests[index].publisher.send(completion: .failure(error))
+        loadPhotosRequests[index].publisher.send(completion: .failure(anyNSError()))
     }
     
     func completeLoadMore(with photos: [Photo], isLastPage: Bool, at index: Int,
