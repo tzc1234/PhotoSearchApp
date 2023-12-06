@@ -27,6 +27,10 @@ class LoaderSpy {
         loadMorePhotosRequests.count
     }
     
+    var loadMorePhotosSearchTerms: [String] {
+        loadMorePhotosRequests.map(\.searchTerm)
+    }
+    
     private(set) var cancelLoadCallCount = 0
     
     func loadPhotosPublisher(searchTerm: String) -> AnyPublisher<Paginated<Photo>, Error> {
