@@ -34,12 +34,12 @@ final class PhotosViewAdapter: PhotosView {
         }
         
         let loadMoreAdapter = LoadPhotosPublisherAdapter(publisher: loadMorePublisher)
-        loadMoreAdapter.presenter = PhotosPresenter(
-            photosView: PhotosViewAdapter(view: viewController, loadImagePublisher: loadImagePublisher),
-            loadingView: WeakRefProxy(viewController),
-            errorView: WeakRefProxy(viewController))
         let searchTerm = viewController.searchTerm
         let loadMoreController = LoadMoreCellController(loadMore: { loadMoreAdapter.load(searchTerm) })
+        loadMoreAdapter.presenter = PhotosPresenter(
+            photosView: PhotosViewAdapter(view: viewController, loadImagePublisher: loadImagePublisher),
+            loadingView: WeakRefProxy(loadMoreController),
+            errorView: WeakRefProxy(viewController))
         
         viewController.display(photoCells, [CellController(loadMoreController)])
     }

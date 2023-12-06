@@ -9,6 +9,7 @@ import UIKit
 
 final class LoadMoreCellController: NSObject {
     private let cell = UITableViewCell()
+    private var isLoading = false
     
     private let loadMore: () -> Void
     
@@ -29,10 +30,18 @@ extension LoadMoreCellController: UITableViewDataSource {
 
 extension LoadMoreCellController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard !isLoading else { return }
+        
         loadMore()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         1
+    }
+}
+
+extension LoadMoreCellController: PhotosLoadingView {
+    func display(_ viewModel: PhotosLoadingViewModel) {
+        isLoading = viewModel.isLoading
     }
 }
