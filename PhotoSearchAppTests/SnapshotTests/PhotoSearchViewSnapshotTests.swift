@@ -74,7 +74,7 @@ private extension PhotoSearchViewController {
         display(stubs.map { stub in
             let cell = PhotoCellController(delegate: stub)
             stub.controller = cell
-            return CellController(dataSource: cell)
+            return CellController(cell)
         })
     }
 }

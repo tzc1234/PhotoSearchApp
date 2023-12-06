@@ -10,19 +10,26 @@ import XCTest
 @testable import PhotoSearchApp
 
 class LoaderSpy {
-    typealias LoadPhotosPublisher = PassthroughSubject<[Photo], Error>
+    typealias LoadPhotosPublisher = PassthroughSubject<Paginated<Photo>, Error>
     
     private var loadPhotosRequests = [(publisher: LoadPhotosPublisher, searchTerm: String)]()
+    private var loadMorePhotosRequests = [(publisher: LoadPhotosPublisher, searchTerm: String)]()
+    
     var loadPhotosCallCount: Int {
         loadPhotosRequests.count
     }
+    
     var loggedSearchTerms: [String] {
         loadPhotosRequests.map(\.searchTerm)
     }
     
+    var loadMorePhotosCallCount: Int {
+        loadMorePhotosRequests.count
+    }
+    
     private(set) var cancelLoadCallCount = 0
     
-    func loadPhotosPublisher(searchTerm: String) -> AnyPublisher<[Photo], Error> {
+    func loadPhotosPublisher(searchTerm: String) -> AnyPublisher<Paginated<Photo>, Error> {
         let publisher = LoadPhotosPublisher()
         loadPhotosRequests.append((publisher, searchTerm))
         return publisher.handleEvents(receiveCancel: { [weak self] in
@@ -36,7 +43,7 @@ class LoaderSpy {
             return
         }
         
-        loadPhotosRequests[index].publisher.send(photos)
+        loadPhotosRequests[index].publisher.send(makePaginatedPhotos(with: photos))
         loadPhotosRequests[index].publisher.send(completion: .finished)
     }
     
@@ -47,6 +54,36 @@ class LoaderSpy {
         }
         
         loadPhotosRequests[index].publisher.send(completion: .failure(error))
+    }
+    
+    func completeLoadMore(with photos: [Photo], isLastPage: Bool, at index: Int,
+                          file: StaticString = #filePath, line: UInt = #line) {
+        guard index < loadMorePhotosRequests.count else {
+            XCTFail("Index: \(index) is out of range.", file: file, line: line)
+            return
+        }
+        
+        loadMorePhotosRequests[index].publisher.send(makePaginatedPhotos(with: photos, isLastPage: isLastPage))
+        loadMorePhotosRequests[index].publisher.send(completion: .finished)
+    }
+    
+    func completeLoadMoreWithError(at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        guard index < loadMorePhotosRequests.count else {
+            XCTFail("Index: \(index) is out of range.", file: file, line: line)
+            return
+        }
+        
+        loadMorePhotosRequests[index].publisher.send(completion: .failure(anyNSError()))
+    }
+    
+    private func makePaginatedPhotos(with photos: [Photo], isLastPage: Bool = false) -> Paginated<Photo> {
+        Paginated(
+            items: photos,
+            loadMorePublisher: isLastPage ? nil : { [weak self] searchTerm in
+                let publisher = LoadPhotosPublisher()
+                self?.loadMorePhotosRequests.append((publisher, searchTerm))
+                return publisher.eraseToAnyPublisher()
+            })
     }
     
     // MARK: - Image data loader

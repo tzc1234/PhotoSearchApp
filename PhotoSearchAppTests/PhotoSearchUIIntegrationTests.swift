@@ -226,6 +226,40 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loggedErrors, [expectedError, expectedError], "Expect one new error shown after search photos completed with error")
     }
     
+    // MARK: - Load More
+    
+    func test_loadMorePhotos_requestsLoadMorePhotosFromLoader() {
+        let page0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
+        let page1 = [makePhoto(id: "2", title: "title 2")]
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        
+        loader.completePhotosLoad(with: page0, at: 0)
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 0, "Expect no loads more requests just after the view rendered")
+        
+        sut.simulateLoadMoreAction()
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect 1 load more request after the 1st load more action")
+        
+        sut.simulateUserInitiatedReload()
+        loader.completePhotosLoad(with: page0, at: 1)
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect no change on loads more requests after the user initiated reload")
+
+        sut.simulateLoadMoreAction()
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect 2 load more request after the 2nd load more action")
+        
+        loader.completeLoadMoreWithError(at: 1)
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect no change on loads more requests after load more request completed with error")
+        
+        sut.simulateLoadMoreAction()
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect 3 loads more requests after the 3rd load more action")
+        
+        loader.completeLoadMore(with: page0 + page1, isLastPage: true, at: 2)
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect no change on loads more requests after load more request completed successfully")
+        
+        sut.simulateLoadMoreAction()
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect no change on loads more requests after the last page is loaded")
+    }
+    
     // MARK: - Image View tests
     
     func test_photoImageView_loadImageForPhotoWhenVisible() {

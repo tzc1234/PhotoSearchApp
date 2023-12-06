@@ -8,6 +8,35 @@
 import Combine
 import Foundation
 
+extension Paginated {
+    init(items: [Item], loadMorePublisher: ((String) -> AnyPublisher<Self, Error>)?) {
+        self.init(items: items, loadMore: loadMorePublisher.map { publisher in
+            return { searchTerm, completion in
+                publisher(searchTerm).subscribe(Subscribers.Sink(receiveCompletion: { result in
+                    if case let .failure(error) = result {
+                        completion(.failure(error))
+                    }
+                }, receiveValue: { paginatedItems in
+                    completion(.success(paginatedItems))
+                }))
+            }
+        })
+    }
+    
+    var loadMorePublisher: ((String) -> AnyPublisher<Self, Error>)? {
+        guard let loadMore else { return nil }
+        
+        return { searchTerm in
+            Deferred {
+                Future { completion in
+                    loadMore(searchTerm, completion)
+                }
+            }
+            .eraseToAnyPublisher()
+        }
+    }
+}
+
 extension Publisher where Output == Data, Failure == Error {
     func cache(into cacher: ImageDataCacher, for url: URL) -> AnyPublisher<Output, Failure> {
         handleEvents(receiveOutput: { data in

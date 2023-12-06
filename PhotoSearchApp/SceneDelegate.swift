@@ -40,13 +40,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
-    private func makePhotosPublisher(searchTerm: String) -> AnyPublisher<[Photo], Error> {
+    private func makePhotosPublisher(searchTerm: String) -> AnyPublisher<Paginated<Photo>, Error> {
         let apiKey = ""
         assert(!apiKey.isEmpty, "Set Flickr api key here.")
         let url = PhotosEndpoint.get(searchTerm: searchTerm).url(apiKey: apiKey)
         return httpClient
             .getPublisher(url: url)
             .tryMap(PhotosResponseConverter.convert)
+            .map { photos in
+                Paginated(items: photos, loadMore: nil)
+            }
             .eraseToAnyPublisher()
     }
     

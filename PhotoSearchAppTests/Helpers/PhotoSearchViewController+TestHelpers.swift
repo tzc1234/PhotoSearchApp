@@ -87,6 +87,26 @@ extension PhotoSearchViewController {
     }
     
     private var section: Int { 0 }
+    
+    func simulateLoadMoreAction() {
+        guard let cell = cell(at: 0, inSection: loadMoreSection) else {
+            return
+        }
+        
+        let d = tableView.delegate
+        let indexPath = IndexPath(row: 0, section: loadMoreSection)
+        d?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+    }
+    
+    private var loadMoreSection: Int { 1 }
+    
+    private func cell(at row: Int, inSection: Int) -> UITableViewCell? {
+        guard tableView.numberOfRows(inSection: section) > row else { return nil }
+        
+        let ds = tableView.dataSource
+        let indexPath = IndexPath(row: row, section: section)
+        return ds?.tableView(tableView, cellForRowAt: indexPath)
+    }
 }
 
 final class RefreshControlSpy: UIRefreshControl {

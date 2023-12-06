@@ -12,7 +12,7 @@ struct CellController: Hashable {
     let dataSource: UITableViewDataSource
     let delegate: UITableViewDelegate
     
-    init(dataSource: UITableViewDataSource & UITableViewDelegate) {
+    init(_ dataSource: UITableViewDataSource & UITableViewDelegate) {
         self.dataSource = dataSource
         self.delegate = dataSource
     }

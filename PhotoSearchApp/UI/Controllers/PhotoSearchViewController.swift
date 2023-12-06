@@ -20,7 +20,7 @@ final class PhotoSearchViewController: UITableViewController {
         }
     }()
     
-    private var searchTerm = ""
+    private(set) var searchTerm = ""
     private var onViewIsAppearing: (() -> Void)?
     
     private let loadPhotos: (String) -> Void
@@ -66,10 +66,12 @@ final class PhotoSearchViewController: UITableViewController {
         loadPhotos(searchTerm)
     }
     
-    func display(_ cellControllers: [CellController]) {
+    func display(_ cellControllersArray: [CellController]...) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, CellController>()
-        snapshot.appendSections([0])
-        snapshot.appendItems(cellControllers)
+        cellControllersArray.enumerated().forEach { index, cellControllers in
+            snapshot.appendSections([index])
+            snapshot.appendItems(cellControllers)
+        }
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
     

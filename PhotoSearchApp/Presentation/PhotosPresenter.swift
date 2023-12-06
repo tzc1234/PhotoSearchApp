@@ -12,7 +12,7 @@ protocol PhotosErrorView {
 }
 
 protocol PhotosView {
-    func display(_ viewModel: PhotosViewModel)
+    func display(_ viewModel: Paginated<Photo>)
 }
 
 protocol PhotosLoadingView {
@@ -20,7 +20,7 @@ protocol PhotosLoadingView {
 }
 
 final class PhotosPresenter: ResourcePresenter {
-    typealias Resource = [Photo]
+    typealias Resource = Paginated<Photo>
     
     static var errorTitle: String { "Oops!" }
     static var errorMessage: String { "Network error occurred, please try again." }
@@ -42,7 +42,7 @@ final class PhotosPresenter: ResourcePresenter {
     
     func didFinishLoading(with resource: Resource) {
         loadingView.display(PhotosLoadingViewModel(isLoading: false))
-        photosView.display(PhotosViewModel(photos: resource))
+        photosView.display(resource)
     }
     
     func didFinishLoadingWithError() {

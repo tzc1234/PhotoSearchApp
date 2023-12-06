@@ -17,14 +17,30 @@ final class PhotosViewAdapter: PhotosView {
         self.loadImagePublisher = loadImagePublisher
     }
     
-    func display(_ viewModel: PhotosViewModel) {
-        viewController?.display(viewModel.photos.map { photo in
-            let cell = PhotoCellComposer.composeWith(
+    func display(_ viewModel: Paginated<Photo>) {
+        guard let viewController else { return }
+        
+        let photoCells = viewModel.items.map { photo in
+            CellController(PhotoCellComposer.composeWith(
                 photoTitle: photo.title,
                 loadImagePublisher: { [loadImagePublisher] in
                     loadImagePublisher(photo)
-                })
-            return CellController(dataSource: cell)
-        })
+                }))
+        }
+        
+        guard let loadMorePublisher = viewModel.loadMorePublisher else {
+            viewController.display(photoCells)
+            return
+        }
+        
+        let loadMoreAdapter = LoadPhotosPublisherAdapter(publisher: loadMorePublisher)
+        loadMoreAdapter.presenter = PhotosPresenter(
+            photosView: PhotosViewAdapter(view: viewController, loadImagePublisher: loadImagePublisher),
+            loadingView: WeakRefProxy(viewController),
+            errorView: WeakRefProxy(viewController))
+        let searchTerm = viewController.searchTerm
+        let loadMoreController = LoadMoreCellController(loadMore: { loadMoreAdapter.load(searchTerm) })
+        
+        viewController.display(photoCells, [CellController(loadMoreController)])
     }
 }

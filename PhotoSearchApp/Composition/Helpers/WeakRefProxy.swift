@@ -14,3 +14,15 @@ final class WeakRefProxy<T: AnyObject> {
         self.object = object
     }
 }
+
+extension WeakRefProxy: PhotosLoadingView where T: PhotosLoadingView {
+    func display(_ viewModel: PhotosLoadingViewModel) {
+        object?.display(viewModel)
+    }
+}
+
+extension WeakRefProxy: PhotosErrorView where T: PhotosErrorView {
+    func display(_ viewModel: PhotosErrorViewModel) {
+        object?.display(viewModel)
+    }
+}
