@@ -96,6 +96,8 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     private func makePhotosData() -> Data {
         let json: [String: Any] = [
             "photos": [
+                "page": 1,
+                "pages": 2,
                 "photo": [
                     [
                         "id": "id0",
@@ -118,6 +120,8 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     private func makeSearchedPhotosData() -> Data {
         let json: [String: Any] = [
             "photos": [
+                "page": 1,
+                "pages": 2,
                 "photo": [
                     [
                         "id": "id2",

@@ -58,9 +58,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convertHasNextPage_deliversNoHasNextPageWhenPageNotLessThanPages() throws {
-        let page = 1
-        let pages = 1
-        let pageNotLessThanPagesData = makeData(from: [], for: page, pages: pages)
+        let pageNotLessThanPagesData = makeData(from: [], page: 1, pages: 1)
         
         let hasNextPage = try PhotosResponseConverter.convert(
             pageNotLessThanPagesData,
@@ -69,9 +67,19 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertFalse(hasNextPage)
     }
     
+    func test_convertHasNextPage_deliversHasNextPageWhenPageIsLessThanPages() throws {
+        let pageLessThanPagesData = makeData(from: [], page: 1, pages: 2)
+        
+        let hasNextPage = try PhotosResponseConverter.convert(
+            pageLessThanPagesData,
+            response: ok200Response()).hasNextPage
+        
+        XCTAssertTrue(hasNextPage)
+    }
+    
     // MARK: - Helpers
     
-    private func makeData(from photos: [Photo], for page: Int = 1, pages: Int = 1) -> Data {
+    private func makeData(from photos: [Photo], page: Int = 1, pages: Int = 1) -> Data {
         let photoResponses = photos.map { photo in
             PhotosResponse.Photo(id: photo.id, secret: photo.secret, server: photo.server, title: photo.title)
         }
