@@ -11,6 +11,5 @@ struct Paginated<Item> {
     typealias LoadMoreCompletion = (Result<Self, Error>) -> Void
     
     let items: [Item]
-    let currentPage: Int
     let loadMore: ((String, @escaping LoadMoreCompletion) -> Void)?
 }

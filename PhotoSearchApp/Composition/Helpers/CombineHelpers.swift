@@ -9,8 +9,8 @@ import Combine
 import Foundation
 
 extension Paginated {
-    init(items: [Item], currentPage: Int, loadMorePublisher: ((String) -> AnyPublisher<Self, Error>)?) {
-        self.init(items: items, currentPage: currentPage, loadMore: loadMorePublisher.map { publisher in
+    init(items: [Item], loadMorePublisher: ((String) -> AnyPublisher<Self, Error>)?) {
+        self.init(items: items, loadMore: loadMorePublisher.map { publisher in
             return { searchTerm, completion in
                 publisher(searchTerm).subscribe(Subscribers.Sink(receiveCompletion: { result in
                     if case let .failure(error) = result {

@@ -49,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .getPublisher(url: url)
             .tryMap(PhotosResponseConverter.convert)
             .map { photos in
-                Paginated(items: photos, currentPage: 1, loadMore: nil)
+                Paginated(items: photos, loadMore: nil)
             }
             .eraseToAnyPublisher()
     }
