@@ -25,24 +25,24 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertThrowsError(try PhotosResponseConverter.convert(invalidData, response: ok200Response()))
     }
     
-    func test_convert_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
+    func test_convertPhotos_deliversEmptyOn200ResponseWithEmptyPhotos() throws {
         let emptyPhotosData = makeData(from: [])
         
-        let photos = try PhotosResponseConverter.convert(emptyPhotosData, response: ok200Response())
+        let photos = try PhotosResponseConverter.convert(emptyPhotosData, response: ok200Response()).photos
         
         XCTAssertEqual(photos, [])
     }
     
-    func test_convert_deliversOnePhotoOn200ResponseWithOnePhotoData() throws {
+    func test_convertPhotos_deliversOnePhotoOn200ResponseWithOnePhotoData() throws {
         let photo = Photo(id: "id0", title: "title0", server: "server0", secret: "secret0")
         let onePhotoData = makeData(from: [photo])
         
-        let photos = try PhotosResponseConverter.convert(onePhotoData, response: ok200Response())
+        let photos = try PhotosResponseConverter.convert(onePhotoData, response: ok200Response()).photos
         
         XCTAssertEqual(photos, [photo])
     }
     
-    func test_convert_deliversMultiplePhotosOn200ResponseWithMultiplePhotosData() throws {
+    func test_convertPhotos_deliversMultiplePhotosOn200ResponseWithMultiplePhotosData() throws {
         let expectedPhotos = [
             Photo(id: "id0", title: "title0", server: "server0", secret: "secret0"),
             Photo(id: "id1", title: "title1", server: "server1", secret: "secret1"),
@@ -50,7 +50,7 @@ final class PhotosResponseConverterTests: XCTestCase {
         ]
         let multiplePhotosData = makeData(from: expectedPhotos)
         
-        let photos = try PhotosResponseConverter.convert(multiplePhotosData, response: ok200Response())
+        let photos = try PhotosResponseConverter.convert(multiplePhotosData, response: ok200Response()).photos
         
         XCTAssertEqual(photos, expectedPhotos)
     }

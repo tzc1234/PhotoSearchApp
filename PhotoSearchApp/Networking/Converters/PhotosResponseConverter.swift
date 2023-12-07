@@ -12,12 +12,12 @@ enum PhotosResponseConverter {
         case invalidData
     }
     
-    static func convert(_ data: Data, response: HTTPURLResponse) throws -> [Photo] {
+    static func convert(_ data: Data, response: HTTPURLResponse) throws -> (photos: [Photo], hasNextPage: Bool) {
         guard response.isOK, let root = try? JSONDecoder().decode(Root.self, from: data) else {
             throw Error.invalidData
         }
         
-        return root.photos
+        return (root.photos, false)
     }
     
     private struct Root: Decodable {
