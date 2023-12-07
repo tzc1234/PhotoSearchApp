@@ -365,6 +365,20 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         assert(sut, isRending: photos0 + photos1 + photos2)
     }
     
+    func test_loadMorePhotosComplete_dispatchesFromBackgroundToMainThread() {
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: [], at: 0)
+        
+        sut.simulateLoadMoreAction()
+        let exp = expectation(description: "Wait for load more photos")
+        DispatchQueue.global().async {
+            loader.completeLoadMorePhotos(with: [], isLastPage: true, at: 0)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    
     // MARK: - Image View tests
     
     func test_photoImageView_loadImageForPhotoWhenVisible() {
