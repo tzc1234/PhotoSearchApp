@@ -21,7 +21,7 @@ final class PhotoSearchViewController: UITableViewController {
     }()
     
     private(set) var searchTerm = ""
-    private var onViewIsAppearing: (() -> Void)?
+    private var onViewIsAppearing: ((PhotoSearchViewController) -> Void)?
     
     private let loadPhotos: (String) -> Void
     private let showError: (ErrorMessage) -> Void
@@ -40,9 +40,9 @@ final class PhotoSearchViewController: UITableViewController {
         navigationItem.titleView = searchBar
         configureTableView()
         setupRefreshControl()
-        onViewIsAppearing = { [weak self, searchTerm] in
-            self?.loadPhotos(searchTerm)
-            self?.onViewIsAppearing = nil
+        onViewIsAppearing = { vc in
+            vc.loadPhotos(vc.searchTerm)
+            vc.onViewIsAppearing = nil
         }
     }
     
@@ -59,18 +59,18 @@ final class PhotoSearchViewController: UITableViewController {
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
         
-        onViewIsAppearing?()
+        onViewIsAppearing?(self)
     }
     
     @objc private func reloadPhotos() {
         loadPhotos(searchTerm)
     }
     
-    func display(_ cellControllersArray: [CellController]...) {
+    func display(_ sections: [CellController]...) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, CellController>()
-        cellControllersArray.enumerated().forEach { index, cellControllers in
-            snapshot.appendSections([index])
-            snapshot.appendItems(cellControllers)
+        sections.enumerated().forEach { section, cellControllers in
+            snapshot.appendSections([section])
+            snapshot.appendItems(cellControllers, toSection: section)
         }
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
