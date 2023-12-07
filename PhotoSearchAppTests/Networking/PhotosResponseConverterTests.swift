@@ -58,7 +58,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convertHasNextPage_deliversNoHasNextPageWhenPageEqualToPages() throws {
-        let pageEqualToPagesData = makeData(from: [], page: 1, pages: 1)
+        let pageEqualToPagesData = makeData(page: 1, pages: 1)
         
         let hasNextPage = try PhotosResponseConverter.convert(
             pageEqualToPagesData,
@@ -68,7 +68,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convertHasNextPage_deliversNoHasNextPageWhenPageGreaterThanPages() throws {
-        let pageGreaterThanPagesData = makeData(from: [], page: 2, pages: 1)
+        let pageGreaterThanPagesData = makeData(page: 2, pages: 1)
         
         let hasNextPage = try PhotosResponseConverter.convert(
             pageGreaterThanPagesData,
@@ -78,7 +78,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     }
     
     func test_convertHasNextPage_deliversHasNextPageWhenPageIsLessThanPages() throws {
-        let pageLessThanPagesData = makeData(from: [], page: 1, pages: 2)
+        let pageLessThanPagesData = makeData(page: 1, pages: 2)
         
         let hasNextPage = try PhotosResponseConverter.convert(
             pageLessThanPagesData,
@@ -89,7 +89,7 @@ final class PhotosResponseConverterTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeData(from photos: [Photo], page: Int = 1, pages: Int = 1) -> Data {
+    private func makeData(from photos: [Photo] = [], page: Int = 1, pages: Int = 1) -> Data {
         let photoResponses = photos.map { photo in
             PhotosResponse.Photo(id: photo.id, secret: photo.secret, server: photo.server, title: photo.title)
         }
