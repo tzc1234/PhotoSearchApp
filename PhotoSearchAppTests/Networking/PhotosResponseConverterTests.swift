@@ -57,11 +57,21 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertEqual(photos, expectedPhotos)
     }
     
-    func test_convertHasNextPage_deliversNoHasNextPageWhenPageNotLessThanPages() throws {
-        let pageNotLessThanPagesData = makeData(from: [], page: 1, pages: 1)
+    func test_convertHasNextPage_deliversNoHasNextPageWhenPageEqualToPages() throws {
+        let pageEqualToPagesData = makeData(from: [], page: 1, pages: 1)
         
         let hasNextPage = try PhotosResponseConverter.convert(
-            pageNotLessThanPagesData,
+            pageEqualToPagesData,
+            response: ok200Response()).hasNextPage
+        
+        XCTAssertFalse(hasNextPage)
+    }
+    
+    func test_convertHasNextPage_deliversNoHasNextPageWhenPageGreaterThanPages() throws {
+        let pageGreaterThanPagesData = makeData(from: [], page: 2, pages: 1)
+        
+        let hasNextPage = try PhotosResponseConverter.convert(
+            pageGreaterThanPagesData,
             response: ok200Response()).hasNextPage
         
         XCTAssertFalse(hasNextPage)
