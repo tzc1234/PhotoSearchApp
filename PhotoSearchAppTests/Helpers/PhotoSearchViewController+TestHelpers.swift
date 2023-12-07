@@ -31,7 +31,7 @@ extension PhotoSearchViewController {
     }
     
     private func makeHigherTableFrameToRenderCellSuccessfully() {
-        tableView.frame = CGRect(x: 0, y: 0, width: 1, height: 9999)
+        tableView.frame = CGRect(x: 0, y: 0, width: 390, height: 9999)
     }
     
     func simulateUserInitiatedReload() {

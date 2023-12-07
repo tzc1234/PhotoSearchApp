@@ -315,7 +315,6 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         sut.simulateSearchPhotos(by: anyTerm())
         loader.completePhotosLoad(with: emptyPhotos, at: 1)
-        
         sut.simulateLoadMoreAction()
         loader.completeLoadMorePhotos(with: emptyPhotos, isLastPage: true, at: 1)
         
@@ -338,6 +337,32 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.completeLoadMorePhotosWithError(at: 1)
         
         assert(sut, isRending: photos)
+    }
+    
+    func test_loadMorePhotosComplete_rendersPhotoViewsCompletedWithPhotos() {
+        let photos0 = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
+        let photos1 = [makePhoto(id: "2", title: "title 2"), makePhoto(id: "3", title: "title 3")]
+        let photos2 = [makePhoto(id: "4", title: "title 4")]
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: photos0, at: 0)
+        
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotos(with: photos0 + photos1, isLastPage: true, at: 0)
+        
+        assert(sut, isRending: photos0 + photos1)
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.completePhotosLoad(with: photos0, at: 1)
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotos(with: photos0 + photos1, isLastPage: false, at: 1)
+        
+        assert(sut, isRending: photos0 + photos1)
+
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotos(with: photos0 + photos1 + photos2, isLastPage: true, at: 2)
+        
+        assert(sut, isRending: photos0 + photos1 + photos2)
     }
     
     // MARK: - Image View tests
