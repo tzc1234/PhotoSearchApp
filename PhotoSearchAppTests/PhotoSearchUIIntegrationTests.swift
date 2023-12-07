@@ -245,7 +245,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect no change on load more requests after the 1st load more action not yet completed")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [""], "Expect no changes on load more search term logged after the 1st load more action not yet completed")
 
-        loader.completeLoadMore(with: page, isLastPage: false, at: 0)
+        loader.completeLoadMorePhotos(with: page, isLastPage: false, at: 0)
         XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect no change on load more requests after load more request completed successfully")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [""], "Expect no change on load more search terms after load more request completed successfully")
         
@@ -253,7 +253,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect 2 load more requests after the 2nd load more action")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, ["", ""], "Expect 2 load more search terms logged after the 2nd load more action")
         
-        loader.completeLoadMoreWithError(at: 1)
+        loader.completeLoadMorePhotosWithError(at: 1)
         XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect no change on load more requests after load more request completed with error")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, ["", ""], "Expect no change on load more search terms after load more request completed with error")
         
@@ -261,7 +261,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect 3 load more requests after the 3rd load more action")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, ["", "", ""], "Expect 3 load more search terms logged after the 3rd load more action")
         
-        loader.completeLoadMore(with: page, isLastPage: true, at: 2)
+        loader.completeLoadMorePhotos(with: page, isLastPage: true, at: 2)
         XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect no change on load more requests after load more request completed successfully")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, ["", "", ""], "Expect no change on load more search terms after load more request completed successfully")
         
@@ -288,7 +288,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect no change on load more requests after the 1st load more action not yet completed")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term], "Expect no changes on load more search term logged after the 1st load more action not yet completed")
 
-        loader.completeLoadMore(with: page, isLastPage: false, at: 0)
+        loader.completeLoadMorePhotos(with: page, isLastPage: false, at: 0)
         XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect no change on load more requests after load more request completed successfully")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term], "Expect no change on load more search terms after load more request completed successfully")
         
@@ -296,7 +296,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect 2 load more requests after the 2nd load more action")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term], "Expect 2 load more search terms logged after the 2nd load more action")
         
-        loader.completeLoadMoreWithError(at: 1)
+        loader.completeLoadMorePhotosWithError(at: 1)
         XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect no change on load more requests after load more request completed with error")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term], "Expect no change on load more search terms after load more request completed with error")
         
@@ -304,7 +304,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect 3 load more requests after the 3rd load more action")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term, term], "Expect 3 load more search terms logged after the 3rd load more action")
         
-        loader.completeLoadMore(with: page, isLastPage: true, at: 2)
+        loader.completeLoadMorePhotos(with: page, isLastPage: true, at: 2)
         XCTAssertEqual(loader.loadMorePhotosCallCount, 3, "Expect no change on load more requests after load more request completed successfully")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term, term], "Expect no change on load more search terms after load more request completed successfully")
         
@@ -317,6 +317,24 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateLoadMoreAction()
         XCTAssertEqual(loader.loadMorePhotosCallCount, 4, "Expect 4 load more requests after the 4th load more action with a different search term")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term, term, differentTerm], "Expect a different search term logged after the 4th load more action")
+    }
+    
+    func test_loadMorePhotosComplete_doesNotAlterCurrentRenderedPhotoViewsOnLoaderError() {
+        let photos = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: photos, at: 0)
+        
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotosWithError(at: 0)
+        
+        assert(sut, isRending: photos)
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotosWithError(at: 1)
+        
+        assert(sut, isRending: photos)
     }
     
     // MARK: - Image View tests

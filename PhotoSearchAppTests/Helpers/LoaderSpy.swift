@@ -60,8 +60,8 @@ class LoaderSpy {
         loadPhotosRequests[index].publisher.send(completion: .failure(anyNSError()))
     }
     
-    func completeLoadMore(with photos: [Photo], isLastPage: Bool, at index: Int,
-                          file: StaticString = #filePath, line: UInt = #line) {
+    func completeLoadMorePhotos(with photos: [Photo], isLastPage: Bool, at index: Int,
+                                file: StaticString = #filePath, line: UInt = #line) {
         guard index < loadMorePhotosRequests.count else {
             XCTFail("Index: \(index) is out of range.", file: file, line: line)
             return
@@ -71,12 +71,7 @@ class LoaderSpy {
         loadMorePhotosRequests[index].publisher.send(completion: .finished)
     }
     
-    func completeLoadMoreWithError(at index: Int, file: StaticString = #filePath, line: UInt = #line) {
-        guard index < loadMorePhotosRequests.count else {
-            XCTFail("Index: \(index) is out of range.", file: file, line: line)
-            return
-        }
-        
+    func completeLoadMorePhotosWithError(at index: Int, file: StaticString = #filePath, line: UInt = #line) {
         loadMorePhotosRequests[index].publisher.send(completion: .failure(anyNSError()))
     }
     
