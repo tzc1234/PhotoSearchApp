@@ -15,7 +15,9 @@ final class PhotosResponseConverterTests: XCTestCase {
         
         try samples.forEach { statusCode in
             let response = HTTPURLResponse(statusCode: statusCode)
-            XCTAssertThrowsError(try PhotosResponseConverter.convert(data, response: response), "Expect an error at statusCode: \(statusCode)")
+            XCTAssertThrowsError(
+                try PhotosResponseConverter.convert(data, response: response),
+                "Expect an error at statusCode: \(statusCode)")
         }
     }
     
@@ -55,13 +57,25 @@ final class PhotosResponseConverterTests: XCTestCase {
         XCTAssertEqual(photos, expectedPhotos)
     }
     
+    func test_convertHasNextPage_deliversNoHasNextPageWhenPageNotLessThanPages() throws {
+        let page = 1
+        let pages = 1
+        let pageNotLessThanPagesData = makeData(from: [], for: page, pages: pages)
+        
+        let hasNextPage = try PhotosResponseConverter.convert(
+            pageNotLessThanPagesData,
+            response: ok200Response()).hasNextPage
+        
+        XCTAssertFalse(hasNextPage)
+    }
+    
     // MARK: - Helpers
     
-    private func makeData(from photos: [Photo]) -> Data {
+    private func makeData(from photos: [Photo], for page: Int = 1, pages: Int = 1) -> Data {
         let photoResponses = photos.map { photo in
             PhotosResponse.Photo(id: photo.id, secret: photo.secret, server: photo.server, title: photo.title)
         }
-        let response = PhotosResponse(photos: .init(photo: photoResponses))
+        let response = PhotosResponse(photos: .init(page: page, pages: pages, photo: photoResponses))
         return try! JSONEncoder().encode(response)
     }
     
@@ -69,6 +83,8 @@ final class PhotosResponseConverterTests: XCTestCase {
         let photos: Photos
         
         struct Photos: Encodable {
+            let page: Int
+            let pages: Int
             let photo: [Photo]
         }
         
