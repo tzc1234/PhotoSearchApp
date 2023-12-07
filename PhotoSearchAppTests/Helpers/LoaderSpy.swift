@@ -43,7 +43,7 @@ class LoaderSpy {
     
     func completePhotosLoad(with photos: [Photo], at index: Int, file: StaticString = #filePath, line: UInt = #line) {
         check(index, within: loadPhotosRequests, file: file, line: line, afterThat: {
-            loadPhotosRequests[index].publisher.send(makePaginatedPhotos(with: photos))
+            loadPhotosRequests[index].publisher.send(makePaginatedPhotos(with: photos, currentPage: index+1))
             loadPhotosRequests[index].publisher.send(completion: .finished)
         })
     }
@@ -57,7 +57,10 @@ class LoaderSpy {
     func completeLoadMorePhotos(with photos: [Photo], isLastPage: Bool, at index: Int,
                                 file: StaticString = #filePath, line: UInt = #line) {
         check(index, within: loadMorePhotosRequests, file: file, line: line, afterThat: {
-            loadMorePhotosRequests[index].publisher.send(makePaginatedPhotos(with: photos, isLastPage: isLastPage))
+            loadMorePhotosRequests[index].publisher.send(makePaginatedPhotos(
+                with: photos,
+                currentPage: index+1,
+                isLastPage: isLastPage))
             loadMorePhotosRequests[index].publisher.send(completion: .finished)
         })
     }
@@ -68,9 +71,10 @@ class LoaderSpy {
         })
     }
     
-    private func makePaginatedPhotos(with photos: [Photo], isLastPage: Bool = false) -> Paginated<Photo> {
+    private func makePaginatedPhotos(with photos: [Photo], currentPage: Int, isLastPage: Bool = false) -> Paginated<Photo> {
         Paginated(
-            items: photos,
+            items: photos, 
+            currentPage: currentPage,
             loadMorePublisher: isLastPage ? nil : { [weak self] searchTerm in
                 let publisher = LoadPhotosPublisher()
                 self?.loadMorePhotosRequests.append((publisher, searchTerm))
