@@ -44,6 +44,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let apiKey = ""
         assert(!apiKey.isEmpty, "Set Flickr api key here.")
         let url = PhotosEndpoint.get(searchTerm: searchTerm).url(apiKey: apiKey)
+        let url = PhotosEndpoint.get(searchTerm: searchTerm, page: 1).url(apiKey: apiKey)
         return httpClient
             .getPublisher(url: url)
             .tryMap(PhotosResponseConverter.convert)
