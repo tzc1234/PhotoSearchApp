@@ -62,7 +62,7 @@ extension PhotoSearchViewController {
         guard numberOfRows(inSection: section) > row else { return nil }
         
         let ds = tableView.dataSource
-        let indexPath = IndexPath(row: row, section: photosSection)
+        let indexPath = IndexPath(row: row, section: section)
         return ds?.tableView(tableView, cellForRowAt: indexPath)
     }
     

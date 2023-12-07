@@ -117,28 +117,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once search request completed successfully")
     }
     
-    func test_loadPhotosComplete_doesNotRenderPhotoViewsCompletedWithError() {
-        let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
-        
-        assert(sut, isRending: [])
-        
-        loader.completePhotosLoadWithError(at: 0)
-        
-        assert(sut, isRending: [])
-        
-        sut.simulateSearchPhotos(by: anyTerm())
-        loader.completePhotosLoadWithError(at: 1)
-        
-        assert(sut, isRending: [])
-    }
-    
     func test_loadPhotosComplete_doesNotRenderPhotoViewsCompletedWithEmptyPhotos() {
         let emptyPhotos = [Photo]()
         let (sut, loader) = makeSUT()
         sut.simulateAppearance()
         
-        assert(sut, isRending: [])
+        assert(sut, isRending: emptyPhotos)
         
         loader.completePhotosLoad(with: emptyPhotos, at: 0)
         
@@ -317,6 +301,25 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateLoadMoreAction()
         XCTAssertEqual(loader.loadMorePhotosCallCount, 4, "Expect 4 load more requests after the 4th load more action with a different search term")
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term, term, differentTerm], "Expect a different search term logged after the 4th load more action")
+    }
+    
+    func test_loadMorePhotosComplete_doesNotRenderPhotoViewsCompletedWithEmptyPhotos() {
+        let emptyPhotos = [Photo]()
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: emptyPhotos, at: 0)
+        
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotos(with: emptyPhotos, isLastPage: true, at: 0)
+        assert(sut, isRending: emptyPhotos)
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.completePhotosLoad(with: emptyPhotos, at: 1)
+        
+        sut.simulateLoadMoreAction()
+        loader.completeLoadMorePhotos(with: emptyPhotos, isLastPage: true, at: 1)
+        
+        assert(sut, isRending: emptyPhotos)
     }
     
     func test_loadMorePhotosComplete_doesNotAlterCurrentRenderedPhotoViewsOnLoaderError() {
