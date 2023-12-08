@@ -109,7 +109,11 @@ extension PhotoSearchViewController {
         d?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
-    var loadMoreView: UITableViewCell? {
+    var isLastPage: Bool {
+        loadMoreView == nil
+    }
+    
+    private var loadMoreView: UITableViewCell? {
         cell(at: 0, inSection: loadMoreSection)
     }
     

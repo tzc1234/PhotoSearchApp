@@ -34,7 +34,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
         XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData0())
         XCTAssertEqual(photos.photoView(at: 3)?.renderedImage, makeLoadMoreImageData1())
-        XCTAssertNil(photos.loadMoreView)
+        XCTAssertTrue(photos.isLastPage)
     }
     
     func test_onLaunch_displaysPhotosWhenUserHasConnectivityWithSearchKeyword() throws {
@@ -60,7 +60,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeSearchedImageData())
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeLoadMoreImageData0())
         XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData1())
-        XCTAssertNil(photos.loadMoreView)
+        XCTAssertTrue(photos.isLastPage)
     }
     
     func test_onLaunch_displaysErrorMessageWhenUserHasNoConnectivity() throws {
@@ -132,10 +132,10 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         case "/searchedServer/searchedId_searchedSecret_b.jpg":
             return makeSearchedImageData()
             
-        case "/page2server/page2Id_page2Secret_b.jpg":
+        case "/page2Server/page2Id_page2Secret_b.jpg":
             return makeLoadMoreImageData0()
             
-        case "/page3server/page3Id_page3Secret_b.jpg":
+        case "/page3Server/page3Id_page3Secret_b.jpg":
             return makeLoadMoreImageData1()
             
         default:
@@ -176,7 +176,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
                     [
                         "id": "page2Id",
                         "secret": "page2Secret",
-                        "server": "page2server",
+                        "server": "page2Server",
                         "title": "page2Title"
                     ]
                 ]
@@ -194,7 +194,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
                     [
                         "id": "page3Id",
                         "secret": "page3Secret",
-                        "server": "page3server",
+                        "server": "page3Server",
                         "title": "page3Title"
                     ]
                 ]
