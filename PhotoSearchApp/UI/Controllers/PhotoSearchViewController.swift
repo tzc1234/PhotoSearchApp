@@ -15,7 +15,7 @@ final class PhotoSearchViewController: UITableViewController {
     }()
     
     private lazy var dataSource: UITableViewDiffableDataSource<Int, CellController> = {
-        .init(tableView: tableView) { [weak self] tableView, indexPath, cellController in
+        .init(tableView: tableView) { tableView, indexPath, cellController in
             cellController.dataSource.tableView(tableView, cellForRowAt: indexPath)
         }
     }()
