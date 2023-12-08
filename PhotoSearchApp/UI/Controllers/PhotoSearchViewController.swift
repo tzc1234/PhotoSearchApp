@@ -75,10 +75,6 @@ final class PhotoSearchViewController: UITableViewController {
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        cellController(forRowAt: indexPath)?.delegate.tableView?(tableView, heightForRowAt: indexPath) ?? 0
-    }
-    
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cellController(forRowAt: indexPath)?.delegate.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
     }

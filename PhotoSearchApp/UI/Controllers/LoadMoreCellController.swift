@@ -34,10 +34,6 @@ extension LoadMoreCellController: UITableViewDelegate {
         
         loadMore()
     }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        1
-    }
 }
 
 extension LoadMoreCellController: PhotosLoadingView {

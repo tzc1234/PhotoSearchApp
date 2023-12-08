@@ -8,7 +8,7 @@
 import UIKit
 
 final class PhotoCell: UITableViewCell {
-    static var cellHeight: CGFloat { UIScreen.main.bounds.width * 0.56 }
+    static var cellHeight: CGFloat { (UIScreen.main.bounds.width * 0.56).rounded(.towardZero) }
     
     private lazy var shadowBackgroundView = {
         let v = UIView()
@@ -81,7 +81,8 @@ final class PhotoCell: UITableViewCell {
             shadowBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
             shadowBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             shadowBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            shadowBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            shadowBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6).prioritised(999),
+            shadowBackgroundView.heightAnchor.constraint(equalToConstant: Self.cellHeight - 12),
             
             containerView.topAnchor.constraint(equalTo: shadowBackgroundView.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: shadowBackgroundView.leadingAnchor),
@@ -110,5 +111,12 @@ final class PhotoCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         onReuse?()
+    }
+}
+
+extension NSLayoutConstraint {
+    func prioritised(_ priority: Float) -> NSLayoutConstraint {
+        self.priority = .init(priority)
+        return self
     }
 }

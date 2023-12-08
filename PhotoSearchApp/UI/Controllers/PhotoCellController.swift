@@ -56,10 +56,6 @@ extension PhotoCellController: UITableViewDataSource {
         }
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        PhotoCell.cellHeight
-    }
 }
 
 extension PhotoCellController: UITableViewDelegate {
