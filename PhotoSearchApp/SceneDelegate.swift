@@ -61,7 +61,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func makePaginatedPhotos(photos: [Photo], hasNextPage: Bool, page: Int) -> Paginated<Photo> {
-        print("hasNextPage: \(hasNextPage), page: \(page)" )
         return Paginated(
             items: photos,
             loadMorePublisher: hasNextPage ? makePaginatedPhotosPublisher(page: page, photos: photos) : nil

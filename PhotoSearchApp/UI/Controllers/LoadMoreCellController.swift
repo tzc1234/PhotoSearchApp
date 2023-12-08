@@ -24,7 +24,8 @@ extension LoadMoreCellController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        cell
+        cell.selectionStyle = .none
+        return cell
     }
 }
 

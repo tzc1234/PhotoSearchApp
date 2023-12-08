@@ -102,14 +102,14 @@ extension PhotoSearchViewController {
 
 extension PhotoSearchViewController {
     func simulateLoadMoreAction() {
-        guard let cell = loadMoreView() else { return }
+        guard let cell = loadMoreView else { return }
         
         let d = tableView.delegate
         let indexPath = IndexPath(row: 0, section: loadMoreSection)
         d?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
-    func loadMoreView() -> UITableViewCell? {
+    var loadMoreView: UITableViewCell? {
         cell(at: 0, inSection: loadMoreSection)
     }
     

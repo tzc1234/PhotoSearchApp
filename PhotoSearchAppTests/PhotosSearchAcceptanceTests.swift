@@ -12,13 +12,13 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     func test_onLaunch_displaysPhotosWhenUserHasConnectivity() throws {
         let photos = try onLaunch(.online(response))
         
-        photos.setTableHeightToLimitCellViewRendering(PhotoCell.cellHeight * 2)
+        photos.setTableHeightToLimitCellViewRendering(.heightFor(numOfCells: 2))
         
         XCTAssertEqual(photos.numberOfPhotoViews, 2)
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeImageData0())
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
         
-        photos.setTableHeightToLimitCellViewRendering(PhotoCell.cellHeight * 3)
+        photos.setTableHeightToLimitCellViewRendering(.heightFor(numOfCells: 3))
         photos.simulateLoadMoreAction()
         
         XCTAssertEqual(photos.numberOfPhotoViews, 3)
@@ -26,7 +26,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
         XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData0())
         
-        photos.setTableHeightToLimitCellViewRendering(PhotoCell.cellHeight * 4)
+        photos.setTableHeightToLimitCellViewRendering(.heightFor(numOfCells: 99))
         photos.simulateLoadMoreAction()
         
         XCTAssertEqual(photos.numberOfPhotoViews, 4)
@@ -34,16 +34,33 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
         XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData0())
         XCTAssertEqual(photos.photoView(at: 3)?.renderedImage, makeLoadMoreImageData1())
-        XCTAssertNil(photos.loadMoreView())
+        XCTAssertNil(photos.loadMoreView)
     }
     
-    func test_onLaunch_displaysPhotosWhenUserHasConnectivityAndSearchesByKeyword() throws {
+    func test_onLaunch_displaysPhotosWhenUserHasConnectivityWithSearchKeyword() throws {
         let photos = try onLaunch(.online(response))
         
+        photos.setTableHeightToLimitCellViewRendering(.heightFor(numOfCells: 1))
         photos.simulateSearchPhotos(by: searchKeyword())
         
         XCTAssertEqual(photos.numberOfPhotoViews, 1)
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeSearchedImageData())
+        
+        photos.setTableHeightToLimitCellViewRendering(.heightFor(numOfCells: 2))
+        photos.simulateLoadMoreAction()
+        
+        XCTAssertEqual(photos.numberOfPhotoViews, 2)
+        XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeSearchedImageData())
+        XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeLoadMoreImageData0())
+        
+        photos.setTableHeightToLimitCellViewRendering(.heightFor(numOfCells: 99))
+        photos.simulateLoadMoreAction()
+        
+        XCTAssertEqual(photos.numberOfPhotoViews, 3)
+        XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeSearchedImageData())
+        XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeLoadMoreImageData0())
+        XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData1())
+        XCTAssertNil(photos.loadMoreView)
     }
     
     func test_onLaunch_displaysErrorMessageWhenUserHasNoConnectivity() throws {
@@ -226,5 +243,11 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     
     private func searchKeyword() -> String {
         "keyword"
+    }
+}
+
+private extension CGFloat {
+    static func heightFor(numOfCells num: CGFloat) -> CGFloat {
+        PhotoCell.cellHeight * CGFloat(num)
     }
 }
