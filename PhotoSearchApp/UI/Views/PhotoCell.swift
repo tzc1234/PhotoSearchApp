@@ -113,10 +113,3 @@ final class PhotoCell: UITableViewCell {
         onReuse?()
     }
 }
-
-extension NSLayoutConstraint {
-    func prioritised(_ priority: Float) -> NSLayoutConstraint {
-        self.priority = .init(priority)
-        return self
-    }
-}

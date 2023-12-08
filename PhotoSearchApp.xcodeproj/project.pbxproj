@@ -73,6 +73,7 @@
 		BE81ECDF2A6AEDA000E67DB8 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81ECDE2A6AEDA000E67DB8 /* HTTPClient.swift */; };
 		BE8F8B232B1DDB2100F5BB09 /* PhotosSearchAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8F8B222B1DDB2100F5BB09 /* PhotosSearchAcceptanceTests.swift */; };
 		BE8F8B252B1E010000F5BB09 /* HTTPClientStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8F8B242B1E010000F5BB09 /* HTTPClientStub.swift */; };
+		BE96A59B2B2374310099AD8F /* NSLayoutConstraint+priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE96A59A2B2374310099AD8F /* NSLayoutConstraint+priority.swift */; };
 		BE99DD4F2B18B59F0093F021 /* UITableViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE99DD4E2B18B59F0093F021 /* UITableViewCell+Identifier.swift */; };
 		BE99DD512B18CC330093F021 /* ResourcePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE99DD502B18CC330093F021 /* ResourcePresenter.swift */; };
 		BED8BA362A6820BC0068A202 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */; };
@@ -160,6 +161,7 @@
 		BE81ECDE2A6AEDA000E67DB8 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		BE8F8B222B1DDB2100F5BB09 /* PhotosSearchAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosSearchAcceptanceTests.swift; sourceTree = "<group>"; };
 		BE8F8B242B1E010000F5BB09 /* HTTPClientStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientStub.swift; sourceTree = "<group>"; };
+		BE96A59A2B2374310099AD8F /* NSLayoutConstraint+priority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+priority.swift"; sourceTree = "<group>"; };
 		BE99DD4E2B18B59F0093F021 /* UITableViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Identifier.swift"; sourceTree = "<group>"; };
 		BE99DD502B18CC330093F021 /* ResourcePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcePresenter.swift; sourceTree = "<group>"; };
 		BED8BA352A6820BC0068A202 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				BE99DD4E2B18B59F0093F021 /* UITableViewCell+Identifier.swift */,
+				BE96A59A2B2374310099AD8F /* NSLayoutConstraint+priority.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -581,6 +584,7 @@
 				BE70DF2F2A6C4AE800973366 /* PhotoImageResponseConverter.swift in Sources */,
 				BE4291732A6858FC00AE86D7 /* PhotoCellController.swift in Sources */,
 				BE74D8962A66C76F00073E46 /* AppDelegate.swift in Sources */,
+				BE96A59B2B2374310099AD8F /* NSLayoutConstraint+priority.swift in Sources */,
 				BED8BA382A682C9B0068A202 /* ShimmeringView.swift in Sources */,
 				BE61CDFF2B1F870700359F70 /* CellController.swift in Sources */,
 				BE99DD4F2B18B59F0093F021 /* UITableViewCell+Identifier.swift in Sources */,
