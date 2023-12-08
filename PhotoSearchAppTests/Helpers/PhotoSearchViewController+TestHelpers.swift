@@ -9,8 +9,10 @@ import UIKit
 @testable import PhotoSearchApp
 
 extension PhotoSearchViewController {
-    func simulateAppearance(tableViewFrame: CGRect = CGRect(x: 0, y: 0, width: 390, height: 9999)) {
+    func simulateAppearance(tableViewFrame: CGRect = CGRect(x: 0, y: 0, width: 390, height: 9999), 
+                            cellHeight: CGFloat? = nil) {
         tableView.frame = tableViewFrame
+        cellHeight.map { tableView.rowHeight = $0 }
         replaceRefreshControlToSpyForiOS17Support()
         
         beginAppearanceTransition(true, animated: false)
@@ -76,13 +78,12 @@ extension PhotoSearchViewController {
     }
     
     func photoView(at row: Int) -> PhotoCell? {
-        let indexPath = IndexPath(row: row, section: photosSection)
-        return tableView.cellForRow(at: indexPath) as? PhotoCell
+        cell(at: row, inSection: photosSection) as? PhotoCell
     }
     
     @discardableResult
     func simulatePhotoImageViewVisible(at row: Int) -> PhotoCell? {
-        cell(at: row, inSection: photosSection) as? PhotoCell
+        photoView(at: row)
     }
     
     func simulatePhotoImageViewInvisible(_ view: UITableViewCell, at row: Int) {

@@ -8,8 +8,6 @@
 import UIKit
 
 final class PhotoCell: UITableViewCell {
-    static var cellHeight: CGFloat { (UIScreen.main.bounds.width * 0.56).rounded(.towardZero) }
-    
     private lazy var shadowBackgroundView = {
         let v = UIView()
         v.backgroundColor = .systemBackground
@@ -82,7 +80,7 @@ final class PhotoCell: UITableViewCell {
             shadowBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             shadowBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             shadowBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6).prioritised(999),
-            shadowBackgroundView.heightAnchor.constraint(equalToConstant: Self.cellHeight - 12),
+            shadowBackgroundView.heightAnchor.constraint(equalTo: shadowBackgroundView.widthAnchor, multiplier: 0.56),
             
             containerView.topAnchor.constraint(equalTo: shadowBackgroundView.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: shadowBackgroundView.leadingAnchor),

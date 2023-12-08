@@ -99,7 +99,10 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         
         let nav = try XCTUnwrap(window.rootViewController as? UINavigationController)
         let vc = try XCTUnwrap(nav.topViewController as? PhotoSearchViewController)
-        vc.simulateAppearance(tableViewFrame: .init(x: 0, y: 0, width: 390, height: 1))
+        vc.simulateAppearance(
+            tableViewFrame: .init(x: 0, y: 0, width: 390, height: 1),
+            cellHeight: .specificCellHeightForTest
+        )
         
         return vc
     }
@@ -248,6 +251,8 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
 
 private extension CGFloat {
     static func heightFor(numOfCells num: CGFloat) -> CGFloat {
-        PhotoCell.cellHeight * CGFloat(num)
+        specificCellHeightForTest * CGFloat(num)
     }
+    
+    static var specificCellHeightForTest: CGFloat { 10 }
 }
