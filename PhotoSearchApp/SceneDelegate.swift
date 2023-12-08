@@ -11,6 +11,11 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private lazy var store = NSCacheDataStore()
     private lazy var imageDataCacher = ImageDataCacher(store: store)
+    private lazy var apiKey: String = {
+        let key = ""
+        assert(!apiKey.isEmpty, "Set Flickr api key here.")
+        return key
+    }()
     
     var window: UIWindow?
     private var navigation: UINavigationController?
@@ -31,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureWindow() {
         let photoSearchController = PhotoSearchComposer.composeWith(
-            loadPhotosPublisher: makePhotosPublisher,
+            loadPhotosPublisher: makePaginatedPhotosPublisher(),
             loadImagePublisher: makePhotoImagePublisher,
             showError: showErrorAlert)
         
@@ -40,17 +45,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
-    private func makePhotosPublisher(searchTerm: String) -> AnyPublisher<Paginated<Photo>, Error> {
-        let apiKey = ""
-        assert(!apiKey.isEmpty, "Set Flickr api key here.")
-        let url = PhotosEndpoint.get(searchTerm: searchTerm, page: 1).url(apiKey: apiKey)
-        return httpClient
-            .getPublisher(url: url)
-            .tryMap(PhotosResponseConverter.convert)
-            .map { photos, _ in
-                Paginated(items: photos, loadMore: nil)
-            }
-            .eraseToAnyPublisher()
+    private func makePaginatedPhotosPublisher(page: Int = 1, photos: [Photo] = []) -> (String) -> AnyPublisher<Paginated<Photo>, Error> {
+        return { [apiKey, httpClient, makePaginatedPhotos] searchTerm in
+            let url = PhotosEndpoint.get(searchTerm: searchTerm, page: page).url(apiKey: apiKey)
+            return httpClient
+                .getPublisher(url: url)
+                .tryMap(PhotosResponseConverter.convert)
+                .map { morePhotos, hasNextPage in
+                    let newPhotos = photos + morePhotos
+                    return (newPhotos, hasNextPage, page+1)
+                }
+                .map(makePaginatedPhotos)
+                .eraseToAnyPublisher()
+        }
+    }
+    
+    private func makePaginatedPhotos(photos: [Photo], hasNextPage: Bool, page: Int) -> Paginated<Photo> {
+        print("hasNextPage: \(hasNextPage), page: \(page)" )
+        return Paginated(
+            items: photos,
+            loadMorePublisher: hasNextPage ? makePaginatedPhotosPublisher(page: page, photos: photos) : nil
+        )
     }
     
     private func makePhotoImagePublisher(photo: Photo) -> AnyPublisher<Data, Error> {

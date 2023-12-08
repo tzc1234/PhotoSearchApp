@@ -9,13 +9,12 @@ import UIKit
 @testable import PhotoSearchApp
 
 extension PhotoSearchViewController {
-    func simulateAppearance() {
+    func simulateAppearance(tableViewFrame: CGRect = CGRect(x: 0, y: 0, width: 390, height: 9999)) {
+        tableView.frame = tableViewFrame
         replaceRefreshControlToSpyForiOS17Support()
         
         beginAppearanceTransition(true, animated: false)
         endAppearanceTransition()
-        
-        makeHigherTableFrameToRenderCellSuccessfully()
     }
     
     private func replaceRefreshControlToSpyForiOS17Support() {
@@ -30,8 +29,8 @@ extension PhotoSearchViewController {
         refreshControl = refreshControlSpy
     }
     
-    private func makeHigherTableFrameToRenderCellSuccessfully() {
-        tableView.frame = CGRect(x: 0, y: 0, width: 390, height: 9999)
+    func setTableHeightToLimitCellViewRendering(_ height: CGFloat) {
+        tableView.frame = CGRect(x: 0, y: 0, width: 390, height: height)
     }
     
     func simulateUserInitiatedReload() {
@@ -103,11 +102,15 @@ extension PhotoSearchViewController {
 
 extension PhotoSearchViewController {
     func simulateLoadMoreAction() {
-        guard let cell = cell(at: 0, inSection: loadMoreSection) else { return }
+        guard let cell = loadMoreView() else { return }
         
         let d = tableView.delegate
         let indexPath = IndexPath(row: 0, section: loadMoreSection)
         d?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+    }
+    
+    func loadMoreView() -> UITableViewCell? {
+        cell(at: 0, inSection: loadMoreSection)
     }
     
     private var loadMoreSection: Int { 1 }

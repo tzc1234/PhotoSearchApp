@@ -12,9 +12,29 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     func test_onLaunch_displaysPhotosWhenUserHasConnectivity() throws {
         let photos = try onLaunch(.online(response))
         
+        photos.setTableHeightToLimitCellViewRendering(PhotoCell.cellHeight * 2)
+        
         XCTAssertEqual(photos.numberOfPhotoViews, 2)
         XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeImageData0())
         XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
+        
+        photos.setTableHeightToLimitCellViewRendering(PhotoCell.cellHeight * 3)
+        photos.simulateLoadMoreAction()
+        
+        XCTAssertEqual(photos.numberOfPhotoViews, 3)
+        XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeImageData0())
+        XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
+        XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData0())
+        
+        photos.setTableHeightToLimitCellViewRendering(PhotoCell.cellHeight * 4)
+        photos.simulateLoadMoreAction()
+        
+        XCTAssertEqual(photos.numberOfPhotoViews, 4)
+        XCTAssertEqual(photos.photoView(at: 0)?.renderedImage, makeImageData0())
+        XCTAssertEqual(photos.photoView(at: 1)?.renderedImage, makeImageData1())
+        XCTAssertEqual(photos.photoView(at: 2)?.renderedImage, makeLoadMoreImageData0())
+        XCTAssertEqual(photos.photoView(at: 3)?.renderedImage, makeLoadMoreImageData1())
+        XCTAssertNil(photos.loadMoreView())
     }
     
     func test_onLaunch_displaysPhotosWhenUserHasConnectivityAndSearchesByKeyword() throws {
@@ -62,7 +82,7 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         
         let nav = try XCTUnwrap(window.rootViewController as? UINavigationController)
         let vc = try XCTUnwrap(nav.topViewController as? PhotoSearchViewController)
-        vc.simulateAppearance()
+        vc.simulateAppearance(tableViewFrame: .init(x: 0, y: 0, width: 390, height: 1))
         
         return vc
     }
@@ -73,44 +93,93 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     
     private func makeData(for url: URL) -> Data {
         switch url.path() {
-        case "/services/rest/" where url.query()?.contains("text=\(searchKeyword())") == true:
+        case "/services/rest/"
+            where url.query()?.contains("text=\(searchKeyword())") == true && url.query()?.contains("page=1") == true:
             return makeSearchedPhotosData()
             
-        case "/services/rest/":
-            return makePhotosData()
+        case "/services/rest/" where url.query()?.contains("page=3") == true:
+            return makePage3PhotosData()
             
-        case "/server0/id0_secret0_b.jpg":
+        case "/services/rest/" where url.query()?.contains("page=1") == true:
+            return makePage1PhotosData()
+            
+        case "/services/rest/" where url.query()?.contains("page=2") == true:
+            return makePage2PhotosData()
+            
+        case "/page1Server1/page1Id1_page1Secret1_b.jpg":
             return makeImageData0()
             
-        case "/server1/id1_secret1_b.jpg":
+        case "/page1Server2/page1Id2_page1Secret2_b.jpg":
             return makeImageData1()
             
-        case "/server2/id2_secret2_b.jpg":
+        case "/searchedServer/searchedId_searchedSecret_b.jpg":
             return makeSearchedImageData()
+            
+        case "/page2server/page2Id_page2Secret_b.jpg":
+            return makeLoadMoreImageData0()
+            
+        case "/page3server/page3Id_page3Secret_b.jpg":
+            return makeLoadMoreImageData1()
             
         default:
             return Data()
         }
     }
     
-    private func makePhotosData() -> Data {
+    private func makePage1PhotosData() -> Data {
         let json: [String: Any] = [
             "photos": [
                 "page": 1,
-                "pages": 2,
+                "pages": 3,
                 "photo": [
                     [
-                        "id": "id0",
-                        "secret": "secret0",
-                        "server": "server0",
-                        "title": "title0"
+                        "id": "page1Id1",
+                        "secret": "page1Secret1",
+                        "server": "page1Server1",
+                        "title": "page1Title1"
                     ],
                     [
-                        "id": "id1",
-                        "secret": "secret1",
-                        "server": "server1",
-                        "title": "title1"
+                        "id": "page1Id2",
+                        "secret": "page1Secret2",
+                        "server": "page1Server2",
+                        "title": "page1Title2"
                     ],
+                ]
+            ]
+        ]
+        return try! JSONSerialization.data(withJSONObject: json)
+    }
+    
+    private func makePage2PhotosData() -> Data {
+        let json: [String: Any] = [
+            "photos": [
+                "page": 2,
+                "pages": 3,
+                "photo": [
+                    [
+                        "id": "page2Id",
+                        "secret": "page2Secret",
+                        "server": "page2server",
+                        "title": "page2Title"
+                    ]
+                ]
+            ]
+        ]
+        return try! JSONSerialization.data(withJSONObject: json)
+    }
+    
+    private func makePage3PhotosData() -> Data {
+        let json: [String: Any] = [
+            "photos": [
+                "page": 3,
+                "pages": 3,
+                "photo": [
+                    [
+                        "id": "page3Id",
+                        "secret": "page3Secret",
+                        "server": "page3server",
+                        "title": "page3Title"
+                    ]
                 ]
             ]
         ]
@@ -121,13 +190,13 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
         let json: [String: Any] = [
             "photos": [
                 "page": 1,
-                "pages": 2,
+                "pages": 3,
                 "photo": [
                     [
-                        "id": "id2",
-                        "secret": "secret2",
-                        "server": "server2",
-                        "title": "title2"
+                        "id": "searchedId",
+                        "secret": "searchedSecret",
+                        "server": "searchedServer",
+                        "title": "searchedTitle"
                     ]
                 ]
             ]
@@ -145,6 +214,14 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     
     private func makeSearchedImageData() -> Data {
         UIImage.makeData(withColor: .blue)
+    }
+    
+    private func makeLoadMoreImageData0() -> Data {
+        UIImage.makeData(withColor: .lightGray)
+    }
+    
+    private func makeLoadMoreImageData1() -> Data {
+        UIImage.makeData(withColor: .darkGray)
     }
     
     private func searchKeyword() -> String {
