@@ -22,6 +22,7 @@ final class PhotoSearchViewController: UITableViewController {
     
     private(set) var searchTerm = ""
     private var onViewIsAppearing: ((PhotoSearchViewController) -> Void)?
+    private var topContentOffset: CGFloat = 0
     
     private let loadPhotos: (String) -> Void
     private let showError: (ErrorMessage) -> Void
@@ -43,6 +44,7 @@ final class PhotoSearchViewController: UITableViewController {
         onViewIsAppearing = { vc in
             vc.loadPhotos(vc.searchTerm)
             vc.onViewIsAppearing = nil
+            vc.topContentOffset = vc.tableView.contentOffset.y
         }
     }
     
@@ -111,6 +113,11 @@ extension PhotoSearchViewController: PhotosLoadingView {
             refreshControl?.beginRefreshing()
         } else {
             refreshControl?.endRefreshing()
+            scrollToTheTop()
         }
+    }
+    
+    private func scrollToTheTop() {
+        tableView.setContentOffset(.init(x: 0, y: topContentOffset), animated: false)
     }
 }

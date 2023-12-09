@@ -56,6 +56,22 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of one more uncompleted search request")
     }
     
+    func test_photosSearching_scrollsToTheTopAfterSearching() {
+        let photos = [makePhoto()]
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        
+        loader.completePhotosLoad(with: photos, at: 0)
+        sut.simulateScrollDown()
+        
+        XCTAssertFalse(sut.isAtTheTop)
+        
+        sut.simulateSearchPhotos(by: anyTerm())
+        loader.completePhotosLoad(with: photos, at: 1)
+        
+        XCTAssertTrue(sut.isAtTheTop)
+    }
+    
     func test_photoSearching_unfocusesSearchBarAfterUserFinishedSearching() {
         let (sut, _) = makeSUT()
         let window = UIWindow()

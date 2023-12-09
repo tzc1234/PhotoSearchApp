@@ -51,6 +51,14 @@ extension PhotoSearchViewController {
         searchBarSearchButtonClicked(searchBar)
     }
     
+    func simulateScrollDown() {
+        tableView.setContentOffset(.init(x: 0, y: 1), animated: false)
+    }
+    
+    var isAtTheTop: Bool {
+        tableView.contentOffset.y <= 0
+    }
+    
     var isFocusingOnSearchBar: Bool {
         searchBar.isFirstResponder
     }
@@ -151,6 +159,6 @@ final class AlwaysDraggingTableView: UITableView {
     }
     
     func simulateScroll() {
-        contentOffset = .init(x: 0, y: 1)
+        setContentOffset(.init(x: 0, y: 1), animated: false)
     }
 }
