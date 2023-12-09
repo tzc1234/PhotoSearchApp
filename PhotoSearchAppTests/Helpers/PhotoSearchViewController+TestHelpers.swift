@@ -102,12 +102,20 @@ extension PhotoSearchViewController {
 }
 
 extension PhotoSearchViewController {
-    func simulateLoadMoreAction() {
-        guard let cell = loadMoreView else { return }
+    @discardableResult
+    func simulateLoadMoreAction(tableViewForTest: UITableView? = nil) -> UITableViewCell? {
+        guard let cell = loadMoreView else { return nil }
         
         let d = tableView.delegate
         let indexPath = IndexPath(row: 0, section: loadMoreSection)
-        d?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+        d?.tableView?(tableViewForTest ?? tableView, willDisplay: cell, forRowAt: indexPath)
+        return cell
+    }
+    
+    func simulateLoadMoreViewInvisible(_ view: UITableViewCell) {
+        let d = tableView.delegate
+        let indexPath = IndexPath(row: 0, section: loadMoreSection)
+        d?.tableView?(tableView, didEndDisplaying: view, forRowAt: indexPath)
     }
     
     var isLastPage: Bool {
@@ -134,5 +142,15 @@ final class RefreshControlSpy: UIRefreshControl {
     
     override func endRefreshing() {
         _isRefreshing = false
+    }
+}
+
+final class AlwaysDraggingTableView: UITableView {
+    override var isDragging: Bool {
+        true
+    }
+    
+    func simulateScroll() {
+        contentOffset = .init(x: 0, y: 1)
     }
 }

@@ -379,6 +379,28 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
+    func test_loadMorePhotos_requestsLoadMoreAgainAfterALoadMoreActionCompletedWithError_whenScrollingLoadMoreView() throws {
+        let (sut, loader) = makeSUT()
+        let alwaysDraggingTableView = AlwaysDraggingTableView()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: [], at: 0)
+        
+        let loadMoreView = try XCTUnwrap(sut.simulateLoadMoreAction(tableViewForTest: alwaysDraggingTableView))
+        loader.completeLoadMorePhotosWithError(at: 0)
+        
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 1, "Expect 1 load more request after the 1st load more completed with error")
+        
+        alwaysDraggingTableView.simulateScroll()
+        loader.completeLoadMorePhotosWithError(at: 1)
+        
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect 2 load more requests after the scrolling of the visible load more view")
+        
+        sut.simulateLoadMoreViewInvisible(loadMoreView)
+        alwaysDraggingTableView.simulateScroll()
+        
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect no changes on load more requests when scrolling and the load more view is invisible")
+    }
+    
     // MARK: - Image View tests
     
     func test_photoImageView_loadImageForPhotoWhenVisible() {
