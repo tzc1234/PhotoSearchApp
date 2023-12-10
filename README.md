@@ -20,9 +20,6 @@ All snapshot tests in this project are run on iPhone 15(iOS 17.0.1) simulator.**
 4. Refactor from MVC to MVP, safeguard by tests
 5. "Glue" the components by Combine in the composition root
 
-## TODO
-1. Pagination
-
 ## Photo Search Feature Specs
 
 ### Story: User requests to search photos
