@@ -158,7 +158,11 @@ final class AlwaysDraggingTableView: UITableView {
         true
     }
     
-    func simulateScroll() {
+    func simulateScrollUp() {
+        setContentOffset(.init(x: 0, y: 0), animated: false)
+    }
+    
+    func simulateScrollDown() {
         setContentOffset(.init(x: 0, y: 1), animated: false)
     }
 }

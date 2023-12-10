@@ -34,11 +34,13 @@ extension LoadMoreCellController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         reloadIfNeeded()
         
-        offsetObserver = tableView.observe(\.contentOffset, options: .new, changeHandler: { [weak self] tableView, _ in
-            guard tableView.isDragging else { return }
+        offsetObserver = tableView.observe(\.contentOffset, options: [.old, .new]) { [weak self] tableView, value in
+            guard tableView.isDragging, let old = value.oldValue?.y, let new = value.newValue?.y, new > old else {
+                return
+            }
             
             self?.reloadIfNeeded()
-        })
+        }
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
