@@ -13,7 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private lazy var imageDataCacher = ImageDataCacher(store: store)
     private lazy var apiKey: String = {
         let key = ""
-        assert(!apiKey.isEmpty, "Set Flickr api key here.")
+        assert(!key.isEmpty, "Set Flickr api key here.")
         return key
     }()
     
