@@ -19,22 +19,20 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT()
         
         XCTAssertEqual(loader.loadPhotosCallCount, 0, "Expect zero photos loads before the view rendering completed")
-        XCTAssertEqual(loader.cancelLoadCallCount, 0, "Expect zero cancel photos loads before a cancel the view rendering completed")
         
         sut.simulateAppearance()
         
         XCTAssertEqual(loader.loadPhotosCallCount, 1, "Expect a photos load after the view rendering completed")
         
+        loader.completePhotosLoad(with: [], at: 0)
         sut.simulateUserInitiatedReload()
 
         XCTAssertEqual(loader.loadPhotosCallCount, 2, "Expect two photos loads after user initiated a photos reload")
-        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load after an uncompleted request")
         
-        loader.completePhotosLoadWithError(at: 1)
+        loader.completePhotosLoad(with: [], at: 1)
         sut.simulateUserInitiatedReload()
         
         XCTAssertEqual(loader.loadPhotosCallCount, 3, "Expect three photos loads after user initiated second photos reload")
-        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect no changes because no more request uncompleted")
     }
     
     func test_photosSearching_requestsPhotosBySearchTermFromLoader() {
@@ -42,18 +40,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateAppearance()
         
         XCTAssertEqual(loader.loggedSearchTerms, [""], "Expect one search term logged after view rendered")
+        loader.completePhotosLoad(with: [], at: 0)
         
         let searchTerm0 = "term 0"
         sut.simulateSearchPhotos(by: searchTerm0)
+        loader.completePhotosLoad(with: [], at: 1)
         
         XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0], "Expect two search terms logged after a search request")
-        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect one cancel load because of the initial uncompleted request")
         
         let searchTerm1 = "term 1"
         sut.simulateSearchPhotos(by: searchTerm1)
+        loader.completePhotosLoad(with: [], at: 2)
         
         XCTAssertEqual(loader.loggedSearchTerms, ["", searchTerm0, searchTerm1], "Expect three search terms logged after more one search request")
-        XCTAssertEqual(loader.cancelLoadCallCount, 2, "Expect two cancel loads because of one more uncompleted search request")
     }
     
     func test_photosSearching_scrollsToTheTopAfterSearching() {
@@ -86,7 +85,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(sut.isFocusingOnSearchBar, "Expect not focusing on search bar after user unfocused on it")
     }
     
-    func test_loadingIndicator_showsBeforePhotosLoadedCompletedWithError() {
+    func test_loadingIndicator_showsIndicatorBeforePhotosLoadedCompletedWithError() {
         let (sut, loader) = makeSUT()
         sut.simulateAppearance()
         
@@ -96,11 +95,12 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error")
         
-        sut.simulateUserInitiatedReload() // index 1
+        sut.simulateUserInitiatedReload()
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user initiates photos again")
         
-        sut.simulateSearchPhotos(by: anyTerm()) // index 2
+        loader.completePhotosLoadWithError(at: 1)
+        sut.simulateSearchPhotos(by: anyTerm())
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searches photos")
         
@@ -109,7 +109,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadingIndicator, "Expect no loading indicator once photo request completed with error again")
     }
     
-    func test_loadingIndicator_showsBeforePhotosLoadedCompletedSuccessfully() {
+    func test_loadingIndicator_showsIndicatorBeforePhotosLoadedCompletedSuccessfully() {
         let photos = [makePhoto()]
         let (sut, loader) = makeSUT()
         sut.simulateAppearance()
@@ -124,6 +124,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user initiates photos again")
         
+        loader.completePhotosLoad(with: photos, at: 1)
         sut.simulateSearchPhotos(by: anyTerm()) // index 2
         
         XCTAssertTrue(sut.isShowingLoadingIndicator, "Expect a loading indicator once user searches photos")
@@ -179,11 +180,15 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         sut.simulateUserInitiatedReload()
         loader.completePhotosLoadWithError(at: 1)
+        loader.completeImageLoad(with: anyImageData(), at: 0)
+        loader.completeImageLoad(with: anyImageData(), at: 1)
         
         assert(sut, isRending: photos)
         
         sut.simulateSearchPhotos(by: anyTerm())
         loader.completePhotosLoadWithError(at: 2)
+        loader.completeImageLoad(with: anyImageData(), at: 2)
+        loader.completeImageLoad(with: anyImageData(), at: 3)
         
         assert(sut, isRending: photos)
     }
@@ -273,9 +278,10 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
     func test_loadMorePhotos_requestsLoadMorePhotosBySearchTermFromLoader() {
         let page = [makePhoto(id: "0", title: "title 0"), makePhoto(id: "1", title: "title 1")]
         let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
         let term = "search term"
         let differentTerm = "different search term"
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: [], at: 0)
         
         sut.simulateSearchPhotos(by: term)
         loader.completePhotosLoad(with: page, at: 1)
@@ -348,9 +354,11 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         assert(sut, isRending: photos)
         
+        loader.completeImageLoad(with: anyImageData(), at: 0)
         sut.simulateSearchPhotos(by: anyTerm())
         sut.simulateLoadMoreAction()
         loader.completeLoadMorePhotosWithError(at: 1)
+        loader.completeImageLoad(with: anyImageData(), at: 1)
         
         assert(sut, isRending: photos)
     }
@@ -543,7 +551,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         XCTAssertTrue(view.isShowingLoadingIndicator, "Expect a loading before image load completed")
         
-        loader.completeImageLoad(with: anyNSError(), at: 0)
+        loader.completeImageLoadWithError(at: 0)
         
         XCTAssertNil(view.renderedImage, "Expect no rendered image for image view after image load completed with error")
         XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image load completed with error")
@@ -594,18 +602,17 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0)) // image request at 0
-        XCTAssertEqual(view.titleText, photo0.title, "Expect view set the first photo title")
+        
+        XCTAssertEqual(view.titleText, photo0.title, "Expect view set to the first photo title")
         
         sut.simulatePhotoImageViewVisible(at: 1) // image request at 1
-        sut.simulatePhotoImageViewBecomeVisibleAgain(view, at: 1) // view reused at row 1 and become visible again, image request at 2
-        XCTAssertEqual(view.titleText, photo1.title, "Expect view set the second photo title")
-        
+        sut.simulatePhotoImageViewBecomeVisibleAgain(view, at: 1)
         view.prepareForReuse()
         
         let afterReusedImageData = UIImage.makeData(withColor: .red)
-        loader.completeImageLoad(with: afterReusedImageData, at: 2) // complete the reused image request first
+        loader.completeImageLoad(with: afterReusedImageData, at: 1) // complete the image request which is after reused
         let previousImageData = UIImage.makeData(withColor: .gray)
-        loader.completeImageLoad(with: previousImageData, at: 0) // then complete the previous image request
+        loader.completeImageLoad(with: previousImageData, at: 0) // complete the image request which is before reused
         
         XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image after view reused when image load completed successfully")
         XCTAssertEqual(view.titleText, photo1.title, "Expect view set the second photo title without changes")

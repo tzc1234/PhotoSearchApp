@@ -104,9 +104,9 @@ class LoaderSpy {
         })
     }
     
-    func completeImageLoad(with error: Error, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+    func completeImageLoadWithError(at index: Int, file: StaticString = #filePath, line: UInt = #line) {
         check(index, within: loadImageRequests, file: file, line: line, afterThat: {
-            loadImageRequests[index].publisher.send(completion: .failure(error))
+            loadImageRequests[index].publisher.send(completion: .failure(anyNSError()))
         })
     }
     

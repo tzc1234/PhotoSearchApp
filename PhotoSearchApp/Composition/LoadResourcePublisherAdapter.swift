@@ -10,6 +10,7 @@ import Foundation
 
 final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Resource> where Presenter.Resource == Resource {
     private var cancellable: Cancellable?
+    private var isLoading = false
     var presenter: Presenter?
     
     private let publisher: (Input) -> AnyPublisher<Resource, Error>
@@ -19,6 +20,9 @@ final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Re
     }
     
     func load(_ input: Input) {
+        guard !isLoading else { return }
+        
+        isLoading = true
         presenter?.didStartLoading()
         
         cancellable = publisher(input)
@@ -27,6 +31,8 @@ final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Re
                 if case .failure = completion {
                     self?.presenter?.didFinishLoadingWithError()
                 }
+                
+                self?.isLoading = false
             }, receiveValue: { [weak self] resource in
                 self?.presenter?.didFinishLoading(with: resource)
             })
@@ -41,5 +47,6 @@ extension LoadResourcePublisherAdapter: PhotoCellControllerDelegate where Input 
     func cancel() {
         cancellable?.cancel()
         cancellable = nil
+        isLoading = false
     }
 }
