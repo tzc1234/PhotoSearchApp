@@ -231,6 +231,25 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loggedErrors, [expectedError, expectedError], "Expect one new error shown after search photos completed with error")
     }
     
+    func test_deinit_cancelsPhotoLoadRequestWhenSUTIsDeallocated() {
+        let loader = LoaderSpy()
+        var sut: PhotoSearchViewController?
+        
+        autoreleasepool {
+            sut = PhotoSearchComposer.composeWith(
+                loadPhotosPublisher: loader.loadPhotosPublisher,
+                loadImagePublisher: loader.loadImagePublisher,
+                showError: { _ in })
+            sut?.simulateAppearance()
+        }
+        
+        XCTAssertEqual(loader.cancelLoadCallCount, 0, "Expect no cancel photos load requests before sut is deallocated")
+        
+        sut = nil
+        
+        XCTAssertEqual(loader.cancelLoadCallCount, 1, "Expect 1 cancel photos load requests after sut is deallocated")
+    }
+    
     // MARK: - Load More
     
     func test_loadMorePhotos_requestsLoadMorePhotosFromLoader() {
