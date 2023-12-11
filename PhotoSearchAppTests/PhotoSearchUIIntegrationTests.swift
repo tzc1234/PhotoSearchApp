@@ -344,6 +344,28 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loader.loadMorePhotosSearchTerms, [term, term, term, differentTerm], "Expect a different search term logged after the 4th load more action")
     }
     
+    func test_loadMorePhotos_showsLoadingIndicatorWhenLoadingMorePhotos() throws {
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: [], at: 0)
+        
+        var loadMoreView = try XCTUnwrap(sut.simulateLoadMoreAction())
+        
+        XCTAssertTrue(loadMoreView.isShowingLoadingIndicator, "Expect a loading indicator after 1st load more request")
+        
+        loader.completeLoadMorePhotosWithError(at: 0)
+        
+        XCTAssertFalse(loadMoreView.isShowingLoadingIndicator, "Expect no loading indicator after 1st load more request completed with error")
+        
+        loadMoreView = try XCTUnwrap(sut.simulateLoadMoreAction())
+        
+        XCTAssertTrue(loadMoreView.isShowingLoadingIndicator, "Expect a loading indicator after 2nd load more request")
+        
+        loader.completeLoadMorePhotos(with: [], isLastPage: true, at: 1)
+        
+        XCTAssertFalse(loadMoreView.isShowingLoadingIndicator, "Expect no loading indicator after 2nd load more request completed successfully")
+    }
+    
     func test_loadMorePhotosComplete_doesNotRenderPhotoViewsCompletedWithEmptyPhotos() {
         let emptyPhotos = [Photo]()
         let (sut, loader) = makeSUT()
@@ -397,6 +419,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         sut.simulateSearchPhotos(by: anyTerm())
         loader.completePhotosLoad(with: photos0, at: 1)
+        
         sut.simulateLoadMoreAction()
         loader.completeLoadMorePhotos(with: photos0 + photos1, isLastPage: false, at: 1)
         

@@ -111,13 +111,13 @@ extension PhotoSearchViewController {
 
 extension PhotoSearchViewController {
     @discardableResult
-    func simulateLoadMoreAction(tableViewForTest: UITableView? = nil) -> UITableViewCell? {
+    func simulateLoadMoreAction(tableViewForTest: UITableView? = nil) -> LoadMoreCell? {
         guard let cell = loadMoreView else { return nil }
         
         let d = tableView.delegate
         let indexPath = IndexPath(row: 0, section: loadMoreSection)
         d?.tableView?(tableViewForTest ?? tableView, willDisplay: cell, forRowAt: indexPath)
-        return cell
+        return cell as? LoadMoreCell
     }
     
     func simulateLoadMoreViewInvisible(_ view: UITableViewCell) {
