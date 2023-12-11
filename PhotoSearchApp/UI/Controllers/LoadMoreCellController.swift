@@ -8,7 +8,7 @@
 import UIKit
 
 final class LoadMoreCellController: NSObject {
-    private let cell = UITableViewCell()
+    private let cell = LoadMoreCell()
     private var isLoading = false
     private var offsetObserver: NSKeyValueObservation?
     
@@ -25,8 +25,7 @@ extension LoadMoreCellController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        cell.selectionStyle = .none
-        return cell
+        cell
     }
 }
 
