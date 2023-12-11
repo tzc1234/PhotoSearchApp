@@ -17,6 +17,8 @@
 		BE3ADE8C2B273DE400478A1A /* LOADING_MORE_PHOTOS_light.png in Resources */ = {isa = PBXBuildFile; fileRef = BE3ADE8A2B273DE400478A1A /* LOADING_MORE_PHOTOS_light.png */; };
 		BE3ADE8D2B273DE400478A1A /* LOADING_MORE_PHOTOS_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = BE3ADE8B2B273DE400478A1A /* LOADING_MORE_PHOTOS_dark.png */; };
 		BE3ADE8F2B27428900478A1A /* LoadMoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3ADE8E2B27428900478A1A /* LoadMoreCell.swift */; };
+		BE3ADE922B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = BE3ADE902B2749AA00478A1A /* LOAD_MORE_PHOTOS_ERROR_dark.png */; };
+		BE3ADE932B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_light.png in Resources */ = {isa = PBXBuildFile; fileRef = BE3ADE912B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_light.png */; };
 		BE4291732A6858FC00AE86D7 /* PhotoCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4291722A6858FC00AE86D7 /* PhotoCellController.swift */; };
 		BE4291752A685A8200AE86D7 /* PhotoSearchComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4291742A685A8200AE86D7 /* PhotoSearchComposer.swift */; };
 		BE479DD82A671B820036898B /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE479DD72A671B820036898B /* Photo.swift */; };
@@ -104,6 +106,8 @@
 		BE3ADE8A2B273DE400478A1A /* LOADING_MORE_PHOTOS_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOADING_MORE_PHOTOS_light.png; sourceTree = "<group>"; };
 		BE3ADE8B2B273DE400478A1A /* LOADING_MORE_PHOTOS_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOADING_MORE_PHOTOS_dark.png; sourceTree = "<group>"; };
 		BE3ADE8E2B27428900478A1A /* LoadMoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreCell.swift; sourceTree = "<group>"; };
+		BE3ADE902B2749AA00478A1A /* LOAD_MORE_PHOTOS_ERROR_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOAD_MORE_PHOTOS_ERROR_dark.png; sourceTree = "<group>"; };
+		BE3ADE912B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOAD_MORE_PHOTOS_ERROR_light.png; sourceTree = "<group>"; };
 		BE4291722A6858FC00AE86D7 /* PhotoCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCellController.swift; sourceTree = "<group>"; };
 		BE4291742A685A8200AE86D7 /* PhotoSearchComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSearchComposer.swift; sourceTree = "<group>"; };
 		BE479DD72A671B820036898B /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
@@ -276,8 +280,8 @@
 			children = (
 				BE59B6152A6937F9002C7E21 /* Helpers */,
 				BE479DD92A671BF00036898B /* PhotoCell.swift */,
-				BED8BA372A682C9B0068A202 /* ShimmeringView.swift */,
 				BE3ADE8E2B27428900478A1A /* LoadMoreCell.swift */,
+				BED8BA372A682C9B0068A202 /* ShimmeringView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -335,6 +339,8 @@
 				BE61CDFA2B1F6CEB00359F70 /* PHOTOS_WITH_FAILED_IMAGE_LOADING_light.png */,
 				BE3ADE8B2B273DE400478A1A /* LOADING_MORE_PHOTOS_dark.png */,
 				BE3ADE8A2B273DE400478A1A /* LOADING_MORE_PHOTOS_light.png */,
+				BE3ADE902B2749AA00478A1A /* LOAD_MORE_PHOTOS_ERROR_dark.png */,
+				BE3ADE912B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_light.png */,
 			);
 			path = snapshots;
 			sourceTree = "<group>";
@@ -558,9 +564,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE3ADE932B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_light.png in Resources */,
 				BE61CDF82B1F667700359F70 /* PHOTOS_WITH_CONTENT_dark.png in Resources */,
 				BE61CDF92B1F667700359F70 /* PHOTOS_WITH_CONTENT_light.png in Resources */,
 				BE3ADE8C2B273DE400478A1A /* LOADING_MORE_PHOTOS_light.png in Resources */,
+				BE3ADE922B2749AB00478A1A /* LOAD_MORE_PHOTOS_ERROR_dark.png in Resources */,
 				BE61CDEF2B1F58A900359F70 /* EMPTY_PHOTOS_dark.png in Resources */,
 				BE3ADE8D2B273DE400478A1A /* LOADING_MORE_PHOTOS_dark.png in Resources */,
 				BE61CDF02B1F58A900359F70 /* EMPTY_PHOTOS_light.png in Resources */,

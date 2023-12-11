@@ -45,6 +45,15 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone(style: .dark)), named: "LOADING_MORE_PHOTOS_dark")
     }
     
+    func test_loadMorePhotosError() {
+        let sut = makeSUT()
+        
+        sut.display(loadMorePhotosError())
+        
+        assert(snapshot: sut.snapshot(for: .iPhone(style: .light)), named: "LOAD_MORE_PHOTOS_ERROR_light")
+        assert(snapshot: sut.snapshot(for: .iPhone(style: .dark)), named: "LOAD_MORE_PHOTOS_ERROR_dark")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT() -> PhotoSearchViewController {
@@ -78,6 +87,18 @@ final class PhotoSearchViewSnapshotTests: XCTestCase {
     private func loadingMorePhotos() -> [[CellController]] {
         let loadMore = LoadMoreCellController(loadMore: {})
         loadMore.display(PhotosLoadingViewModel(isLoading: true))
+        return [
+            Array(photosWithContent().prefix(2)),
+            [CellController(loadMore)]
+        ]
+    }
+    
+    private func loadMorePhotosError() -> [[CellController]] {
+        let loadMore = LoadMoreCellController(loadMore: {})
+        loadMore.display(PhotosLoadingViewModel(isLoading: false))
+        loadMore.display(PhotosErrorViewModel(message: ErrorMessage(
+            title: "Error Title",
+            message: "This a multiline\nerror message.")))
         return [
             Array(photosWithContent().prefix(2)),
             [CellController(loadMore)]

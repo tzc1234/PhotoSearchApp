@@ -9,7 +9,6 @@ import UIKit
 
 final class LoadMoreCellController: NSObject {
     private let cell = LoadMoreCell()
-    private var isLoading = false
     private var offsetObserver: NSKeyValueObservation?
     
     private let loadMore: () -> Void
@@ -49,6 +48,14 @@ extension LoadMoreCellController: UITableViewDelegate {
 
 extension LoadMoreCellController: PhotosLoadingView {
     func display(_ viewModel: PhotosLoadingViewModel) {
-        isLoading = viewModel.isLoading
+        cell.isLoading = viewModel.isLoading
+    }
+}
+
+extension LoadMoreCellController: PhotosErrorView {
+    func display(_ viewModel: PhotosErrorViewModel) {
+        cell.stackView.isHidden = viewModel.message == nil
+        cell.titleLabel.text = viewModel.message?.title
+        cell.messageLabel.text = viewModel.message?.message
     }
 }
