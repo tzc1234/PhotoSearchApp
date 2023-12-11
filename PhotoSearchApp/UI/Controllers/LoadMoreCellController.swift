@@ -54,8 +54,8 @@ extension LoadMoreCellController: PhotosLoadingView {
 
 extension LoadMoreCellController: PhotosErrorView {
     func display(_ viewModel: PhotosErrorViewModel) {
-        cell.stackView.isHidden = viewModel.message == nil
         cell.titleLabel.text = viewModel.message?.title
         cell.messageLabel.text = viewModel.message?.message
+        cell.stackView.isHidden = viewModel.message == nil
     }
 }

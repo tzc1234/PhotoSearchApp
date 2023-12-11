@@ -412,6 +412,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         assert(sut, isRending: photos)
         
         loader.completeImageLoad(with: anyImageData(), at: 0)
+        
         sut.simulateSearchPhotos(by: anyTerm())
         sut.simulateLoadMoreAction()
         loader.completeLoadMorePhotosWithError(at: 1)
