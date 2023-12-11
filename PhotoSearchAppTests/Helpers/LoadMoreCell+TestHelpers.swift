@@ -12,4 +12,12 @@ extension LoadMoreCell {
     var isShowingLoadingIndicator: Bool {
         isLoading
     }
+    
+    var title: String? {
+        titleLabel.text
+    }
+    
+    var message: String? {
+        messageLabel.text
+    }
 }

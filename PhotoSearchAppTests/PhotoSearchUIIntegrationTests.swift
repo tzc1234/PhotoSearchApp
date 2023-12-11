@@ -366,6 +366,22 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(loadMoreView.isShowingLoadingIndicator, "Expect no loading indicator after 2nd load more request completed successfully")
     }
     
+    func test_loadMorePhotos_showsErrorMessageOnLoadMoreError() throws {
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: [], at: 0)
+        
+        var loadMoreView = try XCTUnwrap(sut.simulateLoadMoreAction())
+        
+        XCTAssertNil(loadMoreView.title, "Expect no error title before completion of load more request")
+        XCTAssertNil(loadMoreView.message, "Expect no error message before completion of load more request")
+        
+        loader.completeLoadMorePhotosWithError(at: 0)
+        
+        XCTAssertEqual(loadMoreView.title, PhotosPresenter.errorTitle, "Expect an error title after load more request completed with error")
+        XCTAssertEqual(loadMoreView.message, PhotosPresenter.errorMessage, "Expect an error message after load more request completed with error")
+    }
+    
     func test_loadMorePhotosComplete_doesNotRenderPhotoViewsCompletedWithEmptyPhotos() {
         let emptyPhotos = [Photo]()
         let (sut, loader) = makeSUT()

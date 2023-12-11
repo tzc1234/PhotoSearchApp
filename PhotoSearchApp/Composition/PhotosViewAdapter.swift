@@ -39,7 +39,7 @@ final class PhotosViewAdapter: PhotosView {
         loadMoreAdapter.presenter = PhotosPresenter(
             photosView: PhotosViewAdapter(view: viewController, loadImagePublisher: loadImagePublisher),
             loadingView: WeakRefProxy(loadMoreController),
-            errorView: WeakRefProxy(viewController))
+            errorView: WeakRefProxy(loadMoreController))
         let loadMoreSection = [CellController(loadMoreController)]
         
         viewController.display(photosSection, loadMoreSection)
