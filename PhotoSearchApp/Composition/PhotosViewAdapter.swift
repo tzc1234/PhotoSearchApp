@@ -20,7 +20,7 @@ final class PhotosViewAdapter: PhotosView {
     func display(_ viewModel: Paginated<Photo>) {
         guard let viewController else { return }
         
-        let photoCells = viewModel.items.map { photo in
+        let photosSection = viewModel.items.map { photo in
             CellController(PhotoCellComposer.composeWith(
                 photoTitle: photo.title,
                 loadImagePublisher: { [loadImagePublisher] in
@@ -29,7 +29,7 @@ final class PhotosViewAdapter: PhotosView {
         }
         
         guard let loadMorePublisher = viewModel.loadMorePublisher else {
-            viewController.display(photoCells)
+            viewController.display(photosSection)
             return
         }
         
@@ -40,7 +40,8 @@ final class PhotosViewAdapter: PhotosView {
             photosView: PhotosViewAdapter(view: viewController, loadImagePublisher: loadImagePublisher),
             loadingView: WeakRefProxy(loadMoreController),
             errorView: WeakRefProxy(viewController))
+        let loadMoreSection = [CellController(loadMoreController)]
         
-        viewController.display(photoCells, [CellController(loadMoreController)])
+        viewController.display(photosSection, loadMoreSection)
     }
 }
