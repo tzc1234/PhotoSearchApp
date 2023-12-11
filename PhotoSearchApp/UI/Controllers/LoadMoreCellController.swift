@@ -32,25 +32,19 @@ extension LoadMoreCellController: UITableViewDataSource {
 
 extension LoadMoreCellController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        reloadIfNeeded()
+        loadMore()
         
         offsetObserver = tableView.observe(\.contentOffset, options: [.old, .new]) { [weak self] tableView, value in
             guard tableView.isDragging, let old = value.oldValue?.y, let new = value.newValue?.y, new > old else {
                 return
             }
             
-            self?.reloadIfNeeded()
+            self?.loadMore()
         }
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         offsetObserver = nil
-    }
-    
-    private func reloadIfNeeded() {
-        guard !isLoading else { return }
-
-        loadMore()
     }
 }
 
