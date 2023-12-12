@@ -18,19 +18,6 @@ final class LoadMoreCell: UITableViewCell {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
-        stack.spacing = 4
-        
-        stack.addArrangedSubview(titleLabel)
-        stack.addArrangedSubview(messageLabel)
-        contentView.addSubview(stack)
-        
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
-        ])
-        
         return stack
     }()
     
@@ -67,11 +54,19 @@ final class LoadMoreCell: UITableViewCell {
     private func configureLayout() {
         selectionStyle = .none
         contentView.addSubview(spinner)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(messageLabel)
+        contentView.addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 56),
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 68),
             spinner.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            spinner.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -8),
+            
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         ])
     }
     
