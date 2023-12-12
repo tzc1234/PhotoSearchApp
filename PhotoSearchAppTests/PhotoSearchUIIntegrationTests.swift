@@ -371,7 +371,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateAppearance()
         loader.completePhotosLoad(with: [], at: 0)
         
-        var loadMoreView = try XCTUnwrap(sut.simulateLoadMoreAction())
+        let loadMoreView = try XCTUnwrap(sut.simulateLoadMoreAction())
         
         XCTAssertNil(loadMoreView.title, "Expect no error title before completion of load more request")
         XCTAssertNil(loadMoreView.message, "Expect no error message before completion of load more request")
