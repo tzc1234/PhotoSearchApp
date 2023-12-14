@@ -17,13 +17,13 @@ protocol PhotoImageLoadingView {
     func display(_ viewModel: PhotoImageLoadingViewModel)
 }
 
-final class PhotoImagePresenter<View: PhotoImageView, Image>: ResourcePresenter where View.Image == Image {
+final class PhotoImagePresenter<View: PhotoImageView>: ResourcePresenter {
     private let title: String
     private let view: View
     private let loadingView: PhotoImageLoadingView
-    private let imageConverter: (Data) -> Image?
+    private let imageConverter: (Data) -> View.Image?
     
-    init(title: String, view: View, loadingView: PhotoImageLoadingView, imageConverter: @escaping (Data) -> Image?) {
+    init(title: String, view: View, loadingView: PhotoImageLoadingView, imageConverter: @escaping (Data) -> View.Image?) {
         self.title = title
         self.view = view
         self.loadingView = loadingView

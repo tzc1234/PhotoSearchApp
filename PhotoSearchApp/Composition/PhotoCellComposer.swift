@@ -10,7 +10,7 @@ import UIKit
 
 enum PhotoCellComposer {
     typealias LoadImagePublisherAdapter = 
-        LoadResourcePublisherAdapter<PhotoImagePresenter<WeakRefProxy<PhotoCellController>, UIImage>, Void>
+        LoadResourcePublisherAdapter<PhotoImagePresenter<WeakRefProxy<PhotoCellController>>, Void>
     
     static func composeWith(photoTitle: String,
                             loadImagePublisher: @escaping () -> AnyPublisher<Data, Error>) -> PhotoCellController {
