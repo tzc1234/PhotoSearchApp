@@ -18,8 +18,6 @@ protocol PhotoImageLoadingView {
 }
 
 final class PhotoImagePresenter<View: PhotoImageView, Image>: ResourcePresenter where View.Image == Image {
-    typealias Resource = Data
-    
     private let title: String
     private let view: View
     private let loadingView: PhotoImageLoadingView
@@ -37,7 +35,7 @@ final class PhotoImagePresenter<View: PhotoImageView, Image>: ResourcePresenter 
         view.display(PhotoImageViewModel(title: title, image: nil))
     }
     
-    func didFinishLoading(with resource: Resource) {
+    func didFinishLoading(with resource: Data) {
         loadingView.display(PhotoImageLoadingViewModel(isLoading: false))
         view.display(PhotoImageViewModel(title: title, image: imageConverter(resource)))
     }
