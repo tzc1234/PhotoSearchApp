@@ -8,14 +8,14 @@
 import Combine
 import Foundation
 
-final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input, Resource> where Presenter.Resource == Resource {
+final class LoadResourcePublisherAdapter<Presenter: ResourcePresenter, Input> {
     private var cancellable: Cancellable?
     private var isLoading = false
     var presenter: Presenter?
     
-    private let publisher: (Input) -> AnyPublisher<Resource, Error>
+    private let publisher: (Input) -> AnyPublisher<Presenter.Resource, Error>
     
-    init(publisher: @escaping (Input) -> AnyPublisher<Resource, Error>) {
+    init(publisher: @escaping (Input) -> AnyPublisher<Presenter.Resource, Error>) {
         self.publisher = publisher
     }
     

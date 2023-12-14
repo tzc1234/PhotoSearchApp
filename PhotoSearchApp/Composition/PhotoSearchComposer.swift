@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-typealias LoadPhotosPublisherAdapter = LoadResourcePublisherAdapter<PhotosPresenter, String, Paginated<Photo>>
+typealias LoadPhotosPublisherAdapter = LoadResourcePublisherAdapter<PhotosPresenter, String>
 
 enum PhotoSearchComposer {
     static func composeWith(loadPhotosPublisher: @escaping (String) -> AnyPublisher<Paginated<Photo>, Error>,
