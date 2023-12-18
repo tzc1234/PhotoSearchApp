@@ -136,17 +136,3 @@ extension PhotoSearchViewController {
     
     private var loadMoreSection: Int { 1 }
 }
-
-final class AlwaysDraggingTableView: UITableView {
-    override var isDragging: Bool {
-        true
-    }
-    
-    func simulateScrollUp() {
-        setContentOffset(.init(x: 0, y: 0), animated: false)
-    }
-    
-    func simulateScrollDown() {
-        setContentOffset(.init(x: 0, y: 1), animated: false)
-    }
-}
