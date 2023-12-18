@@ -76,6 +76,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let window = UIWindow()
         window.addSubview(sut.searchBar)
         sut.simulateAppearance()
+        
         sut.simulateFocusOnSearchBar()
         
         XCTAssertTrue(sut.isFocusingOnSearchBar, "Expect focusing on search bar after user focused on it")
@@ -211,7 +212,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         let (sut, loader) = makeSUT(showError: { loggedErrors.append($0) })
         sut.simulateAppearance()
         
-        XCTAssertEqual(loggedErrors.count, 0, "Expect no errors shown before load photos completed")
+        XCTAssertEqual(loggedErrors, [], "Expect no errors shown before load photos completed")
         
         loader.completePhotosLoadWithError(at: 0)
         
@@ -220,11 +221,11 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateUserInitiatedReload()
         loader.completePhotosLoad(with: [], at: 1)
         
-        XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown after user initiated load photos completed successfully")
+        XCTAssertEqual(loggedErrors, [expectedError], "Expect no new error shown after user initiated load photos completed successfully")
         
         sut.simulateSearchPhotos(by: anyTerm())
         
-        XCTAssertEqual(loggedErrors.count, 1, "Expect no new error shown before search photos completed")
+        XCTAssertEqual(loggedErrors, [expectedError], "Expect no new error shown before search photos completed")
         
         loader.completePhotosLoadWithError(at: 2)
         
@@ -476,7 +477,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         alwaysDraggingTableView.simulateScrollDown()
         loader.completeLoadMorePhotosWithError(at: 1)
         
-        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect 2 load more requests after the scrolling of the visible load more view")
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect 2 load more requests after scrolling down the visible load more view")
         
         alwaysDraggingTableView.simulateScrollUp()
         
@@ -485,7 +486,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         sut.simulateLoadMoreViewInvisible(loadMoreView)
         alwaysDraggingTableView.simulateScrollDown()
         
-        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect no changes on load more requests when scrolling and the load more view is invisible")
+        XCTAssertEqual(loader.loadMorePhotosCallCount, 2, "Expect no changes on load more requests when the load more view is invisible even scrolling down")
     }
     
     // MARK: - Image View tests
@@ -557,16 +558,18 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         
         let secondView = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 1))
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImageRequest,
-                       [photo0, photo0, photo1],
-                       "Expect a image load for second image view once second image view is visible")
+        XCTAssertEqual(
+            loader.loggedPhotosForLoadImageRequest,
+            [photo0, photo0, photo1],
+            "Expect a image load for second image view once second image view is visible")
         
         sut.simulatePhotoImageViewInvisible(secondView, at: 1)
         sut.simulatePhotoImageViewBecomeVisibleAgain(secondView, at: 1)
         
-        XCTAssertEqual(loader.loggedPhotosForLoadImageRequest,
-                       [photo0, photo0, photo1, photo1],
-                       "Expect a image reload for second image view once second image view becomes visible again")
+        XCTAssertEqual(
+            loader.loggedPhotosForLoadImageRequest,
+            [photo0, photo0, photo1, photo1],
+            "Expect a image reload for second image view once second image view becomes visible again")
     }
     
     func test_photoImageView_rendersLoadedImage() throws {
@@ -620,6 +623,19 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image load completed with error")
     }
     
+    func test_photoImageView_doesNotRenderImageWhenItIsInvisible() throws {
+        let (sut, loader) = makeSUT()
+        
+        sut.simulateAppearance()
+        loader.completePhotosLoad(with: [makePhoto()], at: 0)
+        
+        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
+        sut.simulatePhotoImageViewInvisible(view, at: 0)
+        loader.completeImageLoad(with: anyImageData(), at: 0)
+        
+        XCTAssertNil(view.renderedImage, "Expect no rendered image when view is invisible although image load completed successfully")
+    }
+    
     func test_photoImageView_configuresCorrectlyWhenViewBecomeVisibleAgain() throws {
         let (sut, loader) = makeSUT()
         
@@ -644,24 +660,11 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         XCTAssertFalse(view.isShowingLoadingIndicator, "Expect no loading after image reload completed")
     }
     
-    func test_photoImageView_doesNotRenderImageWhenItIsInvisible() throws {
-        let (sut, loader) = makeSUT()
-        
-        sut.simulateAppearance()
-        loader.completePhotosLoad(with: [makePhoto()], at: 0)
-        
-        let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0))
-        sut.simulatePhotoImageViewInvisible(view, at: 0)
-        loader.completeImageLoad(with: anyImageData(), at: 0)
-        
-        XCTAssertNil(view.renderedImage, "Expect no rendered image when view is invisible although image load completed successfully")
-    }
-    
     func test_photoImageView_doesNotRenderImageFromPreviousImageLoadWhenItIsReused() throws {
-        let (sut, loader) = makeSUT()
-        sut.simulateAppearance()
         let photo0 = makePhoto(id: "0", title: "title 0")
         let photo1 = makePhoto(id: "1", title: "title 1")
+        let (sut, loader) = makeSUT()
+        sut.simulateAppearance()
         loader.completePhotosLoad(with: [photo0, photo1], at: 0)
         
         let view = try XCTUnwrap(sut.simulatePhotoImageViewVisible(at: 0)) // image request at 0
@@ -678,7 +681,7 @@ final class PhotoSearchUIIntegrationTests: XCTestCase {
         loader.completeImageLoad(with: previousImageData, at: 0) // complete the image request which is before reused
         
         XCTAssertEqual(view.renderedImage, afterReusedImageData, "Expect rendered image after view reused when image load completed successfully")
-        XCTAssertEqual(view.titleText, photo1.title, "Expect view set the second photo title without changes")
+        XCTAssertEqual(view.titleText, photo1.title, "Expect view set to the second photo title")
     }
     
     func test_photoImageView_cancelImageRequestAfterViewDeallocated() {
