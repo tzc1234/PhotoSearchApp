@@ -104,36 +104,52 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
     private func makeData(for url: URL) -> Data {
         switch url.path() {
         case "/services/rest/"
-            where url.query()?.contains("text=\(searchKeyword())") == true && url.query()?.contains("page=1") == true:
+            where queryContains(keyword: searchKeyword(), in: url) && queryContains(page: 1, in: url):
             return makeSearchedPhotosData()
             
-        case "/services/rest/" where url.query()?.contains("page=3") == true:
+        case "/services/rest/" where queryContains(page: 3, in: url):
             return makePage3PhotosData()
             
-        case "/services/rest/" where url.query()?.contains("page=1") == true:
+        case "/services/rest/" where queryContains(page: 1, in: url):
             return makePage1PhotosData()
             
-        case "/services/rest/" where url.query()?.contains("page=2") == true:
+        case "/services/rest/" where queryContains(page: 2, in: url):
             return makePage2PhotosData()
             
-        case "/page1Server1/page1Id1_page1Secret1_b.jpg":
+        case makeImageDataPath(id: "page1Id1", secret: "page1Secret", server: "page1Server"):
             return makeImageData0()
             
-        case "/page1Server2/page1Id2_page1Secret2_b.jpg":
+        case makeImageDataPath(id: "page1Id2", secret: "page1Secret", server: "page1Server"):
             return makeImageData1()
             
-        case "/searchedServer/searchedId_searchedSecret_b.jpg":
+        case makeImageDataPath(id: "searchedId", secret: "searchedSecret", server: "searchedServer"):
             return makeSearchedImageData()
             
-        case "/page2Server/page2Id_page2Secret_b.jpg":
+        case makeImageDataPath(id: "page2Id", secret: "page2Secret", server: "page2Server"):
             return makeLoadMoreImageData0()
             
-        case "/page3Server/page3Id_page3Secret_b.jpg":
+        case makeImageDataPath(id: "page3Id", secret: "page3Secret", server: "page3Server"):
             return makeLoadMoreImageData1()
             
         default:
             return Data()
         }
+    }
+    
+    private func queryContains(keyword: String, in url: URL) -> Bool {
+        queryContains("text=\(keyword)", in: url)
+    }
+    
+    private func queryContains(page: Int, in url: URL) -> Bool {
+        queryContains("page=\(page)", in: url)
+    }
+    
+    private func queryContains(_ str: String, in url: URL) -> Bool {
+        url.query()?.contains(str) == true
+    }
+    
+    private func makeImageDataPath(id: String, secret: String, server: String) -> String {
+        "/\(server)/\(id)_\(secret)_b.jpg"
     }
     
     private func makePage1PhotosData() -> Data {
@@ -144,14 +160,14 @@ final class PhotosSearchAcceptanceTests: XCTestCase {
                 "photo": [
                     [
                         "id": "page1Id1",
-                        "secret": "page1Secret1",
-                        "server": "page1Server1",
+                        "secret": "page1Secret",
+                        "server": "page1Server",
                         "title": "page1Title1"
                     ],
                     [
                         "id": "page1Id2",
-                        "secret": "page1Secret2",
-                        "server": "page1Server2",
+                        "secret": "page1Secret",
+                        "server": "page1Server",
                         "title": "page1Title2"
                     ],
                 ]
