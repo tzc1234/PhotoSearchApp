@@ -137,22 +137,6 @@ extension PhotoSearchViewController {
     private var loadMoreSection: Int { 1 }
 }
 
-final class RefreshControlSpy: UIRefreshControl {
-    private var _isRefreshing = false
-    
-    override var isRefreshing: Bool {
-        _isRefreshing
-    }
-    
-    override func beginRefreshing() {
-        _isRefreshing = true
-    }
-    
-    override func endRefreshing() {
-        _isRefreshing = false
-    }
-}
-
 final class AlwaysDraggingTableView: UITableView {
     override var isDragging: Bool {
         true
