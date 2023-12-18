@@ -9,10 +9,7 @@ import UIKit
 @testable import PhotoSearchApp
 
 extension PhotoSearchViewController {
-    func simulateAppearance(tableViewFrame: CGRect = CGRect(x: 0, y: 0, width: 390, height: 9999), 
-                            cellHeight: CGFloat? = nil) {
-        tableView.frame = tableViewFrame
-        cellHeight.map { tableView.rowHeight = $0 }
+    func simulateAppearance() {
         replaceRefreshControlToSpyForiOS17Support()
         
         beginAppearanceTransition(true, animated: false)
@@ -29,10 +26,6 @@ extension PhotoSearchViewController {
         }
         
         refreshControl = refreshControlSpy
-    }
-    
-    func setTableHeightToLimitCellViewRendering(_ height: CGFloat) {
-        tableView.frame = CGRect(x: 0, y: 0, width: 390, height: height)
     }
     
     func simulateUserInitiatedReload() {
